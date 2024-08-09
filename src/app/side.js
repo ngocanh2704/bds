@@ -1,0 +1,81 @@
+import { Layout, Menu } from "antd";
+import { useState } from "react";
+import {
+  DesktopOutlined,
+  FileOutlined,
+  PieChartOutlined,
+  TeamOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import Link from "next/link";
+
+const { Sider } = Layout;
+const Side = () => {
+  function getItem(label, key, icon, children) {
+    return {
+      key,
+      icon,
+      children,
+      label,
+    };
+  }
+  const itemsAdminManager = [
+    getItem("Người dùng", "sub1", <PieChartOutlined />, [
+      getItem(<Link href="/dashboard/employee">Nhân viên</Link>, "1"),
+      getItem(<Link href="/dashboard/user">Tài khoản</Link>, "2"),
+    ]),
+    getItem("Sale", "sub2", <DesktopOutlined />, [
+      getItem(<Link href="/dashboard/project">Dự án</Link>, "3"),
+      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "4"),
+      getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "5"),
+      getItem(
+        <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
+        "6"
+      ),
+      getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "7"),
+    ]),
+    // getItem("Hình ảnh", "8", <UserOutlined />),
+  ];
+
+  // const itemStaff = [
+  //   getItem("Sale", "sub1", <DesktopOutlined />, [
+  //     getItem(<Link href="/dashboard/project">Dự án</Link>, "1"),
+  //     getItem(<Link href="/dashboard/status">Trạng thái </Link>, "2"),
+  //     getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "3"),
+  //     getItem(
+  //       <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
+  //       "4"
+  //     ),
+  //     getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "5"),
+  //   ]),
+  //   getItem("Hình ảnh", "6", <UserOutlined />),
+  // ];
+  const [collapsed, setCollapsed] = useState(false);
+  return (
+    <Sider
+      collapsible
+      collapsed={collapsed}
+      onCollapse={(value) => setCollapsed(value)}
+    >
+      <div
+        className="demo-logo-vertical"
+        style={{
+          height: 32,
+          margin: 16,
+          background: "rgba(255,255,255,.2)",
+          borderRadius: 6,
+        }}
+      />
+      <Menu
+        theme="dark"
+        defaultSelectedKeys={["1"]}
+        mode="inline"
+        items={itemsAdminManager}
+        activeKey={["1"]}
+        defaultOpenKeys={["sub1"]}
+      />
+    </Sider>
+  );
+};
+
+export default Side;
