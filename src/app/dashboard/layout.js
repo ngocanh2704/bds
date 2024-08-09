@@ -11,7 +11,7 @@ import {
 import { Breadcrumb, Layout, Menu, theme } from "antd";
 import { useEffect, useState } from "react";
 import Side from "../side";
-import Head from "../Head";
+import Head from "../head";
 import { useRouter } from "next/router";
 const { Header, Content, Footer, Sider } = Layout;
 function getItem(label, key, icon, children) {
