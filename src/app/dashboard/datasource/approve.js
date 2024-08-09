@@ -7,7 +7,7 @@ const Approve = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .post("http://localhost:3001/approve")
+      .post("http://14.169.150.105:3001/approve")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };

@@ -19,8 +19,8 @@ const ModalStatus = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "http://localhost:3001/status/create";
-    var urlEdit = "http://localhost:3001/status/edit";
+    var urlCreate = "http://14.169.150.105:3001/status/create";
+    var urlEdit = "http://14.169.150.105:3001/status/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -41,7 +41,7 @@ const ModalStatus = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("http://localhost:3001/status/detail", { id: id })
+      .post("http://14.169.150.105:3001/status/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           status_name: res.data.status.status_name

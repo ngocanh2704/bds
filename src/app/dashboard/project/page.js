@@ -51,7 +51,7 @@ const Project = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/project/delete", { id: id })
+      .post("http://14.169.150.105:3001/project/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
@@ -63,7 +63,7 @@ const Project = () => {
 
   const getData = () => {
     axios
-      .get("http://localhost:3001/project",{
+      .get("http://14.169.150.105:3001/project",{
         headers:{
           Authorization: `Bearer ${localStorage.getItem('jwt')}`
         }

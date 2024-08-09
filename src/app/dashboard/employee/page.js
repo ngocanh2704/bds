@@ -63,7 +63,7 @@ const Employee = () => {
       render: (_, { cccd_image }) => (
         <>
           <Image
-            src={"http://localhost:3001" + cccd_image}
+            src={"http://14.169.150.105:3001" + cccd_image}
             style={{ width: 150, height: 80 }}
             alt="..."
           />
@@ -106,7 +106,7 @@ const Employee = () => {
       jwt = localStorage.getItem('jwt') || ''
     }
     axios
-      .get("http://localhost:3001/employee",{
+      .get("http://14.169.150.105:3001/employee",{
         headers: {
           Authorization: `Bearer ${jwt}`,
         }
@@ -129,7 +129,7 @@ const Employee = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/employee/delete", { id: id })
+      .post("http://14.169.150.105:3001/employee/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",

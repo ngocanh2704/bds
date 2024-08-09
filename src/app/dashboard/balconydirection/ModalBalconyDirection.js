@@ -19,8 +19,8 @@ const ModalStatus = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "http://localhost:3001/balconyDirection/create";
-    var urlEdit = "http://localhost:3001/balconyDirection/edit";
+    var urlCreate = "http://14.169.150.105:3001/balconyDirection/create";
+    var urlEdit = "http://14.169.150.105:3001/balconyDirection/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -41,7 +41,7 @@ const ModalStatus = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("http://localhost:3001/balconyDirection/detail", { id: id })
+      .post("http://14.169.150.105:3001/balconyDirection/detail", { id: id })
       .then((res) => {
         console.log(res.data)
         form.setFieldsValue({

@@ -95,7 +95,7 @@ const ALl = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("http://localhost:3001/request", { id: id })
+      .post("http://14.169.150.105:3001/request", { id: id })
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };
@@ -103,7 +103,7 @@ const ALl = (prop) => {
   const onDelete = (id) => {
     prop.changeLoading();
     axios
-      .post("http://localhost:3001/delete", { id: id })
+      .post("http://14.169.150.105:3001/delete", { id: id })
       .then((res) => prop.changeLoading())
       .catch((e) => console.log(e));
   };

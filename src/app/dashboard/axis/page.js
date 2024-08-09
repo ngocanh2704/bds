@@ -50,7 +50,7 @@ const Axis = () => {
 
   const getData = () => {
     axios
-      .get("http://localhost:3001/axis")
+      .get("http://14.169.150.105:3001/axis")
       .then((res) => {
         console.log(res)
         setData(res.data.data);
@@ -61,7 +61,7 @@ const Axis = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/axis/delete", { id: id })
+      .post("http://14.169.150.105:3001/axis/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",

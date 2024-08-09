@@ -74,7 +74,7 @@ const User = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/user/delete", { id: id })
+      .post("http://14.169.150.105:3001/user/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
@@ -87,7 +87,7 @@ const User = () => {
   useEffect(() => {
     const getData = () => {
       axios
-        .get("http://localhost:3001/user",{
+        .get("http://14.169.150.105:3001/user",{
           headers:{
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
           }

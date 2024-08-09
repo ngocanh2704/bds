@@ -35,8 +35,8 @@ const ModalData = (prop) => {
     if (prop.id) {
       values.id = prop.id
     }
-    var urlEdit = 'http://localhost:3001/apartment/edit'
-    var urlCreate = 'http://localhost:3001/apartment/create'
+    var urlEdit = 'http://14.169.150.105:3001/apartment/edit'
+    var urlCreate = 'http://14.169.150.105:3001/apartment/create'
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -47,7 +47,7 @@ const ModalData = (prop) => {
 
   const getDataProject = () => {
     axios
-      .get("http://localhost:3001/project")
+      .get("http://14.169.150.105:3001/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -63,7 +63,7 @@ const ModalData = (prop) => {
 
   const getDataAxis = () => {
     axios
-      .get("http://localhost:3001/axis")
+      .get("http://14.169.150.105:3001/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -79,7 +79,7 @@ const ModalData = (prop) => {
 
   const getDataBalcon = () => {
     axios
-      .get("http://localhost:3001/balconyDirection")
+      .get("http://14.169.150.105:3001/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -94,7 +94,7 @@ const ModalData = (prop) => {
   };
   const getDataStatus = () => {
     axios
-      .get("http://localhost:3001/status")
+      .get("http://14.169.150.105:3001/status")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -110,7 +110,7 @@ const ModalData = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("http://localhost:3001/apartment/detail", { id: id })
+      .post("http://14.169.150.105:3001/apartment/detail", { id: id })
       .then((res) => {
         var detail = res.data.detail
         var available = [moment(detail.available_from),moment(detail.available_until)]

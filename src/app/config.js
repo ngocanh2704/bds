@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-  "http://localhost:3001/";
+  "http://14.169.150.105:3001/";
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.common.Accept = "application/json";

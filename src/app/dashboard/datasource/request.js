@@ -7,7 +7,7 @@ const Request = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .get("http://localhost:3001/request")
+      .get("http://14.169.150.105:3001/request")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };
@@ -89,7 +89,7 @@ const Request = (prop) => {
 
   const actionApprove = (id) => {
     axios
-      .post("http://localhost:3001/approve", {
+      .post("http://14.169.150.105:3001/approve", {
         id: id,
         user: localStorage.getItem("user"),
       })

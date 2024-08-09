@@ -24,8 +24,8 @@ const ModalUser = (prop) => {
       ? values.employee_ID
       : data[0].value;
       values.id = prop.id
-    var urlCreate = "http://localhost:3001/user/register";
-    var urlEdit = "http://localhost:3001/user/edit";
+    var urlCreate = "http://14.169.150.105:3001/user/register";
+    var urlEdit = "http://14.169.150.105:3001/user/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -46,7 +46,7 @@ const ModalUser = (prop) => {
 
   const getDetailUser = (id) => {
     axios
-      .post("http://localhost:3001/user/detail", { id: id })
+      .post("http://14.169.150.105:3001/user/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           username: res.data.user.username,
