@@ -28,10 +28,10 @@ const ModalData = (prop) => {
   const dateFormat = "DD/MM/YYYY";
   const onFinish = async () => {
     var values = form.getFieldsValue();
-    console.log(values);
-    console.log(values.available);
-    values.available_from = values.available[0];
-    values.available_until = values.available[1];
+    if(values.available){
+      values.available_from = values.available[0];
+      values.available_until = values.available[1];
+    }
     if (prop.id) {
       values.id = prop.id
     }
