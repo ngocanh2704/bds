@@ -99,26 +99,7 @@ const Employee = () => {
     },
   ];
 
-  const getData = () => {
-    // getNewToken(localStorage.getItem('refreshJWT'))
-    var jwt = ''
-    if(typeof window !== 'undefined'){
-      jwt = localStorage.getItem('jwt') || ''
-    }
-    axios
-      .get("https://api.connecthome.vn/employee",{
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        }
-      })
-      .then((res) => {
-        setData(res.data);
-        setDataStatus(res.data.dataStatus), setIsLoading(false);
-      })
-      .catch((e) => {
-        redirect("/login");
-      });
-  };
+  
   const changeLoading = () => {
     setIsLoading(true);
   };
@@ -139,7 +120,30 @@ const Employee = () => {
       });
   };
 
-  useEffect(getData, [isLoading]);
+  useEffect(()=>{
+    const getData = () => {
+      // getNewToken(localStorage.getItem('refreshJWT'))
+      var jwt = ''
+      if(typeof window !== 'undefined'){
+        jwt = localStorage.getItem('jwt') || ''
+      }
+      console.log(jwt)
+      axios
+        .get("https://api.connecthome.vn/employee",{
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          }
+        })
+        .then((res) => {
+          setData(res.data);
+          setDataStatus(res.data.dataStatus), setIsLoading(false);
+        })
+        .catch((e) => {
+          redirect("/login");
+        });
+    };
+    getData()
+  }, [isLoading]);
   return (
     <>
       {contextHolder}
