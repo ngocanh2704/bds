@@ -68,8 +68,8 @@ const CreateEmployee = (prop) => {
       (values.employment_status_id ? values.employment_status_id : data[0].value)
     );
     prop.id ? formData.append('id',prop.id) : null
-    var urlCreate = "http://14.169.150.105:3001/employee/create";
-    var urlEdit = "http://14.169.150.105:3001/employee/edit";
+    var urlCreate = "https://api.connecthome.vn/employee/create";
+    var urlEdit = "https://api.connecthome.vn/employee/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, formData, {
         headers: {
@@ -94,7 +94,7 @@ const CreateEmployee = (prop) => {
 
   const getDetailEmployee = (id) => {
     axios
-      .post("http://14.169.150.105:3001/employee/detail", { id: id })
+      .post("https://api.connecthome.vn/employee/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           employee_name: res.data.employee.employee_name,
@@ -105,7 +105,7 @@ const CreateEmployee = (prop) => {
           start_date: res.data.employee.start_date? moment(res.data.employee.start_date): null,
           employment_status_id: res.data.employee.employment_status_id,
           cccd_image: [
-            { url: "http://14.169.150.105:3001" + res.data.employee.cccd_image },
+            { url: "https://api.connecthome.vn" + res.data.employee.cccd_image },
           ],
         });
       })

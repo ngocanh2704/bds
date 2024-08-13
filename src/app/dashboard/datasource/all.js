@@ -10,6 +10,14 @@ const ALl = (prop) => {
   }, []);
   const columns = [
     {
+      title: "STT",
+      dataIndex: "_id",
+      key: "_id",
+      render: index => (
+        index
+      )
+    },
+    {
       title: "Căn hộ",
       dataIndex: "apartment_name",
       key: "apartment_name",
@@ -95,7 +103,7 @@ const ALl = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("http://14.169.150.105:3001/request", { id: id })
+      .post("https://api.connecthome.vn/request", { id: id })
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };
@@ -103,7 +111,7 @@ const ALl = (prop) => {
   const onDelete = (id) => {
     prop.changeLoading();
     axios
-      .post("http://14.169.150.105:3001/delete", { id: id })
+      .post("https://api.connecthome.vn/delete", { id: id })
       .then((res) => prop.changeLoading())
       .catch((e) => console.log(e));
   };

@@ -41,7 +41,7 @@ const DataSource = () => {
     }
     const getData = () => {
     axios
-      .get("http://14.169.150.105:3001/apartment", {
+      .get("https://api.connecthome.vn/apartment", {
         headers: {
           Authorization: `Bearer ${jwt}`,
         },

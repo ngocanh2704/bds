@@ -7,7 +7,7 @@ const Approve = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .post("http://14.169.150.105:3001/approve")
+      .post("https://api.connecthome.vn/approve")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };

@@ -18,7 +18,7 @@ export default function App() {
   const router = useRouter();
   const onFinish = (values) => {
     axios
-      .post("http://14.169.150.105:3001/login", values)
+      .post("https://api.connecthome.vn/login", values)
       .then(async (res) => {
         console.log(res)
         localStorage.setItem("jwt", res.data.accessToken);

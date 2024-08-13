@@ -63,7 +63,7 @@ const Employee = () => {
       render: (_, { cccd_image }) => (
         <>
           <Image
-            src={"http://14.169.150.105:3001" + cccd_image}
+            src={"https://api.connecthome.vn" + cccd_image}
             style={{ width: 150, height: 80 }}
             alt="..."
           />
@@ -106,7 +106,7 @@ const Employee = () => {
       jwt = localStorage.getItem('jwt') || ''
     }
     axios
-      .get("http://14.169.150.105:3001/employee",{
+      .get("https://api.connecthome.vn/employee",{
         headers: {
           Authorization: `Bearer ${jwt}`,
         }
@@ -129,7 +129,7 @@ const Employee = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://14.169.150.105:3001/employee/delete", { id: id })
+      .post("https://api.connecthome.vn/employee/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
