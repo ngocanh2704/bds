@@ -1,26 +1,184 @@
 import axios from "axios";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState,useRef } from "react";
+import { SearchOutlined } from '@ant-design/icons';
+import { Button, Flex, Table, Input, Form, Space } from "antd";
+import Highlighter from 'react-highlight-words';
 
-import { Button, Flex, Table } from "antd";
 
 const ALl = (prop) => {
+  const { Search } = Input;
+
   const [role, setRole] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+
+  const [dataAll, setDataAll] = useState([]);
+
+  const [selectionType, setSelectionType] = useState("checkbox");
+
+  useEffect(() => {
+    var jwt = "";
+    if (typeof window !== "undefined") {
+      jwt = localStorage.getItem("jwt") || "";
+    }
+    const getData = () => {
+      axios
+        .get("https://api.connecthome.vn/apartment", {
+          headers: {
+            Authorization: `Bearer ${jwt}`,
+          },
+        })
+        .then((res) => {
+          setDataAll(res.data.data);
+          setIsLoading(false);
+        })
+        .catch((e) => {
+          redirect("/login");
+        });
+    };
+    getData();
+  }, [isLoading]);
+
   useEffect(() => {
     setRole(localStorage.getItem("role"));
   }, []);
+
+  const rowSelection = {
+    onChange: (selectedRowKeys, selectedRows) => {
+      console.log(
+        `selectedRowKeys: ${selectedRowKeys}`,
+        "selectedRows: ",
+        selectedRows
+      );
+    },
+    getCheckboxProps: (record) => ({
+      disabled: record.name === "Disabled User",
+      // Column configuration not to be checked
+      name: record.name,
+    }),
+  };
+  const [searchText, setSearchText] = useState('');
+  const [searchedColumn, setSearchedColumn] = useState('');
+  const searchInput = useRef(null);
+  const handleSearch = (selectedKeys, confirm, dataIndex) => {
+    confirm();
+    setSearchText(selectedKeys[0]);
+    setSearchedColumn(dataIndex);
+  };
+
+  const handleReset = (clearFilters) => {
+    clearFilters();
+    setSearchText('');
+  };
+
+  const getColumnSearchProps = (dataIndex) => ({
+    filterDropdown: ({ setSelectedKeys, selectedKeys, confirm, clearFilters, close }) => (
+      <div
+        style={{
+          padding: 8,
+        }}
+        onKeyDown={(e) => e.stopPropagation()}
+      >
+        <Input
+          ref={searchInput}
+          placeholder={`Search ${dataIndex}`}
+          value={selectedKeys[0]}
+          onChange={(e) => setSelectedKeys(e.target.value ? [e.target.value] : [])}
+          onPressEnter={() => handleSearch(selectedKeys, confirm, dataIndex)}
+          style={{
+            marginBottom: 8,
+            display: 'block',
+          }}
+        />
+        <Space>
+          <Button
+            type="primary"
+            onClick={() => handleSearch(selectedKeys, confirm, dataIndex)}
+            icon={<SearchOutlined />}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Search
+          </Button>
+          <Button
+            onClick={() => clearFilters && handleReset(clearFilters)}
+            size="small"
+            style={{
+              width: 90,
+            }}
+          >
+            Reset
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              confirm({
+                closeDropdown: false,
+              });
+              setSearchText(selectedKeys[0]);
+              setSearchedColumn(dataIndex);
+            }}
+          >
+            Filter
+          </Button>
+          <Button
+            type="link"
+            size="small"
+            onClick={() => {
+              close();
+            }}
+          >
+            close
+          </Button>
+        </Space>
+      </div>
+    ),
+    filterIcon: (filtered) => (
+      <SearchOutlined
+        style={{
+          color: filtered ? '#1677ff' : undefined,
+        }}
+      />
+    ),
+    onFilter: (value, record) =>
+      record[dataIndex].toString().toLowerCase().includes(value.toLowerCase()),
+    onFilterDropdownOpenChange: (visible) => {
+      if (visible) {
+        setTimeout(() => searchInput.current?.select(), 100);
+      }
+    },
+    render: (text) =>
+      searchedColumn === dataIndex ? (
+        <Highlighter
+          highlightStyle={{
+            backgroundColor: '#ffc069',
+            padding: 0,
+          }}
+          searchWords={[searchText]}
+          autoEscape
+          textToHighlight={text ? text.toString() : ''}
+        />
+      ) : (
+        text
+      ),
+  });
+
   const columns = [
     {
       title: "STT",
       dataIndex: "_id",
       key: "_id",
-      render: index => (
-        index
-      )
+      render: (text, record, index) => {
+        return <>{index}</>;
+      },
     },
     {
       title: "Căn hộ",
       dataIndex: "apartment_name",
       key: "apartment_name",
+      ...getColumnSearchProps('apartment_name')
     },
     {
       title: "Chủ căn hộ",
@@ -28,6 +186,7 @@ const ALl = (prop) => {
       key: "owner",
       render: (item) =>
         (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+      ...getColumnSearchProps('owner')
     },
     {
       title: "Số điện thoại",
@@ -35,6 +194,7 @@ const ALl = (prop) => {
       key: "phone_number",
       render: (item) =>
         (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+      ...getColumnSearchProps('phone_number')
     },
     {
       title: "Giá bán",
@@ -116,8 +276,21 @@ const ALl = (prop) => {
       .catch((e) => console.log(e));
   };
 
+  
+
   return (
-    <Table columns={columns} dataSource={prop.data} loading={prop.isLoading} />
+    <>
+      {/* <Search style={{ marginBottom: 20 }} /> */}
+      <Table
+        rowSelection={{
+          type: selectionType,
+          ...rowSelection,
+        }}
+        columns={columns}
+        dataSource={dataAll}
+        loading={isLoading}
+      />
+    </>
   );
 };
 

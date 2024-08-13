@@ -34,16 +34,17 @@ const CreateEmployee = (prop) => {
       newFileList.splice(index, 1);
       setFileList(newFileList);
     },
-    // beforeUpload: (file) => {
-    //   setFileList([file]);
-    //   return false;
-    // },
+    beforeUpload: (file) => {
+      setFileList([file]);
+      return false;
+    },
     fileList,
   };
 
   const dateFormat = "DD/MM/YYYY";
   const onFinish = () => {
     var values = form.getFieldsValue();
+    console.log(values)
     const formData = new FormData();
     fileList.forEach((file) => {
       formData.append("cccd_image", file);

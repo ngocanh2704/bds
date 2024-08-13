@@ -19,7 +19,6 @@ const DataSource = () => {
   const [on, setOn] = useState(false);
   const [id, setId] = useState("");
   const [isLoading, setIsLoading] = useState(true);
-  const { Search } = Input;
 
   const changeOpen = () => {
     setOpen(!open);
@@ -34,28 +33,28 @@ const DataSource = () => {
   }
   
 
-  useEffect(() => {
-    var jwt = ''
-    if(typeof window !== 'undefined'){
-      jwt = localStorage.getItem('jwt') || ''
-    }
-    const getData = () => {
-    axios
-      .get("https://api.connecthome.vn/apartment", {
-        headers: {
-          Authorization: `Bearer ${jwt}`,
-        },
-      })
-      .then((res) => {
-        setDataAll(res.data.data);
-        setIsLoading(false);
-      })
-      .catch((e) => {
-        redirect('/login')
-      });
-  };
-    getData();
-  }, [key, isLoading]);
+  // useEffect(() => {
+  //   var jwt = ''
+  //   if(typeof window !== 'undefined'){
+  //     jwt = localStorage.getItem('jwt') || ''
+  //   }
+  //   const getData = () => {
+  //   axios
+  //     .get("https://api.connecthome.vn/apartment", {
+  //       headers: {
+  //         Authorization: `Bearer ${jwt}`,
+  //       },
+  //     })
+  //     .then((res) => {
+  //       setDataAll(res.data.data);
+  //       setIsLoading(false);
+  //     })
+  //     .catch((e) => {
+  //       redirect('/login')
+  //     });
+  // };
+  //   getData();
+  // }, [key, isLoading]);
   const onChange = (key) => {
     setKey(key, open);
   };
@@ -119,11 +118,6 @@ const DataSource = () => {
       >
         Thêm mới
       </Button>
-      <Row>
-        <Col span={4}>
-          <Search placeholder="input search text" enterButton />
-        </Col>
-      </Row>
       <ModalUpload open={on} hideModal={() => changeOn()} id={id} />
       <ModalData open={open} hideModal={() => changeOpen()} id={id} />
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
