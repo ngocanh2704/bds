@@ -28,7 +28,7 @@ const ModalData = (prop) => {
   const dateFormat = "DD/MM/YYYY";
   const onFinish = async () => {
     var values = form.getFieldsValue();
-    if(values.available){
+    if(values.available[0]){
       values.available_from = values.available[0];
       values.available_until = values.available[1];
     }
