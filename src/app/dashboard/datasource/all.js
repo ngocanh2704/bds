@@ -127,7 +127,7 @@ const ALl = (prop) => {
             PN
           </p>
           <p>- {record.notes}</p>
-          <p>- {record.properties.property_name}</p>
+          <p>- {record.properties?.property_name}</p>
         </>
       ),
     },
