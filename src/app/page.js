@@ -4,8 +4,8 @@ import { redirect } from "next/navigation";
 import React, { useEffect } from "react";
 
 const Home = () => {
-  const token = getCookie('token')
   useEffect(() => {
+  const token = getCookie('token')
     if (token) {
       redirect("/dashboard/employee");
     } else {
