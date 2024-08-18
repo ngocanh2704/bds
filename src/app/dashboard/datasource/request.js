@@ -7,7 +7,7 @@ const Request = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .get("https://api.connecthome.vn/request")
+      .get("http://localhost:3001/request")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };
@@ -89,7 +89,7 @@ const Request = (prop) => {
 
   const actionApprove = (id) => {
     axios
-      .post("https://api.connecthome.vn/approve", {
+      .post("http://localhost:3001/approve", {
         id: id,
         user: localStorage.getItem("user"),
       })

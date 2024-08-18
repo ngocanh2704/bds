@@ -1,27 +1,33 @@
 import React, { useEffect, useState } from "react";
 import {
+  Button,
   Modal,
+  DatePicker,
   Form,
   Input,
+  InputNumber,
+  Select,
+  Upload,
   message,
 } from "antd";
 import axios from "axios";
 import { mutate } from "swr";
 
-const ModalBuilding = (prop) => {
+const ModalFurnished = (prop) => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "http://localhost:3001/building/create";
-    var urlEdit = "http://localhost:3001/building/edit";
+    var urlCreate = "http://localhost:3001/furnished/create";
+    var urlEdit = "http://localhost:3001/furnished/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('http://localhost:3001/building')
+        mutate('http://localhost:3001/furnished')
         prop.hideModal();
+        prop.isLoading(),
           messageApi.open({
             type: "success",
             content: res.data.message,
@@ -39,11 +45,11 @@ const ModalBuilding = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("http://localhost:3001/building/detail", { id: id })
+      .post("http://localhost:3001/furnished/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({
-          building_name: res.data.building.building_name
+          furnished_name: res.data.data.furnished_name
         });
       })
       .catch((e) => console.log(e));
@@ -60,7 +66,7 @@ const ModalBuilding = (prop) => {
     <>
       {contextHolder}
       <Modal
-        title={prop.id ? "Sửa toà nhà" : "Thêm toà nhà"}
+        title={prop.id ? "Sửa nội thất" : "Thêm nội thất"}
         open={prop.open}
         onOk={onFinish}
         onCancel={prop.hideModal}
@@ -86,7 +92,7 @@ const ModalBuilding = (prop) => {
             }}
             form={form}
           >
-            <Form.Item label="Toà" name="building_name">
+            <Form.Item label="Nội thất" name="furnished_name">
               <Input />
             </Form.Item>
           </Form>
@@ -96,4 +102,4 @@ const ModalBuilding = (prop) => {
   );
 };
 
-export default ModalBuilding;
+export default ModalFurnished;

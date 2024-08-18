@@ -30,6 +30,7 @@ const DasboardLayout = ({ children }) => {
           hasSider
         >
       <DynamicSide />
+      
       <Layout>
         <DynamicHead /> 
         <Content

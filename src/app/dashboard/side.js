@@ -1,11 +1,9 @@
-import { Layout, Menu } from "antd";
+import { Button, Layout, Menu } from "antd";
 import { useState } from "react";
 import {
   DesktopOutlined,
-  FileOutlined,
+  LogoutOutlined,
   PieChartOutlined,
-  TeamOutlined,
-  UserOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
 
@@ -29,15 +27,15 @@ const Side = () => {
       getItem(<Link href="/dashboard/project">Dự án</Link>, "3"),
       getItem(<Link href="/dashboard/building">Toà</Link>, "4"),
       getItem(<Link href="/dashboard/property">Loại BDS</Link>, "5"),
-      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
+      // getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
       getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "7"),
+      getItem(<Link href="/dashboard/furnished">Nội thất</Link>, "8"),
       getItem(
         <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
-        "8"
+        "9"
       ),
-      getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "9"),
+      getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
     ]),
-    // getItem("Hình ảnh", "8", <UserOutlined />),
   ];
   return (
     <Sider

@@ -15,7 +15,7 @@ const ALl = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment`,
+    `http://localhost:3001/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -76,7 +76,8 @@ const ALl = (prop) => {
       dataIndex: "_id",
       key: "_id",
       render: (text, record, index) => (
-        <Tag color={record.color}>
+        //đỏ #ff4d4f, xanh rgb(88 206 79), 
+        <Tag style={{fontSize: 'small', backgroundColor: record.color}} bordered={false}>
           {record.building?.building_name +
             (role == "admin" | role == 'manager'? record?.floor : spliceString(record?.floor)) +
             record.axis?.axis_name}
@@ -101,11 +102,17 @@ const ALl = (prop) => {
       title: "Giá bán",
       dataIndex: "sale_price",
       key: "sale_ price",
+      render: item => (
+     item?   `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ''
+      )
     },
     {
       title: "Giá thuê",
       dataIndex: "rental_price",
       key: "rental_price",
+      render: item => (
+        item?   `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : ''
+         )
     },
     {
       title: "Thông tin bất động sản",
@@ -120,6 +127,7 @@ const ALl = (prop) => {
             PN
           </p>
           <p>- {record.notes}</p>
+          <p>- {record.properties.property_name}</p>
         </>
       ),
     },
@@ -164,16 +172,16 @@ const ALl = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("https://api.connecthome.vn/request", { id: id })
+      .post("http://localhost:3001/request", { id: id })
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("http://localhost:3001/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => console.log(e));
   };

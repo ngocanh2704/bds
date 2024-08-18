@@ -2,24 +2,24 @@
 import { Button, Flex, Table, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
-import ModalAxis from "./ModalAxis";
 import useSWR, { mutate } from "swr";
 import { deleteCookie, getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
+import ModalFurnished from "./ModalFurnished";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
 };
 const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
-const Axis = () => {
+const Furnished = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/axis`,
+    `http://localhost:3001/furnished`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -36,7 +36,7 @@ const Axis = () => {
     } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("http://localhost:3001/employee");
+        mutate("http://localhost:3001/furnished");
         redirect("/login");
       }
     }
@@ -44,9 +44,9 @@ const Axis = () => {
 
   const columns = [
     {
-      title: "Trục",
-      dataIndex: "axis_name",
-      key: "axis_name",
+      title: "Nội thất",
+      dataIndex: "furnished_name",
+      key: "furnished_name",
     },
     {
       title: "Action",
@@ -82,8 +82,8 @@ const Axis = () => {
   };
 
   const onDelete = (id) => {
-    axios.post("http://localhost:3001/axis/delete", { id: id }).then((res) => {
-      mutate("http://localhost:3001/axis");
+    axios.post("http://localhost:3001/furnished/delete", { id: id }).then((res) => {
+      mutate("http://localhost:3001/furnished");
       messageApi.open({
         type: "success",
         content: res.data.message,
@@ -103,10 +103,10 @@ const Axis = () => {
       >
         Thêm mới
       </Button>
-      <ModalAxis open={open} hideModal={() => changeOpen()} id={id} />
+      <ModalFurnished open={open} hideModal={() => changeOpen()} id={id} />
       <Table columns={columns} dataSource={data?.data} isLoading={isLoading} />
     </>
   );
 };
 
-export default Axis;
+export default Furnished;
