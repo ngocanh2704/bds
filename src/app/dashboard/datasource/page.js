@@ -110,7 +110,7 @@ const DataSource = () => {
   const onClickYeuCauDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/request", { id: item })
+        .post("https://api.connecthome.vn/request", { id: item })
         .then((res) => {})
         .catch((e) => console.log(e));
     });
@@ -123,9 +123,9 @@ const DataSource = () => {
   const onClickXoaDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/delete", { id: item })
+        .post("https://api.connecthome.vn/delete", { id: item })
         .then((res) => {
-          mutate("http://localhost:3001/apartment");
+          mutate("https://api.connecthome.vn/apartment");
         })
         .catch((e) => console.log(e));
     });
@@ -137,7 +137,7 @@ const DataSource = () => {
 
   const getProject = () => {
     axios
-      .get("http://localhost:3001/project")
+      .get("https://api.connecthome.vn/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -153,7 +153,7 @@ const DataSource = () => {
 
   const getBuilding = () => {
     axios
-      .get("http://localhost:3001/building")
+      .get("https://api.connecthome.vn/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -169,7 +169,7 @@ const DataSource = () => {
 
   const getProperty = () => {
     axios
-      .get("http://localhost:3001/property")
+      .get("https://api.connecthome.vn/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -185,7 +185,7 @@ const DataSource = () => {
 
   const getBalconyDirection = () => {
     axios
-      .get("http://localhost:3001/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -201,7 +201,7 @@ const DataSource = () => {
 
   const getAxis = () => {
     axios
-      .get("http://localhost:3001/axis")
+      .get("https://api.connecthome.vn/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -217,7 +217,7 @@ const DataSource = () => {
 
   const getFurnished = () => {
     axios
-      .get("http://localhost:3001/furnished")
+      .get("https://api.connecthome.vn/furnished")
       .then((res) => {
         console.log(res)
         var array = [];
@@ -244,7 +244,7 @@ const DataSource = () => {
 
   const onFinish = (values) => {
     axios
-      .post("http://localhost:3001/apartment/search", values)
+      .post("https://api.connecthome.vn/apartment/search", values)
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };

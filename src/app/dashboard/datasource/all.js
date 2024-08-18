@@ -15,7 +15,7 @@ const ALl = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/apartment`,
+    `https://api.connecthome.vn/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -172,16 +172,16 @@ const ALl = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("http://localhost:3001/request", { id: id })
+      .post("https://api.connecthome.vn/request", { id: id })
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/delete", { id: id })
+      .post("https://api.connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("http://localhost:3001/apartment");
+        mutate("https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };

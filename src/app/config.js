@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-  "http://localhost:3001/";
+  "https://api.connecthome.vn/";
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.common.Accept = "application/json";
