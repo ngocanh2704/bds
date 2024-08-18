@@ -2,17 +2,30 @@
 import React, { useEffect, useState } from "react";
 import { Button, Image, Table, Flex, message, Input, Space } from "antd";
 import axios from "axios";
-import CreateEmployee from "./CreateEmployee";
+// import CreateEmployee from "./CreateEmployee";
 import moment from "moment";
 // import { getNewToken } from "@/app/auth";
+// import { redirect } from "next/navigation";
+import useSWR, { mutate } from "swr";
+import dynamic from "next/dynamic";
 import { redirect } from "next/navigation";
+import { deleteCookie, getCookie } from "cookies-next";
+import { jwtDecode } from "jwt-decode";
+
+const config = {
+  headers: { Authorization: `Bearer ${getCookie("token")}` },
+};
+const fetcher = (url) => axios.get(url, config).then((res) => res.data);
+const DynamicCreateEmployee = dynamic(() => import("./CreateEmployee"), {
+  ssr: false,
+});
 
 const Employee = () => {
   const { Search } = Input;
 
-  const [data, setData] = useState([]);
+  // const [data, setData] = useState([]);
   const [dataStatus, setDataStatus] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
+  // const [isLoading, setIsLoading] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
   const [open, setOpen] = useState(false);
   const [detail, setDetail] = useState([]);
@@ -99,7 +112,6 @@ const Employee = () => {
     },
   ];
 
-  
   const changeLoading = () => {
     setIsLoading(true);
   };
@@ -116,36 +128,37 @@ const Employee = () => {
           type: "success",
           content: res.data.message,
         }),
-          setIsLoading(true);
+          mutate("https://api.connecthome.vn/employee");
       });
   };
+  const { data, error, isLoading } = useSWR(
+    `https://api.connecthome.vn/employee`,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
-  useEffect(()=>{
-    const getData = () => {
-      // getNewToken(localStorage.getItem('refreshJWT'))
-      var jwt = ''
-      if(typeof window !== 'undefined'){
-        jwt = localStorage.getItem('jwt') || ''
+  useEffect(() => {
+    var token = getCookie("token");
+    const currentTime = Date.now() / 1000;
+    if (token == undefined) {
+      redirect("/login");
+    } 
+    else {
+      if (jwtDecode(token).exp < currentTime) {
+        deleteCookie("token");
+        mutate("https://api.connecthome.vn/employee");
+        redirect("/login");
       }
-      console.log(jwt)
-      axios
-        .get("https://api.connecthome.vn/employee",{
-          headers: {
-            Authorization: `Bearer ${jwt}`,
-          }
-        })
-        .then((res) => {
-          setData(res.data);
-          setDataStatus(res.data.dataStatus), setIsLoading(false);
-        })
-        .catch((e) => {
-          redirect("/login");
-        });
-    };
-    getData()
+    }
   }, [isLoading]);
+
+
   return (
-    <>
+    <div>
       {contextHolder}
       <Button
         type="primary"
@@ -173,15 +186,15 @@ const Employee = () => {
           }}
         />
       </div>
-      <CreateEmployee
+      <DynamicCreateEmployee
         open={open}
         hideModal={() => changeOpen()}
-        status={dataStatus}
+        status={data?.dataStatus}
         id={id}
         isLoading={() => changeLoading()}
       />
-      <Table columns={columns} dataSource={data.data} loading={isLoading} />
-    </>
+      <Table columns={columns} dataSource={data?.data} loading={isLoading} />
+    </div>
   );
 };
 export default Employee;

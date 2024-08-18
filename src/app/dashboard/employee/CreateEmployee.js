@@ -13,6 +13,7 @@ import {
 import { PlusOutlined } from "@ant-design/icons";
 import axios from "axios";
 import moment from "moment";
+import { mutate } from "swr";
 
 const normFile = (e) => {
   if (Array.isArray(e)) {
@@ -66,7 +67,7 @@ const CreateEmployee = (prop) => {
     formData.append("dob", values.dob ? values.dob : "");
     formData.append(
       "employment_status_id",
-      (values.employment_status_id ? values.employment_status_id : data[0].value)
+      (values.employment_status_id ? values.employment_status_id : data[0]?.value)
     );
     prop.id ? formData.append('id',prop.id) : null
     var urlCreate = "https://api.connecthome.vn/employee/create";
@@ -79,11 +80,12 @@ const CreateEmployee = (prop) => {
       })
       .then((res) => {
         prop.hideModal()
-        prop.isLoading();
+        // prop.isLoading();
         messageApi.open({
           type: "success",
           content: res.data.message,
         });
+        mutate('https://api.connecthome.vn/employee')
       })
       .catch((e) => {
         messageApi.open({
@@ -129,10 +131,6 @@ const CreateEmployee = (prop) => {
     });
     setData(array);
   };
-
-  useEffect(()=>{
-
-  },[])
 
   return (
     <>

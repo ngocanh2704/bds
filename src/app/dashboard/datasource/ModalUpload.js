@@ -33,7 +33,6 @@ const ModalUpload = (prop) => {
             arr.push(item);
           });
         }
-        console.log(arr);
         setFileList(arr);
       })
       .catch((e) => console.log(e));
@@ -86,7 +85,6 @@ const ModalUpload = (prop) => {
       .post("https://api.connecthome.vn/apartment/upload", formData, config)
       .then((res) => {
         onSuccess("Ok");
-        console.log(res);
         // setFileList(res.data.image)
         var arr = [];
         if (res.data.image) {
@@ -118,6 +116,7 @@ const ModalUpload = (prop) => {
       open={prop.open}
       onCancel={prop.hideModal}
       onClose={prop.hideModal}
+      onOk={prop.hideModal}
       width={700}
       afterOpenChange={afterOpenChange}
     >

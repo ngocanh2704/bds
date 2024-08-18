@@ -3,13 +3,44 @@ import { Button, Flex, Table, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ModalAxis from "./ModalAxis";
+import useSWR, { mutate } from "swr";
+import { deleteCookie, getCookie } from "cookies-next";
+import { jwtDecode } from "jwt-decode";
+import { redirect } from "next/navigation";
+
+const config = {
+  headers: { Authorization: `Bearer ${getCookie("token")}` },
+};
+const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
 const Axis = () => {
-  const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+
+  const { data, error, isLoading } = useSWR(
+    `https://api.connecthome.vn/axis`,
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
+
+  useEffect(() => {
+    var token = getCookie("token");
+    const currentTime = Date.now() / 1000;
+    if (token == undefined) {
+      redirect("/login");
+    } else {
+      if (jwtDecode(token).exp < currentTime) {
+        deleteCookie("token");
+        mutate("https://api.connecthome.vn/employee");
+        redirect("/login");
+      }
+    }
+  }, [isLoading]);
 
   const columns = [
     {
@@ -26,13 +57,19 @@ const Axis = () => {
           <Button
             type="primary"
             style={{ backgroundColor: "rgb(250, 173, 20)" }}
-            onClick={()=>{
-                setOpen(true), setId(item);
+            onClick={() => {
+              setOpen(true), setId(item);
             }}
           >
             Sửa
           </Button>
-          <Button type="primary" danger onClick={()=>{onDelete(item)}}>
+          <Button
+            type="primary"
+            danger
+            onClick={() => {
+              onDelete(item);
+            }}
+          >
             Xoá
           </Button>
         </Flex>
@@ -40,55 +77,34 @@ const Axis = () => {
     },
   ];
 
-  const changeLoading = () => {
-    setIsLoading(true);
-  };
-
   const changeOpen = () => {
     setOpen(false);
   };
 
-  const getData = () => {
-    axios
-      .get("https://api.connecthome.vn/axis")
-      .then((res) => {
-        console.log(res)
-        setData(res.data.data);
-        setIsLoading(false)
-      })
-      .catch((e) => console.log(e));
-  };
-
   const onDelete = (id) => {
-    axios
-      .post("https://api.connecthome.vn/axis/delete", { id: id })
-      .then((res) => {
-        messageApi.open({
-          type: "success",
-          content: res.data.message,
-        }),
-          setIsLoading(true);
+    axios.post("https://api.connecthome.vn/axis/delete", { id: id }).then((res) => {
+      mutate("https://api.connecthome.vn/axis");
+      messageApi.open({
+        type: "success",
+        content: res.data.message,
       });
+    });
   };
 
-  useEffect(() => {
-    getData();
-  }, [isLoading]);
   return (
     <>
-      <Button type="primary" style={{ marginBottom: 20 }} onClick={()=>{
-            setOpen(true);
-            setId("");
-      }}>
+      <Button
+        type="primary"
+        style={{ marginBottom: 20 }}
+        onClick={() => {
+          setOpen(true);
+          setId("");
+        }}
+      >
         Thêm mới
       </Button>
-      <ModalAxis
-        open={open}
-        hideModal={() => changeOpen()}
-        isLoading={() => changeLoading()}
-        id={id}
-      />
-      <Table columns={columns} dataSource={data} isLoading={isLoading} />
+      <ModalAxis open={open} hideModal={() => changeOpen()} id={id} />
+      <Table columns={columns} dataSource={data?.data} isLoading={isLoading} />
     </>
   );
 };

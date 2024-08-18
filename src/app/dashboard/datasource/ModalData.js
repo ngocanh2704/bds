@@ -14,6 +14,7 @@ import {
 } from "antd";
 import axios from "axios";
 import moment from "moment";
+import { mutate } from "swr";
 
 const ModalData = (prop) => {
   const [form] = Form.useForm();
@@ -24,23 +25,32 @@ const ModalData = (prop) => {
   const [dataAxis, setDataAxis] = useState([]);
   const [dataBalcon, setDataBalcon] = useState([]);
   const [dataStatus, setDataStatus] = useState([]);
+  const [building, setBuilding] = useState([]);
+  const [property, setProperty] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const dateFormat = "DD/MM/YYYY";
+
   const onFinish = async () => {
     var values = form.getFieldsValue();
-    if(values.available[0]){
-      values.available_from = values.available[0];
-      values.available_until = values.available[1];
-    }
-    if (prop.id) {
-      values.id = prop.id
-    }
-    var urlEdit = 'https://api.connecthome.vn/apartment/edit'
-    var urlCreate = 'https://api.connecthome.vn/apartment/create'
-    axios
-      .post(prop.id ? urlEdit : urlCreate, values)
+    form
+      .validateFields()
       .then((res) => {
-        prop.hideModal()
+        if (values.available) {
+          values.available_from = values.available[0];
+          values.available_until = values.available[1];
+        }
+        if (prop.id) {
+          values.id = prop.id;
+        }
+        var urlEdit = "https://api.connecthome.vn/apartment/edit";
+        var urlCreate = "https://api.connecthome.vn/apartment/create";
+        axios
+          .post(prop.id ? urlEdit : urlCreate, values)
+          .then((res) => {
+            prop.hideModal();
+            mutate("https://api.connecthome.vn/apartment");
+          })
+          .catch((e) => console.log(e));
       })
       .catch((e) => console.log(e));
   };
@@ -112,11 +122,14 @@ const ModalData = (prop) => {
     axios
       .post("https://api.connecthome.vn/apartment/detail", { id: id })
       .then((res) => {
-        var detail = res.data.detail
-        var available = [moment(detail.available_from),moment(detail.available_until)]
+        var detail = res.data.detail;
+        var available = [
+          moment(detail.available_from),
+          moment(detail.available_until),
+        ];
         form.setFieldsValue({
           project: res.data.detail.project._id,
-          apartment_name: detail.apartment_name,
+          building: detail.building,
           floor: detail.floor,
           axis: detail.axis._id,
           owner: detail.owner,
@@ -133,9 +146,41 @@ const ModalData = (prop) => {
           last_updated: moment(detail.last_updated),
           status: detail.status._id,
           notes: detail.notes,
-          available: available
-        })
-       })
+          available: available,
+        });
+      })
+      .catch((e) => console.log(e));
+  };
+
+  const getBuilding = () => {
+    axios
+      .get("https://api.connecthome.vn/building")
+      .then((res) => {
+        var array = [];
+        res.data.data.forEach((item) => {
+          array.push({
+            value: item._id,
+            label: item.building_name,
+          });
+        });
+        setBuilding(array);
+      })
+      .catch((e) => console.log(e));
+  };
+
+  const getProperty = () => {
+    axios
+      .get("https://api.connecthome.vn/property")
+      .then((res) => {
+        var array = [];
+        res.data.data.forEach((item) => {
+          array.push({
+            value: item._id,
+            label: item.property_name,
+          });
+        });
+        setProperty(array);
+      })
       .catch((e) => console.log(e));
   };
 
@@ -145,11 +190,16 @@ const ModalData = (prop) => {
     } else {
       form.resetFields();
     }
+  };
+
+  useEffect(() => {
     getDataProject();
     getDataAxis();
     getDataBalcon();
     getDataStatus();
-  };
+    getBuilding();
+    getProperty();
+  }, []);
   return (
     <>
       {contextHolder}
@@ -182,16 +232,52 @@ const ModalData = (prop) => {
           >
             <Row>
               <Col span={12}>
-                <Form.Item label="Dự án" name="project">
+                <Form.Item
+                  label="Dự án"
+                  name="project"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn dự án",
+                    },
+                  ]}
+                >
                   <Select options={dataProject}></Select>
                 </Form.Item>
-                <Form.Item label="Tên căn hộ" name="apartment_name">
+                <Form.Item
+                  label="Toà"
+                  name="building"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn toà",
+                    },
+                  ]}
+                >
+                  <Select options={building} />
+                </Form.Item>
+                <Form.Item
+                  label="Tầng"
+                  name="floor"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng nhập tầng",
+                    },
+                  ]}
+                >
                   <Input />
                 </Form.Item>
-                <Form.Item label="Tầng" name="floor">
-                  <Input />
-                </Form.Item>
-                <Form.Item label="Trục căn hộ" name="axis">
+                <Form.Item
+                  label="Trục căn hộ"
+                  name="axis"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn trục căn hộ",
+                    },
+                  ]}
+                >
                   <Select options={dataAxis}></Select>
                 </Form.Item>
                 <Form.Item label="Chủ căn hộ" name="owner">
@@ -201,16 +287,40 @@ const ModalData = (prop) => {
                   <Input />
                 </Form.Item>
                 <Form.Item label="Loại bất động sản" name="property">
-                  <Input />
+                  <Select options={property} />
                 </Form.Item>
                 <Form.Item label="Diện tích" name="area">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Số phòng ngủ" name="bedrooms">
-                  <Input />
+                <Form.Item
+                  label="Số phòng ngủ"
+                  name="bedrooms"
+                  initialValue={"1"}
+                >
+                  <Select
+                    options={[
+                      { value: "1", label: "1" },
+                      { value: "2", label: "2" },
+                      { value: "3", label: "3" },
+                      { value: "4", label: "4" },
+                      { value: "5", label: "5" },
+                    ]}
+                  ></Select>
                 </Form.Item>
-                <Form.Item label="Số phòng vệ sinh" name="bathrooms">
-                  <Input />
+                <Form.Item
+                  label="Số phòng vệ sinh"
+                  name="bathrooms"
+                  initialValue={"1"}
+                >
+                  <Select
+                    options={[
+                      { value: "1", label: "1" },
+                      { value: "2", label: "2" },
+                      { value: "3", label: "3" },
+                      { value: "4", label: "4" },
+                      { value: "5", label: "5" },
+                    ]}
+                  />
                 </Form.Item>
               </Col>
               <Col span={12}>
@@ -235,19 +345,43 @@ const ModalData = (prop) => {
                 <Form.Item label="Cho thuê" name="available">
                   <RangePicker format={dateFormat} />
                 </Form.Item>
-                <Form.Item label="Nội thất" name="furnished">
+                <Form.Item
+                  label="Nội thất"
+                  name="furnished"
+                  initialValue={true}
+                >
                   <Select
                     options={[
                       { value: true, label: "Full nội thất" },
                       { value: false, label: "Cơ bản" },
                     ]}
-                    defaultValue={true}
                   ></Select>
                 </Form.Item>
-                <Form.Item label="Số ban công" name="balconies">
-                  <Input />
+                <Form.Item
+                  label="Số ban công"
+                  name="balconies"
+                  initialValue={"1"}
+                >
+                  <Select
+                    options={[
+                      { value: "1", label: "1" },
+                      { value: "2", label: "2" },
+                      { value: "3", label: "3" },
+                      { value: "4", label: "4" },
+                      { value: "5", label: "5" },
+                    ]}
+                  />
                 </Form.Item>
-                <Form.Item label="Hướng ban công" name="balcony_direction">
+                <Form.Item
+                  label="Hướng ban công"
+                  name="balcony_direction"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn hướng ban công",
+                    },
+                  ]}
+                >
                   <Select options={dataBalcon}></Select>
                 </Form.Item>
                 <Form.Item
@@ -256,11 +390,29 @@ const ModalData = (prop) => {
                 >
                   <DatePicker format={dateFormat} />
                 </Form.Item>
-                <Form.Item label="Trạng thái" name="status">
-                  <Select options={dataStatus} defaultValue={data[0]}></Select>
+                <Form.Item
+                  label="Trạng thái"
+                  name="status"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng chọn trạng thái căn hộ",
+                    },
+                  ]}
+                >
+                  <Select options={dataStatus}></Select>
                 </Form.Item>
                 <Form.Item label="Ghi chú" name="notes">
                   <TextArea />
+                </Form.Item>
+                <Form.Item label="Đánh dấu" name="color">
+                  <Select
+                    options={[
+                      { value: "red", label: "Đỏ" },
+                      { value: "green", label: "Xanh" },
+                      { value: "yellow", label: "Vàng" },
+                    ]}
+                  />
                 </Form.Item>
               </Col>
             </Row>

@@ -1,16 +1,17 @@
-import axios from "axios";
+import jwtDecode from 'jwt-decode';
 
-const getNewToken = (refreshToken) => {
-  axios
-    .post("https://api.connecthome.vn/login/token", { refreshToken: refreshToken })
-    .then((res) => {
-        if(res.status == 200){
-            localStorage.setItem("jwt", res.data.tokens.accessToken)
-        }
-    })
-    .catch((e) => console.log(e));
+const isTokenExpired = (token) => {
+  if (!token) return true;
+  try {
+    const decodedToken = jwtDecode(token);
+    const currentTime = Date.now() / 1000;
+    return decodedToken.exp < currentTime;
+  } catch (error) {
+    console.error('Error decoding token:', error);
+    return true;
+  }
 };
 
 module.exports = {
-  getNewToken,
-};
+  isTokenExpired
+}

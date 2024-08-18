@@ -1,33 +1,27 @@
 import React, { useEffect, useState } from "react";
 import {
-  Button,
   Modal,
-  DatePicker,
   Form,
   Input,
-  InputNumber,
-  Select,
-  Upload,
   message,
 } from "antd";
 import axios from "axios";
 import { mutate } from "swr";
 
-const ModalAxis = (prop) => {
+const ModalProperty = (prop) => {
   const [form] = Form.useForm();
   const [data, setData] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://api.connecthome.vn/axis/create";
-    var urlEdit = "https://api.connecthome.vn/axis/edit";
+    var urlCreate = "https://api.connecthome.vn/property/create";
+    var urlEdit = "https://api.connecthome.vn/property/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('https://api.connecthome.vn/axis')
+        mutate('https://api.connecthome.vn/property')
         prop.hideModal();
-        prop.isLoading(),
           messageApi.open({
             type: "success",
             content: res.data.message,
@@ -45,11 +39,11 @@ const ModalAxis = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://api.connecthome.vn/axis/detail", { id: id })
+      .post("https://api.connecthome.vn/property/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({
-          axis_name: res.data.axis.axis_name
+            property_name: res.data.property.property_name
         });
       })
       .catch((e) => console.log(e));
@@ -64,9 +58,8 @@ const ModalAxis = (prop) => {
   };
   return (
     <>
-      {contextHolder}
       <Modal
-        title={prop.id ? "Sửa trục căn hộ" : "Thêm trục căn hộ"}
+        title={prop.id ? "Sửa toà nhà" : "Thêm toà nhà"}
         open={prop.open}
         onOk={onFinish}
         onCancel={prop.hideModal}
@@ -92,7 +85,7 @@ const ModalAxis = (prop) => {
             }}
             form={form}
           >
-            <Form.Item label="Trục căn hộ" name="axis_name">
+            <Form.Item label="Loại" name="property_name">
               <Input />
             </Form.Item>
           </Form>
@@ -102,4 +95,4 @@ const ModalAxis = (prop) => {
   );
 };
 
-export default ModalAxis;
+export default ModalProperty;

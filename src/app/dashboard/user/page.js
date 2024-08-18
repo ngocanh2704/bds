@@ -2,17 +2,29 @@
 
 import { Button, Flex, Table, message } from "antd";
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import ModalUser from "./ModalUser";
+import useSWR from "swr";
+import dynamic from "next/dynamic";
+
+const fetcher = (url) => fetch(url).then((res) => res.json());
+
+const DynamicModal = dynamic(() => import("./ModalUser"));
 
 const User = () => {
-  const [data, setData] = useState([]);
-  const [dataEmploye, setDataEmployee] = useState([])
-  const [isLoading, setIsLoading] = useState(true);
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const [jwt, setJwt] = useState('')
+
+  const { data, error, isLoading } = useSWR(
+    "https://api.connecthome.vn/user",
+    fetcher,
+    {
+      revalidateIfStale: false,
+      revalidateOnFocus: false,
+      revalidateOnReconnect: false,
+    }
+  );
 
   const columns = [
     {
@@ -24,13 +36,13 @@ const User = () => {
       title: "Nhân viên",
       dataIndex: "employee_ID",
       key: "employee_ID",
-      render: (item) => item ? Object.values(item)[2] : null,
+      render: (item) => (item ? Object.values(item)[2] : null),
     },
     {
       title: "Email",
       dataIndex: "employee_ID",
       key: "employee_ID",
-      render: (item) => item ? Object.values(item)[1] : null,
+      render: (item) => (item ? Object.values(item)[1] : null),
     },
     {
       title: "Kích hoạt",
@@ -47,8 +59,8 @@ const User = () => {
           <Button
             type="primary"
             style={{ backgroundColor: "rgb(250, 173, 20)" }}
-            onClick={()=>{
-                setOpen(true), setId(item);
+            onClick={() => {
+              setOpen(true), setId(item);
             }}
           >
             Sửa
@@ -61,13 +73,6 @@ const User = () => {
     },
   ];
 
- 
-  
-
-  const changeLoading = () => {
-    setIsLoading(true);
-  };
-
   const changeOpen = () => {
     setOpen(false);
   };
@@ -79,32 +84,13 @@ const User = () => {
         messageApi.open({
           type: "success",
           content: res.data.message,
-        }),
-          setIsLoading(true);
+        });
       });
   };
 
-  useEffect(() => {
-    const getData = () => {
-      axios
-        .get("https://api.connecthome.vn/user",{
-          headers:{
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`
-          }
-        })
-        .then((res) => {
-          console.log(res)
-          setDataEmployee(res.data.dataEmployee)
-          setData(res.data.user);
-          setIsLoading(false);
-        })
-        .catch((e) => console.log(e));
-    };
-    getData();
-  }, [isLoading]);
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Button
         type="primary"
         onClick={() => {
@@ -116,14 +102,13 @@ const User = () => {
       >
         Thêm mới
       </Button>
-      <ModalUser
+      <DynamicModal
         open={open}
-        employee={dataEmploye}
+        employee={data?.dataEmployee}
         hideModal={() => changeOpen()}
         id={id}
-        isLoading={() => changeLoading()}
       />
-      <Table columns={columns} dataSource={data} loading={isLoading} />
+      <Table columns={columns} dataSource={data?.user} loading={isLoading} />
     </>
   );
 };

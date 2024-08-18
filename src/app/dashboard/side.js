@@ -11,6 +11,7 @@ import Link from "next/link";
 
 const { Sider } = Layout;
 const Side = () => {
+  const [collapsed, setCollapsed] = useState(false);
   function getItem(label, key, icon, children) {
     return {
       key,
@@ -26,31 +27,18 @@ const Side = () => {
     ]),
     getItem("Sale", "sub2", <DesktopOutlined />, [
       getItem(<Link href="/dashboard/project">Dự án</Link>, "3"),
-      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "4"),
-      getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "5"),
+      getItem(<Link href="/dashboard/building">Toà</Link>, "4"),
+      getItem(<Link href="/dashboard/property">Loại BDS</Link>, "5"),
+      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
+      getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "7"),
       getItem(
         <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
-        "6"
+        "8"
       ),
-      getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "7"),
+      getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "9"),
     ]),
     // getItem("Hình ảnh", "8", <UserOutlined />),
   ];
-
-  // const itemStaff = [
-  //   getItem("Sale", "sub1", <DesktopOutlined />, [
-  //     getItem(<Link href="/dashboard/project">Dự án</Link>, "1"),
-  //     getItem(<Link href="/dashboard/status">Trạng thái </Link>, "2"),
-  //     getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "3"),
-  //     getItem(
-  //       <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
-  //       "4"
-  //     ),
-  //     getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "5"),
-  //   ]),
-  //   getItem("Hình ảnh", "6", <UserOutlined />),
-  // ];
-  const [collapsed, setCollapsed] = useState(false);
   return (
     <Sider
       collapsible
