@@ -23,13 +23,13 @@ const ModalUpload = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("http://localhost:3001/apartment/detail", { id: id })
+      .post("https://api.connecthome.vn/apartment/detail", { id: id })
       .then((res) => {
         var detail = res.data.detail.image;
         var arr = [];
         if (detail) {
           detail.forEach((element) => {
-            var item = { url: "http://localhost:3001" + element };
+            var item = { url: "https://api.connecthome.vn" + element };
             arr.push(item);
           });
         }
@@ -82,14 +82,14 @@ const ModalUpload = (prop) => {
     formData.append("id", prop.id);
     formData.append("file", file);
     axios
-      .post("http://localhost:3001/apartment/upload", formData, config)
+      .post("https://api.connecthome.vn/apartment/upload", formData, config)
       .then((res) => {
         onSuccess("Ok");
         // setFileList(res.data.image)
         var arr = [];
         if (res.data.image) {
           res.data.image.forEach((element) => {
-            var item = { url: "http://localhost:3001" + element };
+            var item = { url: "https://api.connecthome.vn" + element };
             arr.push(item);
           });
         }
@@ -105,7 +105,7 @@ const ModalUpload = (prop) => {
     var str = item.url;
     str = str.slice(str.search("d/") + 2);
     axios
-      .post("http://localhost:3001/apartment/delete-image", { id: prop.id, name: str })
+      .post("https://api.connecthome.vn/apartment/delete-image", { id: prop.id, name: str })
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };
