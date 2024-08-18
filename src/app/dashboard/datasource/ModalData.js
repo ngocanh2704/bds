@@ -34,7 +34,7 @@ const ModalData = (prop) => {
   const onFinish = async () => {
     var values = form.getFieldsValue();
     const checkStatus = dataStatus.find(x => x.value === values.status)
-    if(checkStatus.label == 'het'){
+    if(checkStatus.label == 'Hết'){
       values.color = 'grey'
     }
     form
