@@ -61,6 +61,7 @@ const DataSource = () => {
   };
 
   const onChange = (key) => {
+    setKey(key)
     if (key == '5') {
       mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
     } else if (key == '6') {
@@ -147,6 +148,7 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
+          key={key}
         />
       ),
     },
@@ -156,9 +158,10 @@ const DataSource = () => {
     setItemsYeuCau(items);
   };
   const onClickYeuCauDongLoat = () => {
+    
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request-data", { id: item })
+        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request-data", { id: item,user: getCookie('user') })
         .then((res) => { })
         .catch((e) => console.log(e));
     });
@@ -189,13 +192,13 @@ const DataSource = () => {
       axios
         .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-data", { id: item })
         .then((res) => {
-          mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve");
         })
         .catch((e) => console.log(e));
     });
+    mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
     messageApi.open({
       type: "success",
-      content: "Đã xoá thành công",
+      content: "Đã duyệt thành công",
     });
   }
 

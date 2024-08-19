@@ -6,6 +6,7 @@ import {
   PieChartOutlined,
 } from "@ant-design/icons";
 import Link from "next/link";
+import { getCookie } from "cookies-next";
 
 const { Sider } = Layout;
 const Side = () => {
@@ -37,6 +38,22 @@ const Side = () => {
       getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
     ]),
   ];
+
+  const itmesStaff = [
+    getItem("Sale", "sub2", <DesktopOutlined />, [
+      getItem(<Link href="/dashboard/project">Dự án</Link>, "3"),
+      getItem(<Link href="/dashboard/building">Toà</Link>, "4"),
+      getItem(<Link href="/dashboard/property">Loại BDS</Link>, "5"),
+      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
+      getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "7"),
+      getItem(<Link href="/dashboard/furnished">Nội thất</Link>, "8"),
+      getItem(
+        <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
+        "9"
+      ),
+      getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
+    ]),
+  ];
   return (
     <Sider
       collapsible
@@ -54,11 +71,11 @@ const Side = () => {
       />
       <Menu
         theme="dark"
-        defaultSelectedKeys={["1"]}
+        defaultSelectedKeys={["10"]}
         mode="inline"
-        items={itemsAdminManager}
-        activeKey={["1"]}
-        defaultOpenKeys={["sub1"]}
+        items={getCookie('role') == 'staff' ? itmesStaff : itemsAdminManager}
+        activeKey={["10"]}
+        defaultOpenKeys={["sub2"]}
       />
     </Sider>
   );

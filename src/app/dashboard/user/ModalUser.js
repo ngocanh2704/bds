@@ -42,6 +42,7 @@ const ModalUser = (prop) => {
   };
 
   const getDetailUser = (id) => {
+    form.resetFields()
     axios
       .post("https://cors-iht.onrender.com/https://api.connecthome.vn/user/detail", { id: id })
       .then((res) => {

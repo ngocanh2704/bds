@@ -74,7 +74,7 @@ const Employee = () => {
       render: (_, { cccd_image }) => (
         <>
           <Image
-            src={"https://cors-iht.onrender.com/https://api.connecthome.vn" + cccd_image}
+            src={"https://api.connecthome.vn" + cccd_image}
             style={{ width: 150, height: 80 }}
             alt="..."
           />

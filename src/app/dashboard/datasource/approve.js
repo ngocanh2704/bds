@@ -13,16 +13,25 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
 const Approve = (prop) => {
   const [role, setRole] = useState("");
+  const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(false)
 
-  const { data, error, isLoading } = useSWR(
-    `https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  // const { data, error, isLoading } = useSWR(
+  //   (role == 'admin' | role == 'manager') ? `https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve` : 'https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-user',
+  //   fetcher,
+  //   {
+  //     revalidateIfStale: false,
+  //     revalidateOnFocus: false,
+  //     revalidateOnReconnect: false,
+  //   }
+  // );
+
+  const getData = () => {
+    axios.post('https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-user', { user: getCookie('user'), role: getCookie('role') }).then(res => {
+      setData(res.data.data)
+      console.log(res)
+    }).catch(e => console.log(e))
+  }
 
   useEffect(() => {
     var token = getCookie("token");
@@ -35,7 +44,9 @@ const Approve = (prop) => {
         redirect("/login");
       }
     }
-  }, [isLoading]);
+
+    getData()
+  }, [prop.key]);
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -82,9 +93,7 @@ const Approve = (prop) => {
           bordered={false}
         >
           {record.building?.building_name +
-            ((role == "admin") | (role == "manager")
-              ? record?.floor
-              : spliceString(record?.floor)) +
+           record?.floor+
             record.axis?.axis_name}
         </Tag>
       ),
@@ -93,8 +102,6 @@ const Approve = (prop) => {
       title: "Chủ căn hộ",
       dataIndex: "owner",
       key: "owner",
-      render: (item) =>
-        (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
     },
     {
       title: "Số điện thoại",
@@ -151,34 +158,11 @@ const Approve = (prop) => {
             >
               Hình ảnh
             </Button>
-            <Button
-              type="primary"
-              style={{ backgroundColor: "rgb(250, 173, 20)" }}
-              onClick={() => {
-                prop.changeOpen();
-                prop.changeId(item);
-              }}
-            >
-              Sửa
-            </Button>
-            <Button type="primary" danger on onClick={() => onDelete(item)}>
-              Xoá
-            </Button>
           </Flex>
         </>
       ),
     },
   ];
-
-  const actionRequest = (id) => {
-    axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-data", { id: id, user: getCookie('user') })
-      .then((res) => {
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
-      })
-      .catch((e) => console.log(e));
-      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve");
-  };
 
   const onDelete = (id) => {
     axios
@@ -197,7 +181,7 @@ const Approve = (prop) => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={data?.data}
+        dataSource={data}
         loading={isLoading}
         rowKey={(record) => record._id}
       />
