@@ -34,9 +34,6 @@ const ModalData = (prop) => {
   const onFinish = async () => {
     var values = form.getFieldsValue();
     const checkStatus = dataStatus.find(x => x.value === values.status)
-    if(checkStatus.label == 'Hết'){
-      values.color = 'grey'
-    }
     form
       .validateFields()
       .then((res) => {
@@ -47,13 +44,13 @@ const ModalData = (prop) => {
         if (prop.id) {
           values.id = prop.id;
         }
-        var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/edit";
-        var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/create";
+        var urlEdit = "http://localhost:3001/apartment/edit";
+        var urlCreate = "http://localhost:3001/apartment/create";
         axios
           .post(prop.id ? urlEdit : urlCreate, values)
           .then((res) => {
             prop.hideModal();
-            mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
+            mutate("http://localhost:3001/apartment");
           })
           .catch((e) => console.log(e));
       })
@@ -62,7 +59,7 @@ const ModalData = (prop) => {
 
   const getDataProject = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/project")
+      .get("http://localhost:3001/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -78,7 +75,7 @@ const ModalData = (prop) => {
 
   const getDataAxis = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/axis")
+      .get("http://localhost:3001/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -94,7 +91,7 @@ const ModalData = (prop) => {
 
   const getDataBalcon = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection")
+      .get("http://localhost:3001/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -109,7 +106,7 @@ const ModalData = (prop) => {
   };
   const getDataStatus = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/status")
+      .get("http://localhost:3001/status")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -125,7 +122,7 @@ const ModalData = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/detail", { id: id })
+      .post("http://localhost:3001/apartment/detail", { id: id })
       .then((res) => {
         console.log(res.data.detail)
         var detail = res.data.detail;
@@ -146,7 +143,7 @@ const ModalData = (prop) => {
           bathrooms: detail.bathrooms,
           sale_price: detail.sale_price,
           rental_price: detail.rental_price,
-          furnished: detail.furnished,
+          furnished: detail.furnished._id,
           balconies: detail.balconies,
           balcony_direction: detail.balcony_direction._id,
           last_updated: moment(detail.last_updated),
@@ -160,7 +157,7 @@ const ModalData = (prop) => {
 
   const getBuilding = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/building")
+      .get("http://localhost:3001/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -176,7 +173,7 @@ const ModalData = (prop) => {
 
   const getProperty = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/property")
+      .get("http://localhost:3001/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -192,7 +189,7 @@ const ModalData = (prop) => {
 
   const getFurnished = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/furnished")
+      .get("http://localhost:3001/furnished")
       .then((res) => {
         console.log(res)
         var array = [];

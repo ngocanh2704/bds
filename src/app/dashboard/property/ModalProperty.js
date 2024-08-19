@@ -15,12 +15,12 @@ const ModalProperty = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/property/create";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/property/edit";
+    var urlCreate = "http://localhost:3001/property/create";
+    var urlEdit = "http://localhost:3001/property/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('https://cors-iht.onrender.com/https://api.connecthome.vn/property')
+        mutate('http://localhost:3001/property')
         prop.hideModal();
           messageApi.open({
             type: "success",
@@ -39,7 +39,7 @@ const ModalProperty = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/property/detail", { id: id })
+      .post("http://localhost:3001/property/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({

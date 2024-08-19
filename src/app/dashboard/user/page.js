@@ -3,11 +3,14 @@
 import { Button, Flex, Table, message } from "antd";
 import axios from "axios";
 import { useState } from "react";
-import ModalUser from "./ModalUser";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 import dynamic from "next/dynamic";
+import { getCookie } from "cookies-next";
 
-const fetcher = (url) => fetch(url).then((res) => res.json());
+const config = {
+  headers: { Authorization: `Bearer ${getCookie("token")}` },
+};
+const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
 const DynamicModal = dynamic(() => import("./ModalUser"));
 
@@ -17,7 +20,7 @@ const User = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    "https://cors-iht.onrender.com/https://api.connecthome.vn/user",
+    "http://localhost:3001/user",
     fetcher,
     {
       revalidateIfStale: false,
@@ -48,7 +51,6 @@ const User = () => {
       title: "Kích hoạt",
       dataIndex: "status",
       key: "status",
-      render: (item) => <>{item == true ? "Kích hoạt" : "Tắt"}</>,
     },
     {
       title: "Action",
@@ -79,14 +81,17 @@ const User = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/user/delete", { id: id })
+      .post("http://localhost:3001/user/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
           content: res.data.message,
         });
+      mutate("http://localhost:3001/user")
       });
   };
+
+  console.log(data?.user)
 
   return (
     <>

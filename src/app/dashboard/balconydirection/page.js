@@ -50,7 +50,7 @@ const BalconyDirection = () => {
 
   const getData = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection")
+      .get("http://localhost:3001/balconyDirection")
       .then((res) => {
         console.log(res)
         setData(res.data.data);
@@ -61,7 +61,7 @@ const BalconyDirection = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection/delete", { id: id })
+      .post("http://localhost:3001/balconyDirection/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",

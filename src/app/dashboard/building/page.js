@@ -14,7 +14,7 @@ const Building = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const { data, error, isLoading } = useSWR(
-    `https://cors-iht.onrender.com/https://api.connecthome.vn/building`,
+    `http://localhost:3001/building`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -38,9 +38,9 @@ const Building = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/building/delete", { id: id })
+      .post("http://localhost:3001/building/delete", { id: id })
       .then((res) => {
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/building");
+        mutate("http://localhost:3001/building");
       });
   };
 

@@ -23,9 +23,7 @@ const DynamicCreateEmployee = dynamic(() => import("./CreateEmployee"), {
 const Employee = () => {
   const { Search } = Input;
 
-  // const [data, setData] = useState([]);
   const [dataStatus, setDataStatus] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
   const [messageApi, contextHolder] = message.useMessage();
   const [open, setOpen] = useState(false);
   const [detail, setDetail] = useState([]);
@@ -76,7 +74,7 @@ const Employee = () => {
       render: (_, { cccd_image }) => (
         <>
           <Image
-            src={"https://cors-iht.onrender.com/https://api.connecthome.vn" + cccd_image}
+            src={"http://localhost:3001" + cccd_image}
             style={{ width: 150, height: 80 }}
             alt="..."
           />
@@ -122,17 +120,18 @@ const Employee = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/employee/delete", { id: id })
+      .post("http://localhost:3001/employee/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
           content: res.data.message,
         }),
-          mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/employee");
+          mutate("http://localhost:3001/employee");
       });
   };
+  
   const { data, error, isLoading } = useSWR(
-    `https://cors-iht.onrender.com/https://api.connecthome.vn/employee`,
+    `http://localhost:3001/employee`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -146,16 +145,14 @@ const Employee = () => {
     const currentTime = Date.now() / 1000;
     if (token == undefined) {
       redirect("/login");
-    } 
-    else {
+    } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/employee");
+        mutate("http://localhost:3001/employee");
         redirect("/login");
       }
     }
   }, [isLoading]);
-
 
   return (
     <div>

@@ -11,6 +11,7 @@ import {
   message,
 } from "antd";
 import axios from "axios";
+import { mutate } from "swr";
 
 const ModalUser = (prop) => {
   const [form] = Form.useForm();
@@ -18,35 +19,31 @@ const ModalUser = (prop) => {
   const [messageApi, contextHolder] = message.useMessage();
   const onFinish = () => {
     var values = form.getFieldsValue();
-    values.status = values.status ? values.status : true;
     values.role = values.role ? values.role : "admin";
     values.employee_ID = values.employee_ID
       ? values.employee_ID
       : data[0].value;
       values.id = prop.id
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/user/register";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/user/edit";
+    var urlCreate = "http://localhost:3001/user/register";
+    var urlEdit = "http://localhost:3001/user/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
         prop.hideModal();
-        prop.isLoading(),
           messageApi.open({
             type: "success",
             content: res.data.message,
           });
+      mutate("http://localhost:3001/user")
       })
       .catch((e) => {
-        messageApi.open({
-          type: "warning",
-          content: e.response.data.message,
-        });
-      });
+      console.log(e)
+      })
   };
 
   const getDetailUser = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/user/detail", { id: id })
+      .post("http://localhost:3001/user/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           username: res.data.user.username,
@@ -71,8 +68,10 @@ const ModalUser = (prop) => {
         label: element.employee_name,
       });
     });
+    console.log(array)
     setData(array);
   };
+
   return (
     <>
       {contextHolder}
@@ -123,7 +122,6 @@ const ModalUser = (prop) => {
               <Select
                 style={{ width: 200 }}
                 options={data}
-                defaultValue={data[0]}
               ></Select>
             </Form.Item>
             <Form.Item label="Quyền" name="role">
