@@ -61,10 +61,10 @@ const DataSource = () => {
   };
 
   const onChange = (key) => {
-    if(key == '5'){
-      mutate("http://localhost:3001/apartment/request");
-    } else if (key =='6') {
-      mutate("http://localhost:3001/apartment/approve");
+    if (key == '5') {
+      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
+    } else if (key == '6') {
+      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve");
     }
   };
   const changeId = (id) => {
@@ -158,11 +158,11 @@ const DataSource = () => {
   const onClickYeuCauDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/apartment/request-data", { id: item })
-        .then((res) => {})
+        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request-data", { id: item })
+        .then((res) => { })
         .catch((e) => console.log(e));
     });
-    mutate("http://localhost:3001/apartment/request");
+    mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã yêu cầu thành công",
@@ -172,9 +172,9 @@ const DataSource = () => {
   const onClickXoaDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/delete", { id: item })
+        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/delete", { id: item })
         .then((res) => {
-          mutate("http://localhost:3001/apartment");
+          mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
         })
         .catch((e) => console.log(e));
     });
@@ -184,9 +184,24 @@ const DataSource = () => {
     });
   };
 
+  const onClickDuyetDongLoat = () => {
+    itemsYeuCau.forEach((item) => {
+      axios
+        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-data", { id: item })
+        .then((res) => {
+          mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve");
+        })
+        .catch((e) => console.log(e));
+    });
+    messageApi.open({
+      type: "success",
+      content: "Đã xoá thành công",
+    });
+  }
+
   const getProject = () => {
     axios
-      .get("http://localhost:3001/project")
+      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -202,7 +217,7 @@ const DataSource = () => {
 
   const getBuilding = () => {
     axios
-      .get("http://localhost:3001/building")
+      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -218,7 +233,7 @@ const DataSource = () => {
 
   const getProperty = () => {
     axios
-      .get("http://localhost:3001/property")
+      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -234,7 +249,7 @@ const DataSource = () => {
 
   const getBalconyDirection = () => {
     axios
-      .get("http://localhost:3001/balconyDirection")
+      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -250,7 +265,7 @@ const DataSource = () => {
 
   const getAxis = () => {
     axios
-      .get("http://localhost:3001/axis")
+      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -275,7 +290,7 @@ const DataSource = () => {
 
   const onFinish = (values) => {
     axios
-      .post("http://localhost:3001/apartment/search", values)
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/search", values)
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };
@@ -297,11 +312,13 @@ const DataSource = () => {
         </Button>
         <Button onClick={onClickYeuCauDongLoat}>Yêu cầu đồng loạt</Button>
         {(role == "admin") | (role == "manager") ? (
-           <Button type="primary" danger onClick={onClickXoaDongLoat}>
-           Xoá đồng loạt
-         </Button>
+          <>
+            <Button onClick={onClickDuyetDongLoat}>Duyệt đồng loạt</Button>
+            <Button type="primary" danger onClick={onClickXoaDongLoat}>
+              Xoá đồng loạt
+            </Button>
+          </>
         ) : ''}
-       
       </Flex>
       <ModalUpload open={on} hideModal={() => changeOn()} id={id} />
       <DynamicModalData open={open} hideModal={() => changeOpen()} id={id} />

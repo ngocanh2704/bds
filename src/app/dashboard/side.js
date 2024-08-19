@@ -27,7 +27,7 @@ const Side = () => {
       getItem(<Link href="/dashboard/project">Dự án</Link>, "3"),
       getItem(<Link href="/dashboard/building">Toà</Link>, "4"),
       getItem(<Link href="/dashboard/property">Loại BDS</Link>, "5"),
-      // getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
+      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
       getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "7"),
       getItem(<Link href="/dashboard/furnished">Nội thất</Link>, "8"),
       getItem(
