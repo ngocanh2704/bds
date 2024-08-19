@@ -22,7 +22,7 @@ export default function App() {
   const onFinish = async (values) => {
     setIsLoading(true);
     await axios
-      .post("https://api.connecthome.vn/login", values)
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/login", values)
       .then((res) => {
         setCookie("token", res.data.accessToken),
           setCookie("user", res.data.user._id),

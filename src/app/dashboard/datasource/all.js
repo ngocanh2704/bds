@@ -15,7 +15,7 @@ const ALl = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment`,
+    `https://cors-iht.onrender.com/https://api.connecthome.vn/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -181,18 +181,18 @@ const ALl = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("https://api.connecthome.vn/apartment/request-data", { id: id })
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request-data", { id: id })
       .then((res) => {
-        // mutate("https://api.connecthome.vn/apartment/request");
+        // mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
       })
       .catch((e) => console.log(e));
   };
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };

@@ -8,7 +8,7 @@ const Sale = (prop) => {
   const [isLoading, setIsLoading] = useState(true)
   const getData = () => {
     axios
-      .get("https://api.connecthome.vn/khosale")
+      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/khosale")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };

@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const API_URL =
-  "https://api.connecthome.vn/";
+  "https://cors-iht.onrender.com/https://api.connecthome.vn/";
 
 axios.defaults.baseURL = API_URL;
 axios.defaults.headers.common.Accept = "application/json";

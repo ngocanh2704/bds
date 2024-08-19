@@ -14,7 +14,7 @@ const Property = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/property`,
+    `https://cors-iht.onrender.com/https://api.connecthome.vn/property`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -38,9 +38,9 @@ const Property = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/property/delete", { id: id })
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/property/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/property");
+        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/property");
       });
   };
 

@@ -24,8 +24,8 @@ const ModalUser = (prop) => {
       ? values.employee_ID
       : data[0].value;
       values.id = prop.id
-    var urlCreate = "https://api.connecthome.vn/user/register";
-    var urlEdit = "https://api.connecthome.vn/user/edit";
+    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/user/register";
+    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/user/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -46,7 +46,7 @@ const ModalUser = (prop) => {
 
   const getDetailUser = (id) => {
     axios
-      .post("https://api.connecthome.vn/user/detail", { id: id })
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/user/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           username: res.data.user.username,

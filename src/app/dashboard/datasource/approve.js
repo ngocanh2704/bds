@@ -15,7 +15,7 @@ const Approve = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment/approve`,
+    `https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -172,19 +172,19 @@ const Approve = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("https://api.connecthome.vn/apartment/approve-data", { id: id, user: getCookie('user') })
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-data", { id: id, user: getCookie('user') })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment/request");
+        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
       })
       .catch((e) => console.log(e));
-      mutate("https://api.connecthome.vn/apartment/approve");
+      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve");
   };
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };
