@@ -29,7 +29,7 @@ const ModalUpload = (prop) => {
         var arr = [];
         if (detail) {
           detail.forEach((element) => {
-            var item = { url: "https://cors-iht.onrender.com/https://api.connecthome.vn" + element };
+            var item = { url: "https://api.connecthome.vn" + element };
             arr.push(item);
           });
         }
