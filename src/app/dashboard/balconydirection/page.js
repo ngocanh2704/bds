@@ -26,13 +26,13 @@ const BalconyDirection = () => {
           <Button
             type="primary"
             style={{ backgroundColor: "rgb(250, 173, 20)" }}
-            onClick={()=>{
-                setOpen(true), setId(item);
+            onClick={() => {
+              setOpen(true), setId(item);
             }}
           >
             Sửa
           </Button>
-          <Button type="primary" danger onClick={()=>{onDelete(item)}}>
+          <Button type="primary" danger onClick={() => { onDelete(item) }}>
             Xoá
           </Button>
         </Flex>
@@ -50,7 +50,7 @@ const BalconyDirection = () => {
 
   const getData = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         console.log(res)
         setData(res.data.data);
@@ -61,7 +61,7 @@ const BalconyDirection = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection/delete", { id: id })
+      .post("https://api.connecthome.vn/balconyDirection/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
@@ -76,9 +76,9 @@ const BalconyDirection = () => {
   }, [isLoading]);
   return (
     <>
-      <Button type="primary" style={{ marginBottom: 20 }} onClick={()=>{
-            setOpen(true);
-            setId("");
+      <Button type="primary" style={{ marginBottom: 20 }} onClick={() => {
+        setOpen(true);
+        setId("");
       }}>
         Thêm mới
       </Button>

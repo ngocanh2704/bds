@@ -41,16 +41,6 @@ const Side = () => {
 
   const itmesStaff = [
     getItem("Sale", "sub2", <DesktopOutlined />, [
-      getItem(<Link href="/dashboard/project">Dự án</Link>, "3"),
-      getItem(<Link href="/dashboard/building">Toà</Link>, "4"),
-      getItem(<Link href="/dashboard/property">Loại BDS</Link>, "5"),
-      getItem(<Link href="/dashboard/status">Trạng thái </Link>, "6"),
-      getItem(<Link href="/dashboard/axis">Trục căn hộ</Link>, "7"),
-      getItem(<Link href="/dashboard/furnished">Nội thất</Link>, "8"),
-      getItem(
-        <Link href="/dashboard/balconydirection">Hướng ban công</Link>,
-        "9"
-      ),
       getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
     ]),
   ];
@@ -68,7 +58,7 @@ const Side = () => {
           background: "rgba(255,255,255,.2)",
           borderRadius: 6,
         }}
-      />
+      ><p style={{ fontSize: 'large', color: 'white', marginLeft: 55 }}>{getCookie('name')}</p></div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["10"]}

@@ -28,13 +28,13 @@ const Status = () => {
           <Button
             type="primary"
             style={{ backgroundColor: "rgb(250, 173, 20)" }}
-            onClick={()=>{
-                setOpen(true), setId(item);
+            onClick={() => {
+              setOpen(true), setId(item);
             }}
           >
             Sửa
           </Button>
-          <Button type="primary" danger onClick={()=>{onDelete(item)}}>
+          <Button type="primary" danger onClick={() => { onDelete(item) }}>
             Xoá
           </Button>
         </Flex>
@@ -50,11 +50,11 @@ const Status = () => {
     setOpen(false);
   };
 
-  
+
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/status/delete", { id: id })
+      .post("https://api.connecthome.vn/status/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
@@ -67,8 +67,8 @@ const Status = () => {
   useEffect(() => {
     const getData = () => {
       axios
-        .get("https://cors-iht.onrender.com/https://api.connecthome.vn/status",{
-          headers:{
+        .get("https://api.connecthome.vn/status", {
+          headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
           }
         })
@@ -85,9 +85,9 @@ const Status = () => {
   }, [isLoading]);
   return (
     <>
-      <Button type="primary" style={{ marginBottom: 20 }} onClick={()=>{
-            setOpen(true);
-            setId("");
+      <Button type="primary" style={{ marginBottom: 20 }} onClick={() => {
+        setOpen(true);
+        setId("");
       }}>
         Thêm mới
       </Button>

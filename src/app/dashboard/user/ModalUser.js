@@ -23,28 +23,28 @@ const ModalUser = (prop) => {
     values.employee_ID = values.employee_ID
       ? values.employee_ID
       : data[0]?.value;
-      values.id = prop.id
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/user/register";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/user/edit";
+    values.id = prop.id
+    var urlCreate = "https://api.connecthome.vn/user/register";
+    var urlEdit = "https://api.connecthome.vn/user/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
         prop.hideModal();
-          messageApi.open({
-            type: "success",
-            content: res.data.message,
-          });
-      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/user")
+        messageApi.open({
+          type: "success",
+          content: res.data.message,
+        });
+        mutate("https://api.connecthome.vn/user")
       })
       .catch((e) => {
-      console.log(e)
+        console.log(e)
       })
   };
 
   const getDetailUser = (id) => {
     form.resetFields()
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/user/detail", { id: id })
+      .post("https://api.connecthome.vn/user/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           username: res.data.user.username,
@@ -107,7 +107,7 @@ const ModalUser = (prop) => {
               <Input />
             </Form.Item>
             <Form.Item label="Mật khẩu" name="password">
-              <Input style={{ width: 200 }} type="password"/>
+              <Input style={{ width: 200 }} type="password" />
             </Form.Item>
             <Form.Item label="Trạng thái" name="status">
               <Select

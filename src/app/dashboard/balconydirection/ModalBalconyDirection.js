@@ -19,8 +19,8 @@ const ModalStatus = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection/create";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection/edit";
+    var urlCreate = "https://api.connecthome.vn/balconyDirection/create";
+    var urlEdit = "https://api.connecthome.vn/balconyDirection/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -41,11 +41,11 @@ const ModalStatus = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection/detail", { id: id })
+      .post("https://api.connecthome.vn/balconyDirection/detail", { id: id })
       .then((res) => {
         console.log(res.data)
         form.setFieldsValue({
-            balcony_direction_name: res.data.data.balcony_direction_name
+          balcony_direction_name: res.data.data.balcony_direction_name
         });
       })
       .catch((e) => console.log(e));

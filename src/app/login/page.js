@@ -18,16 +18,17 @@ export default function App() {
   const { token } = useToken();
   const screens = useBreakpoint();
   const [isLoading, setIsLoading] = useState(false);
-  const {push} = useRouter()
+  const { push } = useRouter()
   const onFinish = async (values) => {
     setIsLoading(true);
     await axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/login", values)
+      .post("https://api.connecthome.vn/login", values)
       .then((res) => {
         setCookie("token", res.data.accessToken),
           setCookie("user", res.data.user._id),
           setCookie("role", res.data.user.role),
-          push("/dashboard/employee"),
+          setCookie("name", res.data.user.username),
+          push("/dashboard/datasource"),
           setIsLoading(false)
       })
       .catch((e) => {

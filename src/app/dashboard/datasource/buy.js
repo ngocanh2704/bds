@@ -7,7 +7,7 @@ const Buy = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/khoretal")
+      .get("https://api.connecthome.vn/khoretal")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };

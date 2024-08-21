@@ -63,9 +63,9 @@ const DataSource = () => {
   const onChange = (key) => {
     setKey(key)
     if (key == '5') {
-      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
+      mutate("https://api.connecthome.vn/apartment/request");
     } else if (key == '6') {
-      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve");
+      mutate("https://api.connecthome.vn/apartment/approve");
     }
   };
   const changeId = (id) => {
@@ -158,14 +158,14 @@ const DataSource = () => {
     setItemsYeuCau(items);
   };
   const onClickYeuCauDongLoat = () => {
-    
+
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request-data", { id: item,user: getCookie('user') })
+        .post("https://api.connecthome.vn/apartment/request-data", { id: item, user: getCookie('user') })
         .then((res) => { })
         .catch((e) => console.log(e));
     });
-    mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
+    mutate("https://api.connecthome.vn/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã yêu cầu thành công",
@@ -175,9 +175,9 @@ const DataSource = () => {
   const onClickXoaDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/delete", { id: item })
+        .post("https://api.connecthome.vn/delete", { id: item })
         .then((res) => {
-          mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
+          mutate("https://api.connecthome.vn/apartment");
         })
         .catch((e) => console.log(e));
     });
@@ -190,12 +190,12 @@ const DataSource = () => {
   const onClickDuyetDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-data", { id: item })
+        .post("https://api.connecthome.vn/apartment/approve-data", { id: item })
         .then((res) => {
         })
         .catch((e) => console.log(e));
     });
-    mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
+    mutate("https://api.connecthome.vn/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã duyệt thành công",
@@ -204,7 +204,7 @@ const DataSource = () => {
 
   const getProject = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/project")
+      .get("https://api.connecthome.vn/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -220,7 +220,7 @@ const DataSource = () => {
 
   const getBuilding = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/building")
+      .get("https://api.connecthome.vn/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -236,7 +236,7 @@ const DataSource = () => {
 
   const getProperty = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/property")
+      .get("https://api.connecthome.vn/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -252,7 +252,7 @@ const DataSource = () => {
 
   const getBalconyDirection = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -268,7 +268,7 @@ const DataSource = () => {
 
   const getAxis = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/axis")
+      .get("https://api.connecthome.vn/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -293,7 +293,7 @@ const DataSource = () => {
 
   const onFinish = (values) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/search", values)
+      .post("https://api.connecthome.vn/apartment/search", values)
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };

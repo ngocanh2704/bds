@@ -15,7 +15,7 @@ const Request = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request`,
+    `https://api.connecthome.vn/apartment/request`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -94,14 +94,14 @@ const Request = (prop) => {
       dataIndex: "owner",
       key: "owner",
       render: (item) =>
-        (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+        item
     },
     {
       title: "Số điện thoại",
       dataIndex: "phone_number",
       key: "phone_number",
       render: (item) =>
-        (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+        item
     },
     {
       title: "Giá bán",
@@ -186,21 +186,21 @@ const Request = (prop) => {
 
   const actionRequest = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/approve-data", {
+      .post("https://api.connecthome.vn/apartment/approve-data", {
         id: id,
         user: getCookie("user"),
       })
       .then((res) => {
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
+        mutate("https://api.connecthome.vn/apartment/request");
       })
       .catch((e) => console.log(e));
   };
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/delete", { id: id })
+      .post("https://api.connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
+        mutate("https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };

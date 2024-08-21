@@ -15,18 +15,18 @@ const ModalBuilding = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/building/create";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/building/edit";
+    var urlCreate = "https://api.connecthome.vn/building/create";
+    var urlEdit = "https://api.connecthome.vn/building/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('https://cors-iht.onrender.com/https://api.connecthome.vn/building')
+        mutate('https://api.connecthome.vn/building')
         prop.hideModal();
-          messageApi.open({
-            type: "success",
-            content: res.data.message,
-          });
-         
+        messageApi.open({
+          type: "success",
+          content: res.data.message,
+        });
+
       })
       .catch((e) => {
         // messageApi.open({
@@ -39,7 +39,7 @@ const ModalBuilding = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/building/detail", { id: id })
+      .post("https://api.connecthome.vn/building/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({

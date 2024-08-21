@@ -11,6 +11,7 @@ import {
   message,
   Row,
   Col,
+  Switch,
 } from "antd";
 import axios from "axios";
 import moment from "moment";
@@ -33,7 +34,8 @@ const ModalData = (prop) => {
 
   const onFinish = async () => {
     var values = form.getFieldsValue();
-    const checkStatus = dataStatus.find(x => x.value === values.status)
+    console.log(values.status)
+    // const checkStatus = dataStatus.find(x => x.value === values.status)
     form
       .validateFields()
       .then((res) => {
@@ -44,13 +46,14 @@ const ModalData = (prop) => {
         if (prop.id) {
           values.id = prop.id;
         }
-        var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/edit";
-        var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/create";
+        values.status ? values.color = '#FFFFFF ' : values.color = "#9d9d9d"
+        var urlEdit = "https://api.connecthome.vn/apartment/edit";
+        var urlCreate = "https://api.connecthome.vn/apartment/create";
         axios
           .post(prop.id ? urlEdit : urlCreate, values)
           .then((res) => {
             prop.hideModal();
-            mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
+            mutate("https://api.connecthome.vn/apartment");
           })
           .catch((e) => console.log(e));
       })
@@ -59,7 +62,7 @@ const ModalData = (prop) => {
 
   const getDataProject = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/project")
+      .get("https://api.connecthome.vn/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -75,7 +78,7 @@ const ModalData = (prop) => {
 
   const getDataAxis = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/axis")
+      .get("https://api.connecthome.vn/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -91,7 +94,7 @@ const ModalData = (prop) => {
 
   const getDataBalcon = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -104,25 +107,10 @@ const ModalData = (prop) => {
       })
       .catch((e) => console.log(e));
   };
-  const getDataStatus = () => {
-    axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/status")
-      .then((res) => {
-        var array = [];
-        res.data.data.forEach((item) => {
-          array.push({
-            value: item._id,
-            label: item.status_name,
-          });
-        });
-        setDataStatus(array);
-      })
-      .catch((e) => console.log(e));
-  };
 
   const getDetailApartment = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/detail", { id: id })
+      .post("https://api.connecthome.vn/apartment/detail", { id: id })
       .then((res) => {
         console.log(res.data.detail)
         var detail = res.data.detail;
@@ -147,7 +135,7 @@ const ModalData = (prop) => {
           balconies: detail.balconies,
           balcony_direction: detail.balcony_direction._id,
           last_updated: moment(detail.last_updated),
-          status: detail.status._id,
+          status: detail.status,
           notes: detail.notes,
           available: available,
         });
@@ -157,7 +145,7 @@ const ModalData = (prop) => {
 
   const getBuilding = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/building")
+      .get("https://api.connecthome.vn/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -173,7 +161,7 @@ const ModalData = (prop) => {
 
   const getProperty = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/property")
+      .get("https://api.connecthome.vn/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -189,7 +177,7 @@ const ModalData = (prop) => {
 
   const getFurnished = () => {
     axios
-      .get("https://cors-iht.onrender.com/https://api.connecthome.vn/furnished")
+      .get("https://api.connecthome.vn/furnished")
       .then((res) => {
         console.log(res)
         var array = [];
@@ -216,7 +204,6 @@ const ModalData = (prop) => {
     getDataProject();
     getDataAxis();
     getDataBalcon();
-    getDataStatus();
     getBuilding();
     getProperty();
     getFurnished()
@@ -307,12 +294,12 @@ const ModalData = (prop) => {
                 <Form.Item label="Số điện thoại" name="phone_number">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Loại bất động sản" name="property"  rules={[
-                    {
-                      required: true,
-                      message: "Vui lòng loại bất động sản",
-                    },
-                  ]}>
+                <Form.Item label="Loại bất động sản" name="property" rules={[
+                  {
+                    required: true,
+                    message: "Vui lòng loại bất động sản",
+                  },
+                ]}>
                   <Select options={property} />
                 </Form.Item>
                 <Form.Item label="Diện tích" name="area">
@@ -427,8 +414,10 @@ const ModalData = (prop) => {
                       message: "Vui lòng chọn trạng thái căn hộ",
                     },
                   ]}
+                  initialValue={true}
                 >
-                  <Select options={dataStatus}></Select>
+                  {/* <Select options={dataStatus}></Select> */}
+                  <Switch></Switch>
                 </Form.Item>
                 <Form.Item label="Ghi chú" name="notes">
                   <TextArea />
@@ -436,10 +425,11 @@ const ModalData = (prop) => {
                 <Form.Item label="Đánh dấu" name="color">
                   <Select
                     options={[
-                      { value: "#ffffff", label: "Mặc định" },
-                      { value: "#ff4d4f", label: "Đỏ" },
+                      { value: "#fbff00", label: "Vàng (căn giá rẻ)" },
+                      { value: "#ff4d4f", label: "Đỏ (căn kết hợp)" },
                       { value: "rgb(88 206 79)", label: "Xanh" },
                       { value: "#ffa416c4", label: "Cam" },
+                      { value: "#ffffff", label: "Mặc định" },
                     ]}
                   />
                 </Form.Item>

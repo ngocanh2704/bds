@@ -20,7 +20,7 @@ const User = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    "https://cors-iht.onrender.com/https://api.connecthome.vn/user",
+    "https://api.connecthome.vn/user",
     fetcher,
     {
       revalidateIfStale: false,
@@ -34,6 +34,11 @@ const User = () => {
       title: "Tài khoản",
       dataIndex: "username",
       key: "username",
+    },
+    {
+      title: "Quyền",
+      dataIndex: "role",
+      key: "role",
     },
     {
       title: "Nhân viên",
@@ -51,7 +56,7 @@ const User = () => {
       title: "Kích hoạt",
       dataIndex: "status",
       key: "status",
-      render: item => item == true ? 'Kích hoạt': 'Tắt'
+      render: item => item == true ? 'Kích hoạt' : 'Tắt'
     },
     {
       title: "Action",
@@ -82,13 +87,13 @@ const User = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/user/delete", { id: id })
+      .post("https://api.connecthome.vn/user/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
           content: res.data.message,
         });
-      mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/user")
+        mutate("https://api.connecthome.vn/user")
       });
   };
 

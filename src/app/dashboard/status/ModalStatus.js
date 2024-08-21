@@ -19,8 +19,8 @@ const ModalStatus = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/status/create";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/status/edit";
+    var urlCreate = "https://api.connecthome.vn/status/create";
+    var urlEdit = "https://api.connecthome.vn/status/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -41,7 +41,7 @@ const ModalStatus = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/status/detail", { id: id })
+      .post("https://api.connecthome.vn/status/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           status_name: res.data.status.status_name

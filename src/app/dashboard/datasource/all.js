@@ -15,7 +15,7 @@ const ALl = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `https://cors-iht.onrender.com/https://api.connecthome.vn/apartment`,
+    `https://api.connecthome.vn/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -124,14 +124,11 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.area}m<sup>2</sup> - {record.project.project_name} -{" "}
-            {record.balcony_direction?.balcony_direction_name} -{" "}
-            {record.bedrooms}
-            PN
+            - {record.project.project_name}-{record.area}m<sup>2</sup> - {record.bedrooms}PN - {record.balcony_direction?.balcony_direction_name}
           </p>
-          <p>- {record.notes}</p>
-          <p>-  {record.furnished?.furnished_name}</p>
           <p>- {record.properties?.property_name}</p>
+          <p>-  {record.furnished?.furnished_name}</p>
+          <p>- {record.notes}</p>
         </>
       ),
     },
@@ -183,18 +180,18 @@ const ALl = (prop) => {
   const actionRequest = (id) => {
     const user = getCookie('user')
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request-data", { id: id, user: user })
+      .post("https://api.connecthome.vn/apartment/request-data", { id: id, user: user })
       .then((res) => {
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment/request");
+        mutate("https://api.connecthome.vn/apartment/request");
       })
       .catch((e) => console.log(e));
   };
 
   const onDelete = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/delete", { id: id })
+      .post("https://api.connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("https://cors-iht.onrender.com/https://api.connecthome.vn/apartment");
+        mutate("https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };

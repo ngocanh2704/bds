@@ -69,9 +69,9 @@ const CreateEmployee = (prop) => {
       "employment_status_id",
       (values.employment_status_id ? values.employment_status_id : data[0]?.value)
     );
-    prop.id ? formData.append('id',prop.id) : null
-    var urlCreate = "https://cors-iht.onrender.com/https://api.connecthome.vn/employee/create";
-    var urlEdit = "https://cors-iht.onrender.com/https://api.connecthome.vn/employee/edit";
+    prop.id ? formData.append('id', prop.id) : null
+    var urlCreate = "https://api.connecthome.vn/employee/create";
+    var urlEdit = "https://api.connecthome.vn/employee/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, formData, {
         headers: {
@@ -85,7 +85,7 @@ const CreateEmployee = (prop) => {
           type: "success",
           content: res.data.message,
         });
-        mutate('https://cors-iht.onrender.com/https://api.connecthome.vn/employee')
+        mutate('https://api.connecthome.vn/employee')
       })
       .catch((e) => {
         messageApi.open({
@@ -97,18 +97,18 @@ const CreateEmployee = (prop) => {
 
   const getDetailEmployee = (id) => {
     axios
-      .post("https://cors-iht.onrender.com/https://api.connecthome.vn/employee/detail", { id: id })
+      .post("https://api.connecthome.vn/employee/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           employee_name: res.data.employee.employee_name,
           gender: res.data.employee.gender,
           phone_number: res.data.employee.phone_number,
           email_address: res.data.employee.email_address,
-          dob: res.data.employee.dob ?moment(res.data.employee.dob): null,
-          start_date: res.data.employee.start_date? moment(res.data.employee.start_date): null,
+          dob: res.data.employee.dob ? moment(res.data.employee.dob) : null,
+          start_date: res.data.employee.start_date ? moment(res.data.employee.start_date) : null,
           employment_status_id: res.data.employee.employment_status_id,
           cccd_image: [
-            { url: "https://cors-iht.onrender.com/https://api.connecthome.vn" + res.data.employee.cccd_image },
+            { url: "https://api.connecthome.vn" + res.data.employee.cccd_image },
           ],
         });
       })
@@ -136,7 +136,7 @@ const CreateEmployee = (prop) => {
     <>
       {contextHolder}
       <Modal
-        title={prop.id ? "Sửa nhân viên":"Thêm mới nhân viên" }
+        title={prop.id ? "Sửa nhân viên" : "Thêm mới nhân viên"}
         open={prop.open}
         onOk={onFinish}
         onCancel={prop.hideModal}
