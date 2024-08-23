@@ -152,6 +152,7 @@ const ModalData = (prop) => {
           status: detail.status,
           notes: detail.notes,
           available: available,
+          color: detail.color
         });
       })
       .catch((e) => console.log(e));

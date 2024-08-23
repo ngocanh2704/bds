@@ -219,6 +219,7 @@ const ALl = (prop) => {
         loading={isLoading}
         rowKey={(record) => record._id}
         size="small"
+        indentSize={20}
       />
     </>
   );
