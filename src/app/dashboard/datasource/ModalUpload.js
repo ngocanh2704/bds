@@ -3,6 +3,7 @@ import { Modal, Upload, Image } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
+import { mutate } from "swr";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -94,6 +95,7 @@ const ModalUpload = (prop) => {
           });
         }
         setFileList(arr);
+        mutate('https://api.connecthome.vn/apartment')
       })
       .catch((e) => {
         onError({ e });
@@ -106,7 +108,7 @@ const ModalUpload = (prop) => {
     str = str.slice(str.search("d/") + 2);
     axios
       .post("https://api.connecthome.vn/apartment/delete-image", { id: prop.id, name: str })
-      .then((res) => console.log(res))
+      .then((res) => mutate('https://api.connecthome.vn/apartment'))
       .catch((e) => console.log(e));
   };
 

@@ -108,7 +108,7 @@ const Approve = (prop) => {
       dataIndex: "phone_number",
       key: "phone_number",
       render: (item) =>
-        (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+        item
     },
     {
       title: "Giá bán",
@@ -145,19 +145,28 @@ const Approve = (prop) => {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
-      render: (item) => (
+      render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            <Button
+            {record.image[0] == undefined ? <Button
+              type="primary"
+              style={{ backgroundColor: "#bfbfbf" }}
+              onClick={() => {
+                prop.changeOn();
+                prop.changeId(record._id);
+              }}
+            >
+              Hình ảnh
+            </Button> : <Button
               type="primary"
               style={{ backgroundColor: "rgb(217 5 255)" }}
               onClick={() => {
                 prop.changeOn();
-                prop.changeId(item);
+                prop.changeId(record._id);
               }}
             >
               Hình ảnh
-            </Button>
+            </Button>}
           </Flex>
         </>
       ),
@@ -184,6 +193,7 @@ const Approve = (prop) => {
         dataSource={data}
         loading={isLoading}
         rowKey={(record) => record._id}
+        size="small"
       />
     </>
   );

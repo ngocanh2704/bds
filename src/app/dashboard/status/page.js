@@ -97,7 +97,7 @@ const Status = () => {
         isLoading={() => changeLoading()}
         id={id}
       />
-      <Table columns={columns} dataSource={data} isLoading={isLoading} />
+      <Table columns={columns} dataSource={data} isLoading={isLoading} size="small" />
     </>
   );
 };

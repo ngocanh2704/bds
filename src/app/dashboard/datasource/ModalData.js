@@ -46,7 +46,21 @@ const ModalData = (prop) => {
         if (prop.id) {
           values.id = prop.id;
         }
-        values.status ? values.color = '#FFFFFF ' : values.color = "#9d9d9d"
+
+        if (values.status == false) {
+          values.color = '#bfbfbf'
+        }
+
+        if (values.color == '#fbff00') {
+          values.color = "#fbff00"
+        } else if (values.color == '#ff4d4f') {
+          values.color = "#ff4d4f"
+        } else if (values.color == 'rgb(88 206 79)') {
+          values.color == 'rgb(88 206 79)'
+        } else if (values.color == '#ffa416c4') {
+          values.color == '#ffa416c4'
+        }
+
         var urlEdit = "https://api.connecthome.vn/apartment/edit";
         var urlCreate = "https://api.connecthome.vn/apartment/create";
         axios
@@ -422,7 +436,7 @@ const ModalData = (prop) => {
                 <Form.Item label="Ghi chú" name="notes">
                   <TextArea />
                 </Form.Item>
-                <Form.Item label="Đánh dấu" name="color">
+                <Form.Item label="Đánh dấu" name="color" initialValue={'#ffffff'}>
                   <Select
                     options={[
                       { value: "#fbff00", label: "Vàng (căn giá rẻ)" },

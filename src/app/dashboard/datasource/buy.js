@@ -60,16 +60,29 @@ const Buy = (prop) => {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
-      render: (item) => (
+      render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
             <Button type="primary">Yêu cầu</Button>
-            <Button
+            {record.image[0] == undefined ? <Button
               type="primary"
-              style={{ backgroundColor: "rgb(217 5 255)" }}
+              style={{ backgroundColor: "#bfbfbf" }}
+              onClick={() => {
+                prop.changeOn();
+                prop.changeId(record._id);
+              }}
             >
               Hình ảnh
-            </Button>
+            </Button> : <Button
+              type="primary"
+              style={{ backgroundColor: "rgb(217 5 255)" }}
+              onClick={() => {
+                prop.changeOn();
+                prop.changeId(record._id);
+              }}
+            >
+              Hình ảnh
+            </Button>}
             <Button
               type="primary"
               style={{ backgroundColor: "rgb(250, 173, 20)" }}
@@ -85,7 +98,7 @@ const Buy = (prop) => {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} />;
+  return <Table columns={columns} dataSource={data} size="small" />;
 };
 
 export default Buy;

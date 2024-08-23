@@ -162,7 +162,9 @@ const DataSource = () => {
     itemsYeuCau.forEach((item) => {
       axios
         .post("https://api.connecthome.vn/apartment/request-data", { id: item, user: getCookie('user') })
-        .then((res) => { })
+        .then((res) => {
+          console.log(res)
+        })
         .catch((e) => console.log(e));
     });
     mutate("https://api.connecthome.vn/apartment/request");

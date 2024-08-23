@@ -119,7 +119,7 @@ const User = () => {
         hideModal={() => changeOpen()}
         id={id}
       />
-      <Table columns={columns} dataSource={data?.user} loading={isLoading} />
+      <Table columns={columns} dataSource={data?.user} loading={isLoading} size="small" />
     </>
   );
 };

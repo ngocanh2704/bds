@@ -136,22 +136,32 @@ const ALl = (prop) => {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
-      render: (item) => (
+      render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            <Button type="primary" onClick={() => actionRequest(item)}>
+            <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>
-            <Button
+            {record.image[0] == undefined ? <Button
+              type="primary"
+              style={{ backgroundColor: "#bfbfbf" }}
+              onClick={() => {
+                prop.changeOn();
+                prop.changeId(record._id);
+              }}
+            >
+              Hình ảnh
+            </Button> : <Button
               type="primary"
               style={{ backgroundColor: "rgb(217 5 255)" }}
               onClick={() => {
                 prop.changeOn();
-                prop.changeId(item);
+                prop.changeId(record._id);
               }}
             >
               Hình ảnh
-            </Button>
+            </Button>}
+
             {(role == "admin") | (role == "manager") ? (
               <>
                 <Button
@@ -159,12 +169,12 @@ const ALl = (prop) => {
                   style={{ backgroundColor: "rgb(250, 173, 20)" }}
                   onClick={() => {
                     prop.changeOpen();
-                    prop.changeId(item);
+                    prop.changeId(record._id);
                   }}
                 >
                   Sửa
                 </Button>
-                <Button type="primary" danger on onClick={() => onDelete(item)}>
+                <Button type="primary" danger on onClick={() => onDelete(record._id)}>
                   Xoá
                 </Button>
               </>
@@ -182,6 +192,7 @@ const ALl = (prop) => {
     axios
       .post("https://api.connecthome.vn/apartment/request-data", { id: id, user: user })
       .then((res) => {
+        console.log(res)
         mutate("https://api.connecthome.vn/apartment/request");
       })
       .catch((e) => console.log(e));
@@ -207,6 +218,7 @@ const ALl = (prop) => {
         dataSource={data?.data}
         loading={isLoading}
         rowKey={(record) => record._id}
+        size="small"
       />
     </>
   );

@@ -102,7 +102,7 @@ const Building = () => {
         hideModal={() => changeOpen()}
         id={id}
       />
-      <Table columns={columns} dataSource={data?.data} loading={isLoading} />
+      <Table columns={columns} dataSource={data?.data} loading={isLoading} size="small" />
     </>
   );
 };

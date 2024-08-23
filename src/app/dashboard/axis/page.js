@@ -104,7 +104,7 @@ const Axis = () => {
         Thêm mới
       </Button>
       <ModalAxis open={open} hideModal={() => changeOpen()} id={id} />
-      <Table columns={columns} dataSource={data?.data} isLoading={isLoading} />
+      <Table columns={columns} dataSource={data?.data} isLoading={isLoading} size="small" />
     </>
   );
 };

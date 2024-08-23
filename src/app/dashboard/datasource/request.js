@@ -24,6 +24,8 @@ const Request = (prop) => {
     }
   );
 
+  console.log(data)
+
   useEffect(() => {
     var token = getCookie("token");
     const currentTime = Date.now() / 1000;
@@ -138,11 +140,11 @@ const Request = (prop) => {
       title: "Action",
       dataIndex: "_id",
       key: "_id",
-      render: (item) => (
+      render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
             {(role == "admin") | (role == "manager") ? (
-              <Button type="primary" onClick={() => actionRequest(item)}>
+              <Button type="primary" onClick={() => actionRequest(record_.id)}>
                 Duyệt yêu cầu
               </Button>
             ) : (
@@ -154,7 +156,7 @@ const Request = (prop) => {
               style={{ backgroundColor: "rgb(217 5 255)" }}
               onClick={() => {
                 prop.changeOn();
-                prop.changeId(item);
+                prop.changeId(record._id);
               }}
             >
               Hình ảnh
@@ -166,7 +168,7 @@ const Request = (prop) => {
                   style={{ backgroundColor: "rgb(250, 173, 20)" }}
                   onClick={() => {
                     prop.changeOpen();
-                    prop.changeId(item);
+                    prop.changeId(record._id);
                   }}
                 >
                   Sửa
@@ -216,6 +218,7 @@ const Request = (prop) => {
         dataSource={data?.data}
         loading={isLoading}
         rowKey={(record) => record._id}
+        size="small"
       />
     </>
   );

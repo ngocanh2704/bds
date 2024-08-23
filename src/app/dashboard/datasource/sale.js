@@ -86,7 +86,7 @@ const Sale = (prop) => {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} />;
+  return <Table columns={columns} dataSource={data} size="small" />;
 };
 
 export default Sale;

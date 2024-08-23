@@ -190,7 +190,7 @@ const Employee = () => {
         id={id}
         isLoading={() => changeLoading()}
       />
-      <Table columns={columns} dataSource={data?.data} loading={isLoading} />
+      <Table columns={columns} dataSource={data?.data} loading={isLoading} size="small" />
     </div>
   );
 };
