@@ -7,12 +7,12 @@ const Buy = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .get("https://api.connecthome.vn/khoretal")
+      .get("http://localhost:3001/khoretal")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };
   useEffect(() => {
-    getData()
+    getData();
   }, [prop.data]);
   const columns = [
     {
@@ -64,25 +64,29 @@ const Buy = (prop) => {
         <>
           <Flex gap="small" wrap>
             <Button type="primary">Yêu cầu</Button>
-            {record.image[0] == undefined ? <Button
-              type="primary"
-              style={{ backgroundColor: "#bfbfbf" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button> : <Button
-              type="primary"
-              style={{ backgroundColor: "rgb(217 5 255)" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button>}
+            {record.image[0] == undefined ? (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#bfbfbf" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "rgb(217 5 255)" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            )}
             <Button
               type="primary"
               style={{ backgroundColor: "rgb(250, 173, 20)" }}
@@ -98,7 +102,18 @@ const Buy = (prop) => {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} size="small" />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      size="small"
+      pagination={{
+        defaultPageSize: 20,
+        pageSizeOptions: [20, 30, 40, 50],
+        showSizeChanger: true,
+      }}
+    />
+  );
 };
 
 export default Buy;

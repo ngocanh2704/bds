@@ -20,7 +20,7 @@ const User = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    "https://api.connecthome.vn/user",
+    "http://localhost:3001/user",
     fetcher,
     {
       revalidateIfStale: false,
@@ -30,6 +30,14 @@ const User = () => {
   );
 
   const columns = [
+    {
+      title: "STT",
+      dataIndex: "_id",
+      key: "_id",
+      render: (text, record, index) => {
+        return <>{index + 1}</>;
+      },
+    },
     {
       title: "Tài khoản",
       dataIndex: "username",
@@ -56,7 +64,7 @@ const User = () => {
       title: "Kích hoạt",
       dataIndex: "status",
       key: "status",
-      render: item => item == true ? 'Kích hoạt' : 'Tắt'
+      render: (item) => (item == true ? "Kích hoạt" : "Tắt"),
     },
     {
       title: "Action",
@@ -73,9 +81,13 @@ const User = () => {
           >
             Sửa
           </Button>
-          <Button type="primary" danger onClick={() => onDelete(item)}>
-            Xoá
-          </Button>
+          {(getCookie("role") == "manager") | getCookie("role" == "staff") ? (
+            ""
+          ) : (
+            <Button type="primary" danger onClick={() => onDelete(item)}>
+              Xoá
+            </Button>
+          )}
         </Flex>
       ),
     },
@@ -86,18 +98,16 @@ const User = () => {
   };
 
   const onDelete = (id) => {
-    axios
-      .post("https://api.connecthome.vn/user/delete", { id: id })
-      .then((res) => {
-        messageApi.open({
-          type: "success",
-          content: res.data.message,
-        });
-        mutate("https://api.connecthome.vn/user")
+    axios.post("http://localhost:3001/user/delete", { id: id }).then((res) => {
+      messageApi.open({
+        type: "success",
+        content: res.data.message,
       });
+      mutate("http://localhost:3001/user");
+    });
   };
 
-  console.log(data?.user)
+  console.log(data?.user);
 
   return (
     <>
@@ -119,7 +129,12 @@ const User = () => {
         hideModal={() => changeOpen()}
         id={id}
       />
-      <Table columns={columns} dataSource={data?.user} loading={isLoading} size="small" />
+      <Table
+        columns={columns}
+        dataSource={data?.user}
+        loading={isLoading}
+        size="small"
+      />
     </>
   );
 };

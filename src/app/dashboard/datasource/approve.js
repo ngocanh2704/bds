@@ -13,11 +13,11 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
 const Approve = (prop) => {
   const [role, setRole] = useState("");
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(false)
+  const [data, setData] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
 
   // const { data, error, isLoading } = useSWR(
-  //   (role == 'admin' | role == 'manager') ? `https://api.connecthome.vn/apartment/approve` : 'https://api.connecthome.vn/apartment/approve-user',
+  //   (role == 'admin' | role == 'manager') ? `http://localhost:3001/apartment/approve` : 'http://localhost:3001/apartment/approve-user',
   //   fetcher,
   //   {
   //     revalidateIfStale: false,
@@ -27,11 +27,17 @@ const Approve = (prop) => {
   // );
 
   const getData = () => {
-    axios.post('https://api.connecthome.vn/apartment/approve-user', { user: getCookie('user'), role: getCookie('role') }).then(res => {
-      setData(res.data.data)
-      console.log(res)
-    }).catch(e => console.log(e))
-  }
+    axios
+      .post("http://localhost:3001/apartment/approve-user", {
+        user: getCookie("user"),
+        role: getCookie("role"),
+      })
+      .then((res) => {
+        setData(res.data.data);
+        console.log(res);
+      })
+      .catch((e) => console.log(e));
+  };
 
   useEffect(() => {
     var token = getCookie("token");
@@ -45,7 +51,7 @@ const Approve = (prop) => {
       }
     }
 
-    getData()
+    getData();
   }, [prop.key]);
 
   const spliceString = (text) => {
@@ -107,8 +113,7 @@ const Approve = (prop) => {
       title: "Số điện thoại",
       dataIndex: "phone_number",
       key: "phone_number",
-      render: (item) =>
-        item
+      render: (item) => item,
     },
     {
       title: "Giá bán",
@@ -148,25 +153,41 @@ const Approve = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            {record.image[0] == undefined ? <Button
-              type="primary"
-              style={{ backgroundColor: "#bfbfbf" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button> : <Button
-              type="primary"
-              style={{ backgroundColor: "rgb(217 5 255)" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button>}
+            {record.image[0] == undefined ? (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#bfbfbf" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "rgb(217 5 255)" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            )}
+            {role == "admin" ? (
+              <Button
+                type="primary"
+                danger
+                on
+                onClick={() => onDelete(record._id)}
+              >
+                Xoá
+              </Button>
+            ) : (
+              ""
+            )}
           </Flex>
         </>
       ),
@@ -175,9 +196,9 @@ const Approve = (prop) => {
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("http://localhost:3001/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => console.log(e));
   };
@@ -194,6 +215,11 @@ const Approve = (prop) => {
         loading={isLoading}
         rowKey={(record) => record._id}
         size="small"
+        pagination={{
+          defaultPageSize: 20,
+          pageSizeOptions: [20,30, 40, 50],
+          showSizeChanger: true
+        }}
       />
     </>
   );

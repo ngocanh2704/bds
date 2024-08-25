@@ -5,15 +5,15 @@ import { Button, Flex, Table } from "antd";
 
 const Sale = (prop) => {
   const [data, setData] = useState([]);
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(true);
   const getData = () => {
     axios
-      .get("https://api.connecthome.vn/khosale")
+      .get("http://localhost:3001/khosale")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };
   useEffect(() => {
-    getData()
+    getData();
   }, [prop.data]);
   const columns = [
     {
@@ -86,7 +86,18 @@ const Sale = (prop) => {
     },
   ];
 
-  return <Table columns={columns} dataSource={data} size="small" />;
+  return (
+    <Table
+      columns={columns}
+      dataSource={data}
+      size="small"
+      pagination={{
+        defaultPageSize: 20,
+        pageSizeOptions: [20, 30, 40, 50],
+        showSizeChanger: true,
+      }}
+    />
+  );
 };
 
 export default Sale;

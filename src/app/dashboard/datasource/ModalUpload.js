@@ -1,9 +1,10 @@
 "use client";
-import { Modal, Upload, Image } from "antd";
+import { Modal, Upload, Image, message } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useState } from "react";
 import axios from "axios";
 import { mutate } from "swr";
+import { getCookie } from "cookies-next";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -17,6 +18,7 @@ const ModalUpload = (prop) => {
   const [previewImage, setPreviewImage] = useState("");
   const [progress, setProgress] = useState(0);
   const [fileList, setFileList] = useState([]);
+  const [messageApi, contextHolder] = message.useMessage();
 
   const afterOpenChange = () => {
     getDetailApartment(prop.id);
@@ -24,13 +26,13 @@ const ModalUpload = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("https://api.connecthome.vn/apartment/detail", { id: id })
+      .post("http://localhost:3001/apartment/detail", { id: id })
       .then((res) => {
         var detail = res.data.detail.image;
         var arr = [];
         if (detail) {
           detail.forEach((element) => {
-            var item = { url: "https://api.connecthome.vn" + element };
+            var item = { url: "http://localhost:3001" + element };
             arr.push(item);
           });
         }
@@ -83,19 +85,19 @@ const ModalUpload = (prop) => {
     formData.append("id", prop.id);
     formData.append("file", file);
     axios
-      .post("https://api.connecthome.vn/apartment/upload", formData, config)
+      .post("http://localhost:3001/apartment/upload", formData, config)
       .then((res) => {
         onSuccess("Ok");
         // setFileList(res.data.image)
         var arr = [];
         if (res.data.image) {
           res.data.image.forEach((element) => {
-            var item = { url: "https://api.connecthome.vn" + element };
+            var item = { url: "http://localhost:3001" + element };
             arr.push(item);
           });
         }
         setFileList(arr);
-        mutate('https://api.connecthome.vn/apartment')
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => {
         onError({ e });
@@ -104,49 +106,67 @@ const ModalUpload = (prop) => {
   };
 
   const onRemove = (item) => {
-    var str = item.url;
-    str = str.slice(str.search("d/") + 2);
-    axios
-      .post("https://api.connecthome.vn/apartment/delete-image", { id: prop.id, name: str })
-      .then((res) => mutate('https://api.connecthome.vn/apartment'))
-      .catch((e) => console.log(e));
+    if (getCookie("role") != "staff") {
+      var str = item.url;
+      str = str.slice(str.search("d/") + 2);
+      axios
+        .post("http://localhost:3001/apartment/delete-image", {
+          id: prop.id,
+          name: str,
+        })
+        .then((res) => mutate("http://localhost:3001/apartment"))
+        .catch((e) => console.log(e));
+    } else {
+      messageApi.open({
+        type: "error",
+        content: "Bạn không được xoá.",
+      });
+    }
   };
 
   return (
-    <Modal
-      title="Thêm hình ảnh"
-      open={prop.open}
-      onCancel={prop.hideModal}
-      onClose={prop.hideModal}
-      onOk={prop.hideModal}
-      width={700}
-      afterOpenChange={afterOpenChange}
-    >
-      <Upload
-        listType="picture-card"
-        fileList={fileList}
-        onPreview={handlePreview}
-        onChange={handleChange}
-        customRequest={customRequest}
-        onRemove={onRemove}
+    <>
+      {contextHolder}
+      <Modal
+        title="Thêm hình ảnh"
+        open={prop.open}
+        onCancel={prop.hideModal}
+        onClose={prop.hideModal}
+        onOk={prop.hideModal}
+        width={700}
+        afterOpenChange={afterOpenChange}
+        keyboard={true}
       >
-        {fileList.length >= 8 ? null : uploadButton}
-      </Upload>
-      {previewImage && (
-        <Image
-          wrapperStyle={{
-            display: "none",
+        <Upload
+          listType="picture-card"
+          fileList={fileList}
+          onPreview={handlePreview}
+          onChange={handleChange}
+          customRequest={customRequest}
+          onRemove={onRemove}
+          onDownload={(file)=> {
+            console.log(file)
           }}
-          preview={{
-            visible: previewOpen,
-            onVisibleChange: (visible) => setPreviewOpen(visible),
-            afterOpenChange: (visible) => !visible && setPreviewImage(""),
-          }}
-          src={previewImage}
-          alt="..."
-        />
-      )}
-    </Modal>
+          showUploadList={{showDownloadIcon: true}}
+        >
+          {fileList.length >= 10 ? null : uploadButton}
+        </Upload>
+        {previewImage && (
+          <Image
+            wrapperStyle={{
+              display: "none",
+            }}
+            preview={{
+              visible: previewOpen,
+              onVisibleChange: (visible) => setPreviewOpen(visible),
+              afterOpenChange: (visible) => !visible && setPreviewImage(""),
+            }}
+            src={previewImage}
+            alt="..."
+          />
+        )}
+      </Modal>
+    </>
   );
 };
 

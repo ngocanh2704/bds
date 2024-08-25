@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { Button, Flex, Table, Input, Form, Space, Tag } from "antd";
+import { Button, Flex, Table, Input, Form, Space, Tag, message } from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
@@ -13,9 +13,10 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
 const ALl = (prop) => {
   const [role, setRole] = useState("");
+  const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment`,
+    `http://localhost:3001/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -106,16 +107,24 @@ const ALl = (prop) => {
     {
       title: "Giá bán",
       dataIndex: "sale_price",
-      key: "sale_ price",
+      key: "sale_price",
       render: (item) =>
-        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "",
+        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
+      sorter: {
+        compare: (a, b) => a.sale_price - b.sale_price,
+        multiple: 1,
+      },
     },
     {
       title: "Giá thuê",
       dataIndex: "rental_price",
       key: "rental_price",
       render: (item) =>
-        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "",
+        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
+      sorter: {
+        compare: (a, b) => a.rental_price - b.rental_price,
+        multiple: 2,
+      },
     },
     {
       title: "Thông tin bất động sản",
@@ -131,6 +140,7 @@ const ALl = (prop) => {
           <p>- {record.notes}</p>
         </>
       ),
+      responsive: ["sm"]
     },
     {
       title: "Action",
@@ -190,19 +200,22 @@ const ALl = (prop) => {
   const actionRequest = (id) => {
     const user = getCookie('user')
     axios
-      .post("https://api.connecthome.vn/apartment/request-data", { id: id, user: user })
+      .post("http://localhost:3001/apartment/request-data", { id: id, user: user })
       .then((res) => {
-        console.log(res)
-        mutate("https://api.connecthome.vn/apartment/request");
+        mutate("http://localhost:3001/apartment/request");
+        messageApi.open({
+          type: "success",
+          content: "Đã yêu cầu thành công",
+        });
       })
       .catch((e) => console.log(e));
   };
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("http://localhost:3001/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => console.log(e));
   };
@@ -210,6 +223,7 @@ const ALl = (prop) => {
   return (
     <>
       {/* <Search style={{ marginBottom: 20 }} /> */}
+      {contextHolder}
       <Table
         rowSelection={{
           ...rowSelection,
@@ -219,7 +233,11 @@ const ALl = (prop) => {
         loading={isLoading}
         rowKey={(record) => record._id}
         size="small"
-        indentSize={20}
+        pagination={{
+          defaultPageSize: 20,
+          pageSizeOptions: [20,30, 40, 50],
+          showSizeChanger: true
+        }}
       />
     </>
   );
