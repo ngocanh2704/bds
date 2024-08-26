@@ -63,13 +63,13 @@ const ModalData = (prop) => {
         values.sale_price == undefined  ? values.sale_price = '0' : values.sale_price
         values.rental_price == undefined  ? values.rental_price = '0' : values.rental_price 
 
-        var urlEdit = "https://connecthome.vn/apartment/edit";
-        var urlCreate = "https://connecthome.vn/apartment/create";
+        var urlEdit = "https://api.connecthome.vn/apartment/edit";
+        var urlCreate = "https://api.connecthome.vn/apartment/create";
         axios
           .post(prop.id ? urlEdit : urlCreate, values)
           .then((res) => {
             prop.hideModal();
-            mutate("https://connecthome.vn/apartment");
+            mutate("https://api.connecthome.vn/apartment");
           })
           .catch((e) => console.log(e));
       })
@@ -78,7 +78,7 @@ const ModalData = (prop) => {
 
   const getDataProject = () => {
     axios
-      .get("https://connecthome.vn/project")
+      .get("https://api.connecthome.vn/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -94,7 +94,7 @@ const ModalData = (prop) => {
 
   const getDataAxis = () => {
     axios
-      .get("https://connecthome.vn/axis")
+      .get("https://api.connecthome.vn/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -110,7 +110,7 @@ const ModalData = (prop) => {
 
   const getDataBalcon = () => {
     axios
-      .get("https://connecthome.vn/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -126,7 +126,7 @@ const ModalData = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("https://connecthome.vn/apartment/detail", { id: id })
+      .post("https://api.connecthome.vn/apartment/detail", { id: id })
       .then((res) => {
         console.log(res.data.detail)
         var detail = res.data.detail;
@@ -162,7 +162,7 @@ const ModalData = (prop) => {
 
   const getBuilding = () => {
     axios
-      .get("https://connecthome.vn/building")
+      .get("https://api.connecthome.vn/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -178,7 +178,7 @@ const ModalData = (prop) => {
 
   const getProperty = () => {
     axios
-      .get("https://connecthome.vn/property")
+      .get("https://api.connecthome.vn/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -194,7 +194,7 @@ const ModalData = (prop) => {
 
   const getFurnished = () => {
     axios
-      .get("https://connecthome.vn/furnished")
+      .get("https://api.connecthome.vn/furnished")
       .then((res) => {
         console.log(res)
         var array = [];
