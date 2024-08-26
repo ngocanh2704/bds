@@ -8,7 +8,7 @@ const Sale = (prop) => {
   const [isLoading, setIsLoading] = useState(true);
   const getData = () => {
     axios
-      .get("http://localhost:3001/khosale")
+      .get("https://connecthome.vn/khosale")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };

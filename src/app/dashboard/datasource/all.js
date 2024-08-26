@@ -16,7 +16,7 @@ const ALl = (prop) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/apartment`,
+    `https://connecthome.vn/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -200,9 +200,9 @@ const ALl = (prop) => {
   const actionRequest = (id) => {
     const user = getCookie('user')
     axios
-      .post("http://localhost:3001/apartment/request-data", { id: id, user: user })
+      .post("https://connecthome.vn/apartment/request-data", { id: id, user: user })
       .then((res) => {
-        mutate("http://localhost:3001/apartment/request");
+        mutate("https://connecthome.vn/apartment/request");
         messageApi.open({
           type: "success",
           content: "Đã yêu cầu thành công",
@@ -213,9 +213,9 @@ const ALl = (prop) => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/delete", { id: id })
+      .post("https://connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("http://localhost:3001/apartment");
+        mutate("https://connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };

@@ -20,12 +20,12 @@ const ModalFurnished = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "http://localhost:3001/furnished/create";
-    var urlEdit = "http://localhost:3001/furnished/edit";
+    var urlCreate = "https://connecthome.vn/furnished/create";
+    var urlEdit = "https://connecthome.vn/furnished/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('http://localhost:3001/furnished')
+        mutate('https://connecthome.vn/furnished')
         prop.hideModal();
         prop.isLoading(),
           messageApi.open({
@@ -45,7 +45,7 @@ const ModalFurnished = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("http://localhost:3001/furnished/detail", { id: id })
+      .post("https://connecthome.vn/furnished/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({

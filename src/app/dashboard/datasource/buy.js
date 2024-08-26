@@ -7,7 +7,7 @@ const Buy = (prop) => {
   const [data, setData] = useState([]);
   const getData = () => {
     axios
-      .get("http://localhost:3001/khoretal")
+      .get("https://connecthome.vn/khoretal")
       .then((res) => setData(res.data.data))
       .catch((e) => console.log(e));
   };

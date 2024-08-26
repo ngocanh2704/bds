@@ -54,7 +54,7 @@ const Status = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/status/delete", { id: id })
+      .post("https://connecthome.vn/status/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
@@ -67,7 +67,7 @@ const Status = () => {
   useEffect(() => {
     const getData = () => {
       axios
-        .get("http://localhost:3001/status", {
+        .get("https://connecthome.vn/status", {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('jwt')}`
           }
