@@ -89,11 +89,6 @@ const DataSource = () => {
     },
     {
       key: "2",
-      label: "Của tôi",
-      children: <My />,
-    },
-    {
-      key: "3",
       label: "Kho bán",
       children: (
         <DynamicSale
@@ -108,7 +103,7 @@ const DataSource = () => {
       ),
     },
     {
-      key: "4",
+      key: "3",
       label: "Kho mua",
       children: (
         <DynamicBuy
@@ -123,7 +118,7 @@ const DataSource = () => {
       ),
     },
     {
-      key: "5",
+      key: "4",
       label: "Duyệt yêu cầu số điện thoại",
       children:
         <DynamicRequest
