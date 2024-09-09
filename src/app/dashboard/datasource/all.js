@@ -16,7 +16,7 @@ const ALl = (prop) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/apartment`,
+    `https://connecthome.vn/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -39,8 +39,17 @@ const ALl = (prop) => {
   }, [isLoading]);
 
   const onChangeStatus = (values) => {
-    console.log(values)
-  }
+    axios
+      .post("https://connecthome.vn/apartment/change-status", {
+        id: values._id,
+        status: !values.status,
+      })
+      .then((res) => {
+        console.log(res);
+        mutate("https://connecthome.vn/apartment");
+      })
+      .catch((e) => console.log(e));
+  };
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -137,14 +146,16 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.project.project_name}-{record.area}m<sup>2</sup> - {record.bedrooms}PN - {record.balcony_direction?.balcony_direction_name}
+            - {record.project.project_name}-{record.area}m<sup>2</sup> -{" "}
+            {record.bedrooms}PN -{" "}
+            {record.balcony_direction?.balcony_direction_name}
           </p>
           <p>- {record.properties?.property_name}</p>
-          <p>-  {record.furnished?.furnished_name}</p>
+          <p>- {record.furnished?.furnished_name}</p>
           <p>- {record.notes}</p>
         </>
       ),
-      responsive: ["sm"]
+      responsive: ["sm"],
     },
     {
       title: "Action",
@@ -153,29 +164,36 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-          <Switch defaultChecked={record.status} onClick={()=>onChangeStatus(record)}></Switch>
+            <Switch
+              checked={record.status}
+              onClick={() => onChangeStatus(record)}
+            ></Switch>
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>
-            {record.image[0] == undefined ? <Button
-              type="primary"
-              style={{ backgroundColor: "#bfbfbf" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button> : <Button
-              type="primary"
-              style={{ backgroundColor: "rgb(217 5 255)" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button>}
+            {record.image[0] == undefined ? (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#bfbfbf" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "rgb(217 5 255)" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            )}
 
             {(role == "admin") | (role == "manager") ? (
               <>
@@ -189,7 +207,12 @@ const ALl = (prop) => {
                 >
                   Sửa
                 </Button>
-                <Button type="primary" danger on onClick={() => onDelete(record._id)}>
+                <Button
+                  type="primary"
+                  danger
+                  on
+                  onClick={() => onDelete(record._id)}
+                >
                   Xoá
                 </Button>
               </>
@@ -203,11 +226,14 @@ const ALl = (prop) => {
   ];
 
   const actionRequest = (id) => {
-    const user = getCookie('user')
+    const user = getCookie("user");
     axios
-      .post("http://localhost:3001/apartment/request-data", { id: id, user: user })
+      .post("https://connecthome.vn/apartment/request-data", {
+        id: id,
+        user: user,
+      })
       .then((res) => {
-        mutate("http://localhost:3001/apartment/request");
+        mutate("https://connecthome.vn/apartment/request");
         messageApi.open({
           type: "success",
           content: "Đã yêu cầu thành công",
@@ -218,9 +244,9 @@ const ALl = (prop) => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/delete", { id: id })
+      .post("https://connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("http://localhost:3001/apartment");
+        mutate("https://connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };
@@ -240,8 +266,8 @@ const ALl = (prop) => {
         size="small"
         pagination={{
           defaultPageSize: 20,
-          pageSizeOptions: [20,30, 40, 50],
-          showSizeChanger: true
+          pageSizeOptions: [20, 30, 40, 50],
+          showSizeChanger: true,
         }}
       />
     </>

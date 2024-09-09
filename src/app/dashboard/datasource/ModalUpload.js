@@ -26,13 +26,13 @@ const ModalUpload = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("http://localhost:3001/apartment/detail", { id: id })
+      .post("https://connecthome.vn/apartment/detail", { id: id })
       .then((res) => {
         var detail = res.data.detail.image;
         var arr = [];
         if (detail) {
           detail.forEach((element) => {
-            var item = { url: "http://localhost:3001" + element };
+            var item = { url: "https://connecthome.vn" + element };
             arr.push(item);
           });
         }
@@ -94,20 +94,20 @@ const ModalUpload = (prop) => {
     formData.append("id", prop.id);
     formData.append("file", item.originFileObj);
     axios
-      .post("http://localhost:3001/apartment/upload", formData, config)
+      .post("https://connecthome.vn/apartment/upload", formData, config)
       .then((res) => {
         onSuccess("Ok");
         var arr = []
         // console.log(res.data.image.length)
         if (res.data.image) {
           res.data.image.forEach((element) => {
-            var item2 = { url: "http://localhost:3001" + element };
+            var item2 = { url: "https://connecthome.vn" + element };
             arr.push(item2);
             setFileList([]);
           });
         }
         setFileList(arr);
-    mutate("http://localhost:3001/apartment");
+    mutate("https://connecthome.vn/apartment");
       })
       .catch((e) => {
         onError({ e });
@@ -122,11 +122,11 @@ const ModalUpload = (prop) => {
       var str = item.url;
       str = str.slice(str.search("d/") + 2);
       axios
-        .post("http://localhost:3001/apartment/delete-image", {
+        .post("https://connecthome.vn/apartment/delete-image", {
           id: prop.id,
           name: str,
         })
-        .then((res) => mutate("http://localhost:3001/apartment"))
+        .then((res) => mutate("https://connecthome.vn/apartment"))
         .catch((e) => console.log(e));
     } else {
       messageApi.open({
@@ -135,10 +135,6 @@ const ModalUpload = (prop) => {
       });
     }
   };
-
-  const openFileDialogOnClick = () => {
-    setFileList([])
-  }
 
   return (
     <>
@@ -156,7 +152,6 @@ const ModalUpload = (prop) => {
         <Upload
           listType="picture-card"
           fileList={fileList}
-          openFileDialogOnClick={openFileDialogOnClick}
           beforeUpload={beforeUpload}
           onPreview={handlePreview}
           onChange={handleChange}

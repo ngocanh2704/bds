@@ -19,8 +19,8 @@ const ModalProject = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "http://localhost:3001/project/create";
-    var urlEdit = "http://localhost:3001/project/edit";
+    var urlCreate = "https://connecthome.vn/project/create";
+    var urlEdit = "https://connecthome.vn/project/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -41,7 +41,7 @@ const ModalProject = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("http://localhost:3001/project/detail", { id: id })
+      .post("https://connecthome.vn/project/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           project_name: res.data.data.project_name

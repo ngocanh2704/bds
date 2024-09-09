@@ -1,10 +1,10 @@
 import axios from "axios";
-import { useEffect, useLayoutEffect, useState ,} from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 
-import { Button, Flex, Table , Tag, Switch} from "antd";
+import { Button, Flex, Table, Tag, Switch } from "antd";
 import { getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
-import useSWR from "swr";
+import useSWR, { mutate } from "swr";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -12,20 +12,10 @@ const config = {
 
 const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 const Sale = (prop) => {
-  // const [data, setData] = useState([]);
-  // const [isLoading, setIsLoading] = useState(true);
   const [role, setRole] = useState("");
-  // const getData = () => {
-  //   axios
-  //     .get("http://localhost:3001/apartment/khosale")
-  //     .then((res) => {setData(res.data.data)
-  //       setIsLoading(false)
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/apartment/khosale`,
+    `https://connecthome.vn/apartment/khosale`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -48,6 +38,19 @@ const Sale = (prop) => {
       // Column configuration not to be checked
       name: record.name,
     }),
+  };
+
+  const onChangeStatus = (values) => {
+    axios
+      .post("https://connecthome.vn/apartment/change-status", {
+        id: values._id,
+        status: !values.status,
+      })
+      .then((res) => {
+        console.log(res);
+        mutate("https://connecthome.vn/apartment/khosale");
+      })
+      .catch((e) => console.log(e));
   };
 
   const spliceString = (text) => {
@@ -138,14 +141,16 @@ const Sale = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.project.project_name}-{record.area}m<sup>2</sup> - {record.bedrooms}PN - {record.balcony_direction?.balcony_direction_name}
+            - {record.project.project_name}-{record.area}m<sup>2</sup> -{" "}
+            {record.bedrooms}PN -{" "}
+            {record.balcony_direction?.balcony_direction_name}
           </p>
           <p>- {record.properties?.property_name}</p>
-          <p>-  {record.furnished?.furnished_name}</p>
+          <p>- {record.furnished?.furnished_name}</p>
           <p>- {record.notes}</p>
         </>
       ),
-      responsive: ["sm"]
+      responsive: ["sm"],
     },
     {
       title: "Action",
@@ -154,29 +159,36 @@ const Sale = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-          <Switch defaultChecked={record.status} onClick={()=>onChangeStatus(record)}></Switch>
+            <Switch
+              checked={record.status}
+              onClick={() => onChangeStatus(record)}
+            ></Switch>
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>
-            {record.image[0] == undefined ? <Button
-              type="primary"
-              style={{ backgroundColor: "#bfbfbf" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button> : <Button
-              type="primary"
-              style={{ backgroundColor: "rgb(217 5 255)" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button>}
+            {record.image[0] == undefined ? (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#bfbfbf" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            ) : (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "rgb(217 5 255)" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
+            )}
 
             {(role == "admin") | (role == "manager") ? (
               <>
@@ -190,7 +202,12 @@ const Sale = (prop) => {
                 >
                   Sửa
                 </Button>
-                <Button type="primary" danger on onClick={() => onDelete(record._id)}>
+                <Button
+                  type="primary"
+                  danger
+                  on
+                  onClick={() => onDelete(record._id)}
+                >
                   Xoá
                 </Button>
               </>
@@ -205,9 +222,9 @@ const Sale = (prop) => {
 
   return (
     <Table
-    rowSelection={{
-      ...rowSelection,
-    }}
+      rowSelection={{
+        ...rowSelection,
+      }}
       columns={columns}
       dataSource={data?.data}
       size="small"
