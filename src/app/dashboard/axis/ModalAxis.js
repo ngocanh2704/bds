@@ -20,12 +20,12 @@ const ModalAxis = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://connecthome.vn/axis/create";
-    var urlEdit = "https://connecthome.vn/axis/edit";
+    var urlCreate = "https://api.connecthome.vn/axis/create";
+    var urlEdit = "https://api.connecthome.vn/axis/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('https://connecthome.vn/axis')
+        mutate('https://api.connecthome.vn/axis')
         prop.hideModal();
         prop.isLoading(),
           messageApi.open({
@@ -45,7 +45,7 @@ const ModalAxis = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://connecthome.vn/axis/detail", { id: id })
+      .post("https://api.connecthome.vn/axis/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({

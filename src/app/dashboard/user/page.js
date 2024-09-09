@@ -20,7 +20,7 @@ const User = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    "https://connecthome.vn/user",
+    "https://api.connecthome.vn/user",
     fetcher,
     {
       revalidateIfStale: false,
@@ -98,12 +98,12 @@ const User = () => {
   };
 
   const onDelete = (id) => {
-    axios.post("https://connecthome.vn/user/delete", { id: id }).then((res) => {
+    axios.post("https://api.connecthome.vn/user/delete", { id: id }).then((res) => {
       messageApi.open({
         type: "success",
         content: res.data.message,
       });
-      mutate("https://connecthome.vn/user");
+      mutate("https://api.connecthome.vn/user");
     });
   };
 

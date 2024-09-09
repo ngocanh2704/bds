@@ -24,8 +24,8 @@ const ModalUser = (prop) => {
       ? values.employee_ID
       : data[0]?.value;
     values.id = prop.id
-    var urlCreate = "https://connecthome.vn/user/register";
-    var urlEdit = "https://connecthome.vn/user/edit";
+    var urlCreate = "https://api.connecthome.vn/user/register";
+    var urlEdit = "https://api.connecthome.vn/user/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
@@ -34,7 +34,7 @@ const ModalUser = (prop) => {
           type: "success",
           content: res.data.message,
         });
-        mutate("https://connecthome.vn/user")
+        mutate("https://api.connecthome.vn/user")
       })
       .catch((e) => {
         console.log(e)
@@ -44,7 +44,7 @@ const ModalUser = (prop) => {
   const getDetailUser = (id) => {
     form.resetFields()
     axios
-      .post("https://connecthome.vn/user/detail", { id: id })
+      .post("https://api.connecthome.vn/user/detail", { id: id })
       .then((res) => {
         form.setFieldsValue({
           username: res.data.user.username,

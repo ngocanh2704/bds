@@ -17,7 +17,7 @@ const Approve = (prop) => {
   const [isLoading, setIsLoading] = useState(false);
 
   // const { data, error, isLoading } = useSWR(
-  //   (role == 'admin' | role == 'manager') ? `https://connecthome.vn/apartment/approve` : 'https://connecthome.vn/apartment/approve-user',
+  //   (role == 'admin' | role == 'manager') ? `https://api.connecthome.vn/apartment/approve` : 'https://api.connecthome.vn/apartment/approve-user',
   //   fetcher,
   //   {
   //     revalidateIfStale: false,
@@ -28,7 +28,7 @@ const Approve = (prop) => {
 
   const getData = () => {
     axios
-      .post("https://connecthome.vn/apartment/approve-user", {
+      .post("https://api.connecthome.vn/apartment/approve-user", {
         user: getCookie("user"),
         role: getCookie("role"),
       })
@@ -196,9 +196,9 @@ const Approve = (prop) => {
 
   const onDelete = (id) => {
     axios
-      .post("https://connecthome.vn/delete", { id: id })
+      .post("https://api.connecthome.vn/delete", { id: id })
       .then((res) => {
-        mutate("https://connecthome.vn/apartment");
+        mutate("https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };

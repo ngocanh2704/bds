@@ -128,18 +128,18 @@ const Employee = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://connecthome.vn/employee/delete", { id: id })
+      .post("https://api.connecthome.vn/employee/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
           content: res.data.message,
         }),
-          mutate("https://connecthome.vn/employee");
+          mutate("https://api.connecthome.vn/employee");
       });
   };
 
   const { data, error, isLoading } = useSWR(
-    `https://connecthome.vn/employee`,
+    `https://api.connecthome.vn/employee`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -156,7 +156,7 @@ const Employee = () => {
     } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("https://connecthome.vn/employee");
+        mutate("https://api.connecthome.vn/employee");
         redirect("/login");
       }
     }
