@@ -82,7 +82,7 @@ const Employee = () => {
       render: (_, { cccd_image }) => (
         <>
           <Image
-            src={"https://api.connecthome.vn" + cccd_image}
+            src={"http://localhost:3001" + cccd_image}
             style={{ width: 150, height: 80 }}
             alt="..."
           />
@@ -128,18 +128,18 @@ const Employee = () => {
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/employee/delete", { id: id })
+      .post("http://localhost:3001/employee/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
           content: res.data.message,
         }),
-          mutate("https://api.connecthome.vn/employee");
+          mutate("http://localhost:3001/employee");
       });
   };
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/employee`,
+    `http://localhost:3001/employee`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -156,7 +156,7 @@ const Employee = () => {
     } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("https://api.connecthome.vn/employee");
+        mutate("http://localhost:3001/employee");
         redirect("/login");
       }
     }
@@ -198,7 +198,13 @@ const Employee = () => {
         id={id}
         isLoading={() => changeLoading()}
       />
-      <Table columns={columns} dataSource={data?.data} loading={isLoading} size="small" />
+      <Table columns={columns} dataSource={data?.data} loading={isLoading} size="small" 
+       pagination={{
+        defaultPageSize: 20,
+        pageSizeOptions: [20,30, 40, 50],
+        showSizeChanger: true
+      }}
+      />
     </div>
   );
 };

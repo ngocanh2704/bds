@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { Button, Flex, Table, Input, Form, Space, Tag, message } from "antd";
+import { Button, Flex, Table, Switch, Form, Space, Tag, message } from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
@@ -16,7 +16,7 @@ const ALl = (prop) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment`,
+    `http://localhost:3001/apartment`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -37,6 +37,10 @@ const ALl = (prop) => {
       }
     }
   }, [isLoading]);
+
+  const onChangeStatus = (values) => {
+    console.log(values)
+  }
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -149,6 +153,7 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
+          <Switch defaultChecked={record.status} onClick={()=>onChangeStatus(record)}></Switch>
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>
@@ -200,9 +205,9 @@ const ALl = (prop) => {
   const actionRequest = (id) => {
     const user = getCookie('user')
     axios
-      .post("https://api.connecthome.vn/apartment/request-data", { id: id, user: user })
+      .post("http://localhost:3001/apartment/request-data", { id: id, user: user })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment/request");
+        mutate("http://localhost:3001/apartment/request");
         messageApi.open({
           type: "success",
           content: "Đã yêu cầu thành công",
@@ -213,9 +218,9 @@ const ALl = (prop) => {
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("http://localhost:3001/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => console.log(e));
   };

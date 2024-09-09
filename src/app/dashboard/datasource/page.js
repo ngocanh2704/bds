@@ -62,11 +62,15 @@ const DataSource = () => {
 
   const onChange = (key) => {
     setKey(key)
-    if (key == '5') {
-      mutate("https://api.connecthome.vn/apartment/request");
-    } else if (key == '6') {
-      mutate("https://api.connecthome.vn/apartment/approve");
+    // if (key == '5') {
+    //   mutate("http://localhost:3001/apartment/request");
+    // } else if (key == '6') {
+    //   mutate("http://localhost:3001/apartment/approve");
+    // }
+    const checkKey = {
+      '2': mutate('http://localhost:3001/apartment/khosale')
     }
+    checkKey(key)
   };
   const changeId = (id) => {
     setId(id);
@@ -93,7 +97,7 @@ const DataSource = () => {
       children: (
         <DynamicSale
           changeOn={() => changeOn()}
-          data={dataAll}
+          data={key}
           changeOpen={() => changeOpen()}
           changeId={(id) => changeId(id)}
           onDelete={() => onDelete(id)}
@@ -104,7 +108,7 @@ const DataSource = () => {
     },
     {
       key: "3",
-      label: "Kho mua",
+      label: "Kho Thuê",
       children: (
         <DynamicBuy
           changeOn={() => changeOn()}
@@ -156,13 +160,13 @@ const DataSource = () => {
 
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://api.connecthome.vn/apartment/request-data", { id: item, user: getCookie('user') })
+        .post("http://localhost:3001/apartment/request-data", { id: item, user: getCookie('user') })
         .then((res) => {
           console.log(res)
         })
         .catch((e) => console.log(e));
     });
-    mutate("https://api.connecthome.vn/apartment/request");
+    mutate("http://localhost:3001/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã yêu cầu thành công",
@@ -172,9 +176,9 @@ const DataSource = () => {
   const onClickXoaDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://api.connecthome.vn/delete", { id: item })
+        .post("http://localhost:3001/delete", { id: item })
         .then((res) => {
-          mutate("https://api.connecthome.vn/apartment");
+          mutate("http://localhost:3001/apartment");
         })
         .catch((e) => console.log(e));
     });
@@ -187,12 +191,12 @@ const DataSource = () => {
   const onClickDuyetDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://api.connecthome.vn/apartment/approve-data", { id: item })
+        .post("http://localhost:3001/apartment/approve-data", { id: item })
         .then((res) => {
         })
         .catch((e) => console.log(e));
     });
-    mutate("https://api.connecthome.vn/apartment/request");
+    mutate("http://localhost:3001/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã duyệt thành công",
@@ -201,7 +205,7 @@ const DataSource = () => {
 
   const getProject = () => {
     axios
-      .get("https://api.connecthome.vn/project")
+      .get("http://localhost:3001/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -217,7 +221,7 @@ const DataSource = () => {
 
   const getBuilding = () => {
     axios
-      .get("https://api.connecthome.vn/building")
+      .get("http://localhost:3001/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -233,7 +237,7 @@ const DataSource = () => {
 
   const getProperty = () => {
     axios
-      .get("https://api.connecthome.vn/property")
+      .get("http://localhost:3001/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -249,7 +253,7 @@ const DataSource = () => {
 
   const getBalconyDirection = () => {
     axios
-      .get("https://api.connecthome.vn/balconyDirection")
+      .get("http://localhost:3001/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -265,7 +269,7 @@ const DataSource = () => {
 
   const getAxis = () => {
     axios
-      .get("https://api.connecthome.vn/axis")
+      .get("http://localhost:3001/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -290,7 +294,7 @@ const DataSource = () => {
 
   const onFinish = (values) => {
     axios
-      .post("https://api.connecthome.vn/apartment/search", values)
+      .post("http://localhost:3001/apartment/search", values)
       .then((res) => console.log(res))
       .catch((e) => console.log(e));
   };

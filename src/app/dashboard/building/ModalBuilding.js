@@ -15,12 +15,12 @@ const ModalBuilding = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     values.id = prop.id;
-    var urlCreate = "https://api.connecthome.vn/building/create";
-    var urlEdit = "https://api.connecthome.vn/building/edit";
+    var urlCreate = "http://localhost:3001/building/create";
+    var urlEdit = "http://localhost:3001/building/edit";
     axios
       .post(prop.id ? urlEdit : urlCreate, values)
       .then((res) => {
-        mutate('https://api.connecthome.vn/building')
+        mutate('http://localhost:3001/building')
         prop.hideModal();
         messageApi.open({
           type: "success",
@@ -39,7 +39,7 @@ const ModalBuilding = (prop) => {
 
   const getDetailProject = (id) => {
     axios
-      .post("https://api.connecthome.vn/building/detail", { id: id })
+      .post("http://localhost:3001/building/detail", { id: id })
       .then((res) => {
         console.log(res)
         form.setFieldsValue({

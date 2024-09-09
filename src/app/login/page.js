@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 
-import { Button, Form, Grid, Input, Spin, theme, Typography } from "antd";
+import {message, Button, Form, Grid, Input, Spin, theme, Typography } from "antd";
 
 import { LockOutlined, MailOutlined } from "@ant-design/icons";
 import { redirect, useRouter } from "next/navigation";
@@ -18,11 +18,12 @@ export default function App() {
   const { token } = useToken();
   const screens = useBreakpoint();
   const [isLoading, setIsLoading] = useState(false);
+  const [messageApi, contextHolder] = message.useMessage();
   const { push } = useRouter()
   const onFinish = async (values) => {
     setIsLoading(true);
     await axios
-      .post("https://api.connecthome.vn/login", values)
+      .post("http://localhost:3001/login", values)
       .then((res) => {
         setCookie("token", res.data.accessToken),
           setCookie("user", res.data.user._id),
@@ -32,7 +33,11 @@ export default function App() {
           setIsLoading(false)
       })
       .catch((e) => {
-        console.log(e);
+        messageApi.open({
+          type: "error",
+          content: e.response.data,
+        });
+        setIsLoading(false)
       });
   };
 
@@ -72,6 +77,7 @@ export default function App() {
 
   return (
     <AntdRegistry>
+      {contextHolder}
       <section style={styles.section}>
         <div style={styles.container}>
           <div style={styles.header}>
