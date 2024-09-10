@@ -1,10 +1,11 @@
 "use client";
-import { Modal, Upload, Image, message } from "antd";
+import { Modal, Upload, Image, message, Button } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { mutate } from "swr";
 import { getCookie } from "cookies-next";
+import { saveAs } from "file-saver";
 
 const getBase64 = (file) =>
   new Promise((resolve, reject) => {
@@ -50,12 +51,53 @@ const ModalUpload = (prop) => {
   };
   // const handleChange = ({fileList: newFileList}) =>setFileList(newFileList);
   const handleChange = ({ fileList }) => {
-    setFileList(fileList)};
+    setFileList(fileList);
+  };
 
- const beforeUpload = (file) => {
-    setFileList([...fileList, file]); 
-    return true;
-  }
+  const beforeUpload = (file) => {
+    setFileList([...fileList, file]);
+    return false;
+  };
+
+  const handleUpload = () => {
+    const config = {
+      headers: { "content-type": "multipart/form-data" },
+    };
+    // fileList.forEach((item) => {
+
+    // });
+    var arr = [];
+    var formData = new FormData();
+    console.log(fileList)
+    if (fileList.length > 0) {
+      fileList.forEach((item) => {
+        if(item.originFileObj){
+          formData.append("files", item.originFileObj)
+        }
+      });
+      formData.append("id", prop.id);
+      axios
+        .post("https://api.connecthome.vn/apartment/upload", formData, config)
+        .then((res) => {
+          // var arr = [];
+          // console.log(res.data.image.length)
+          // if (res.data.image) {
+          //   res.data.image.forEach((element) => {
+          //     var item2 = { url: "https://api.connecthome.vn" + element };
+          //     arr.push(item2);
+          //     setFileList([]);
+          //   });
+          // }
+          // setFileList(arr);
+          mutate("https://api.connecthome.vn/apartment");
+        })
+        .catch((e) => {
+          console.log(e);
+        });
+    }
+    prop.hideModal();
+
+  };
 
   const uploadButton = (
     <button
@@ -76,46 +118,46 @@ const ModalUpload = (prop) => {
     </button>
   );
 
-  const customRequest = async (options) => {
-    const { onSuccess, onError, file, onProgress } = options;
-    const config = {
-      headers: { "content-type": "multipart/form-data" },
-      onUploadProgress: (event) => {
-        const percent = Math.floor((event.loaded / event.total) * 100);
-        setProgress(percent);
-        if (percent === 100) {
-          setTimeout(() => setProgress(0), 1000);
-        }
-        onProgress({ percent: (event.loaded / event.total) * 100 });
-      },
-    };
-    fileList.forEach(item=>{
-    var formData = new FormData();
-    formData.append("id", prop.id);
-    formData.append("file", item.originFileObj);
-    axios
-      .post("https://api.connecthome.vn/apartment/upload", formData, config)
-      .then((res) => {
-        onSuccess("Ok");
-        var arr = []
-        // console.log(res.data.image.length)
-        if (res.data.image) {
-          res.data.image.forEach((element) => {
-            var item2 = { url: "https://connecthome.vn" + element };
-            arr.push(item2);
-            setFileList([]);
-          });
-        }
-        setFileList(arr);
-    mutate("https://api.connecthome.vn/apartment");
-      })
-      .catch((e) => {
-        onError({ e });
-        console.log(e);
-      });
-// console.log()
-    })
-  };
+  //   const customRequest = async (options) => {
+  //     const { onSuccess, onError, file, onProgress } = options;
+  //     const config = {
+  //       headers: { "content-type": "multipart/form-data" },
+  //       onUploadProgress: (event) => {
+  //         const percent = Math.floor((event.loaded / event.total) * 100);
+  //         setProgress(percent);
+  //         if (percent === 100) {
+  //           setTimeout(() => setProgress(0), 1000);
+  //         }
+  //         onProgress({ percent: (event.loaded / event.total) * 100 });
+  //       },
+  //     };
+  //     fileList.forEach(item=>{
+  //     var formData = new FormData();
+  //     formData.append("id", prop.id);
+  //     formData.append("file", item.originFileObj);
+  //     axios
+  //       .post("https://api.connecthome.vn/apartment/upload", formData, config)
+  //       .then((res) => {
+  //         onSuccess("Ok");
+  //         var arr = []
+  //         // console.log(res.data.image.length)
+  //         if (res.data.image) {
+  //           res.data.image.forEach((element) => {
+  //             var item2 = { url: "https://api.connecthome.vn" + element };
+  //             arr.push(item2);
+  //             setFileList([]);
+  //           });
+  //         }
+  //         setFileList(arr);
+  //     mutate("https://api.connecthome.vn/apartment");
+  //       })
+  //       .catch((e) => {
+  //         onError({ e });
+  //         console.log(e);
+  //       });
+  // // console.log()
+  //     })
+  //   };
 
   const onRemove = (item) => {
     if (getCookie("role") != "staff") {
@@ -136,6 +178,18 @@ const ModalUpload = (prop) => {
     }
   };
 
+  const sleep = (ms) => new Promise((res) => setTimeout(res, ms));
+
+  const downloadImage = async () => {
+    fileList.forEach(async item => {
+      const nameSplit = item.url.split('/')
+      const duplicateName = nameSplit.pop()
+      saveAs(item.url,duplicateName)
+      await sleep(1000);
+    })
+    prop.hideModal()
+  }
+
   return (
     <>
       {contextHolder}
@@ -143,11 +197,20 @@ const ModalUpload = (prop) => {
         title="Thêm hình ảnh"
         open={prop.open}
         onCancel={prop.hideModal}
+        cancelText={'Huỷ'}
         onClose={prop.hideModal}
-        onOk={prop.hideModal}
+        onOk={handleUpload}
+        okText={'Lưu'}
         width={700}
         afterOpenChange={afterOpenChange}
         keyboard={true}
+        footer={(_, { OkBtn, CancelBtn }) => (
+          <>
+            <Button onClick={() => downloadImage() }>Tải hình ảnh</Button>
+            <CancelBtn />
+            <OkBtn />
+          </>
+        )}
       >
         <Upload
           listType="picture-card"
@@ -155,11 +218,11 @@ const ModalUpload = (prop) => {
           beforeUpload={beforeUpload}
           onPreview={handlePreview}
           onChange={handleChange}
-          customRequest={customRequest}
+          // customRequest={customRequest}
           onRemove={onRemove}
           multiple
         >
-          {fileList.length >= 10 ? null : uploadButton}
+          {fileList.length >= 20 ? null : uploadButton}
         </Upload>
         {previewImage && (
           <Image
