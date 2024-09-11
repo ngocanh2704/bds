@@ -14,6 +14,7 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 const ALl = (prop) => {
   const [role, setRole] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+  const [dataAll, setDataAll] = useState([])
 
   const { data, error, isLoading } = useSWR(
     `https://api.connecthome.vn/apartment`,
@@ -146,7 +147,7 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.project.project_name}-{record.area}m<sup>2</sup> -{" "}
+            - {record.project?.project_name}-{record.area}m<sup>2</sup> -{" "}
             {record.bedrooms}PN -{" "}
             {record.balcony_direction?.balcony_direction_name}
           </p>
@@ -171,7 +172,7 @@ const ALl = (prop) => {
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>
-            {record.image[0] == undefined ? (
+            {record.image.length == 0 ? (
               <Button
                 type="primary"
                 style={{ backgroundColor: "#bfbfbf" }}
@@ -251,6 +252,8 @@ const ALl = (prop) => {
       .catch((e) => console.log(e));
   };
 
+  console.log(prop.search)
+
   return (
     <>
       {/* <Search style={{ marginBottom: 20 }} /> */}
@@ -260,7 +263,7 @@ const ALl = (prop) => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={data?.data}
+        dataSource={prop.search.length == 0 ? data?.data : prop.search}
         loading={isLoading}
         rowKey={(record) => record._id}
         size="small"

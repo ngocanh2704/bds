@@ -72,7 +72,14 @@ const ModalData = (prop) => {
             mutate("https://api.connecthome.vn/apartment");
             mutate("https://api.connecthome.vn/apartment/khosale");
           })
-          .catch((e) => console.log(e));
+          .catch((e) => {
+            if(!prop.id){
+              messageApi.open({
+                type: 'error',
+                content: 'Căn hộ đã tồn tại',
+              });
+            }
+          });
       })
       .catch((e) => console.log(e));
   };

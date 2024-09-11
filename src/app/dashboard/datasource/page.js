@@ -47,6 +47,8 @@ const DataSource = () => {
   const [itemsYeuCau, setItemsYeuCau] = useState([]);
   const [messageApi, contextHolder] = message.useMessage();
   const [role, setRole] = useState("");
+  const [furnished, setFurnished] = useState([]);
+  const [dataSearch, setDataSearch] = useState([]);
 
   const changeOpen = () => {
     setOpen(!open);
@@ -62,15 +64,10 @@ const DataSource = () => {
 
   const onChange = (key) => {
     setKey(key);
-    // if (key == '5') {
-    //   mutate("https://api.connecthome.vn/apartment/request");
-    // } else if (key == '6') {
-    //   mutate("https://api.connecthome.vn/apartment/approve");
-    // }
     const checkKey = {
       1: mutate("httpe//localhost:3001/apartment"),
       2: mutate("https://api.connecthome.vn/apartment/khosale"),
-      3: mutate('https://api.connecthome.vn/apartment/khomua')
+      3: mutate("https://api.connecthome.vn/apartment/khomua"),
     };
     checkKey(key);
   };
@@ -90,6 +87,7 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
+          search={dataSearch}
         />
       ),
     },
@@ -287,19 +285,36 @@ const DataSource = () => {
       .catch((e) => console.log(e));
   };
 
+  const getFurnished = () => {
+    axios
+      .get("https://api.connecthome.vn/furnished")
+      .then((res) => {
+        var array = [];
+        res.data.data.forEach((item) => {
+          array.push({
+            value: item._id,
+            label: item.furnished_name,
+          });
+        });
+        setFurnished(array);
+      })
+      .catch((e) => console.log(e));
+  };
+
   useEffect(() => {
     getProject();
     getBuilding();
     getProperty();
     getBalconyDirection();
     getAxis();
+    getFurnished();
     setRole(getCookie("role"));
   }, []);
 
   const onFinish = (values) => {
     axios
       .post("https://api.connecthome.vn/apartment/search", values)
-      .then((res) => console.log(res))
+      .then((res) => setDataSearch(res.data.data))
       .catch((e) => console.log(e));
   };
 
@@ -322,9 +337,6 @@ const DataSource = () => {
         {(role == "admin") | (role == "manager") ? (
           <>
             <Button onClick={onClickDuyetDongLoat}>Duyệt đồng loạt</Button>
-            <Button type="primary" danger onClick={onClickXoaDongLoat}>
-              Xoá đồng loạt
-            </Button>
           </>
         ) : (
           ""
@@ -350,10 +362,7 @@ const DataSource = () => {
         <Form.Item name={"furnished"}>
           <Select
             style={{ width: 150 }}
-            options={[
-              { value: true, label: "Full nội thất" },
-              { value: false, label: "Cơ bản" },
-            ]}
+            options={furnished}
             placeholder="Chọn nội thất"
           ></Select>
         </Form.Item>
@@ -395,6 +404,9 @@ const DataSource = () => {
           <Button type="primary" htmlType="submit">
             <SearchOutlined />
           </Button>
+        </Form.Item>
+        <Form.Item>
+        <Button htmlType="reset" onClick={()=>setDataSearch([])}>reset</Button>
         </Form.Item>
       </Form>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
