@@ -252,8 +252,6 @@ const ALl = (prop) => {
       .catch((e) => console.log(e));
   };
 
-  console.log(prop.search)
-
   return (
     <>
       {/* <Search style={{ marginBottom: 20 }} /> */}

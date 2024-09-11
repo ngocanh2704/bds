@@ -314,7 +314,15 @@ const DataSource = () => {
   const onFinish = (values) => {
     axios
       .post("https://api.connecthome.vn/apartment/search", values)
-      .then((res) => setDataSearch(res.data.data))
+      .then((res) => {
+        if(res.data.data.length == 0){
+          messageApi.open({
+            type: "warning",
+            content: "Không có căn hộ.",
+          });
+        } else {
+          setDataSearch(res.data.data)}
+        })
       .catch((e) => console.log(e));
   };
 
