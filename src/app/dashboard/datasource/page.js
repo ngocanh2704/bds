@@ -6,6 +6,7 @@ import {
   Flex,
   Form,
   Input,
+  InputNumber,
   message,
   Row,
   Select,
@@ -315,14 +316,15 @@ const DataSource = () => {
     axios
       .post("https://api.connecthome.vn/apartment/search", values)
       .then((res) => {
-        if(res.data.data.length == 0){
+        if (res.data.data.length == 0) {
           messageApi.open({
             type: "warning",
             content: "Không có căn hộ.",
           });
         } else {
-          setDataSearch(res.data.data)}
-        })
+          setDataSearch(res.data.data);
+        }
+      })
       .catch((e) => console.log(e));
   };
 
@@ -403,18 +405,38 @@ const DataSource = () => {
         </Form.Item>
         <Form.Item name="axis_id">
           <Select
-            style={{ width: 150 }}
+            style={{ width: 100 }}
             options={axis}
             placeholder="Trục căn"
           ></Select>
         </Form.Item>
+        {(key == 2) | (key == 3) ? (
+          <>
+            <Form.Item initialValue={0}>
+              <InputNumber placeholder="Giá từ" style={{width: 120}}  formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    }
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}/>
+            </Form.Item>
+            <Form.Item initialValue={0}>
+            <InputNumber placeholder="Đến giá" style={{width: 120}} formatter={(value) =>
+                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                    }
+                    parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}/>
+            </Form.Item>
+          </>
+        ) : (
+          ""
+        )}
         <Form.Item>
           <Button type="primary" htmlType="submit">
             <SearchOutlined />
           </Button>
         </Form.Item>
         <Form.Item>
-        <Button htmlType="reset" onClick={()=>setDataSearch([])}>reset</Button>
+          <Button htmlType="reset" onClick={() => setDataSearch([])}>
+            reset
+          </Button>
         </Form.Item>
       </Form>
       <Tabs defaultActiveKey="1" items={items} onChange={onChange} />

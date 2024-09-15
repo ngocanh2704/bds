@@ -245,7 +245,7 @@ const ALl = (prop) => {
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("https://api.connecthome.vn/apartment/delete", { id: id })
       .then((res) => {
         mutate("https://api.connecthome.vn/apartment");
       })
