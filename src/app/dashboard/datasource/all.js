@@ -14,7 +14,17 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 const ALl = (prop) => {
   const [role, setRole] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const [dataAll, setDataAll] = useState([])
+  const [dataAll, setDataAll] = useState([]);
+  const [form] = Form.useForm();
+
+  // useEffect(()=>{
+  //   prop.search.length == 0 ? setDataAll(data) : setDataAll(prop.search)
+  // },[prop.search])
+
+  const handleDelete = (key) => {
+    const newData = dataAll.filter((item) => item.key !== key);
+    setDataAll(newData);
+  };
 
   const { data, error, isLoading } = useSWR(
     `https://api.connecthome.vn/apartment`,
@@ -80,13 +90,6 @@ const ALl = (prop) => {
   const columns = [
     {
       title: "STT",
-      dataIndex: "_id",
-      key: "_id",
-      render: (text, record, index) => {
-        return <>{index + 1}</>;
-      },
-    },
-    {
       title: "Căn hộ",
       dataIndex: "_id",
       key: "_id",
@@ -167,7 +170,9 @@ const ALl = (prop) => {
           <Flex gap="small" wrap>
             <Switch
               checked={record.status}
-              onClick={() => onChangeStatus(record)}
+              onClick={() => {
+                onChangeStatus(record);
+              }}
             ></Switch>
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
@@ -212,7 +217,9 @@ const ALl = (prop) => {
                   type="primary"
                   danger
                   on
-                  onClick={() => onDelete(record._id)}
+                  onClick={() => {
+                    onDelete(record._id)
+                  }}
                 >
                   Xoá
                 </Button>

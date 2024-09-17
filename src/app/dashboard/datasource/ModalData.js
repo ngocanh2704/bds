@@ -34,7 +34,10 @@ const ModalData = (prop) => {
 
   const onFinish = async () => {
     var values = form.getFieldsValue();
-    // const checkStatus = dataStatus.find(x => x.value === values.status)
+    var axisName =  (dataAxis.find(item => item.value == values.axis))
+    var buildingName = building.find(item => item.value == values.building)
+    var apartment_name = (buildingName.label + values.floor + axisName.label )
+   values.apartment_name = (apartment_name)
     form
       .validateFields()
       .then((res) => {
