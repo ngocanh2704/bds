@@ -63,12 +63,8 @@ const ModalUpload = (prop) => {
     const config = {
       headers: { "content-type": "multipart/form-data" },
     };
-    // fileList.forEach((item) => {
-
-    // });
     var arr = [];
     var formData = new FormData();
-    console.log(fileList)
     if (fileList.length > 0) {
       fileList.forEach((item) => {
         if(item.originFileObj){
@@ -79,16 +75,6 @@ const ModalUpload = (prop) => {
       axios
         .post("https://api.connecthome.vn/apartment/upload", formData, config)
         .then((res) => {
-          // var arr = [];
-          // console.log(res.data.image.length)
-          // if (res.data.image) {
-          //   res.data.image.forEach((element) => {
-          //     var item2 = { url: "https://api.connecthome.vn" + element };
-          //     arr.push(item2);
-          //     setFileList([]);
-          //   });
-          // }
-          // setFileList(arr);
           mutate("https://api.connecthome.vn/apartment");
         })
         .catch((e) => {

@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import * as XLSX from 'xlsx';
 import {
   Button,
   Col,
@@ -11,6 +12,7 @@ import {
   Row,
   Select,
   Tabs,
+  Upload,
 } from "antd";
 import My from "./my";
 import Sale from "./sale";
@@ -328,6 +330,24 @@ const DataSource = () => {
       .catch((e) => console.log(e));
   };
 
+  const uploadExcel = async (options) => {
+    const { onSuccess, onError, file, onProgress } = options;
+    var formData = new FormData();
+    formData.append("file", file);
+    axios
+      .post("https://api.connecthome.vn/apartment/import-excel", formData)
+      .then((res) => {
+        console.log(res.data.arrResult);
+        var ws = XLSX.utils.json_to_sheet(res.data.arrResult);
+        /* create workbook and export */
+        var wb = XLSX.utils.book_new();
+        XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+        XLSX.writeFile(wb, "result.xlsx");
+        mutate("https://api.connecthome.vn/apartment");
+      })
+      .catch((e) => console.log(e));
+  };
+
   return (
     <>
       {contextHolder}
@@ -351,6 +371,13 @@ const DataSource = () => {
         ) : (
           ""
         )}
+        <Upload
+          type="select"
+          showUploadList={false}
+          customRequest={uploadExcel}
+        >
+          <Button>Nhập dữ liệu excel</Button>
+        </Upload>
       </Flex>
       <ModalUpload open={on} hideModal={() => changeOn()} id={id} />
       <DynamicModalData open={open} hideModal={() => changeOpen()} id={id} />
@@ -413,16 +440,24 @@ const DataSource = () => {
         {(key == 2) | (key == 3) ? (
           <>
             <Form.Item initialValue={0}>
-              <InputNumber placeholder="Giá từ" style={{width: 120}}  formatter={(value) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                    }
-                    parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}/>
+              <InputNumber
+                placeholder="Giá từ"
+                style={{ width: 120 }}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+              />
             </Form.Item>
             <Form.Item initialValue={0}>
-            <InputNumber placeholder="Đến giá" style={{width: 120}} formatter={(value) =>
-                      `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                    }
-                    parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}/>
+              <InputNumber
+                placeholder="Đến giá"
+                style={{ width: 120 }}
+                formatter={(value) =>
+                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+                }
+                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+              />
             </Form.Item>
           </>
         ) : (
