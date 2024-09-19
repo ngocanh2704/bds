@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import * as XLSX from 'xlsx';
+import * as XLSX from "xlsx";
 import {
   Button,
   Col,
@@ -337,7 +337,6 @@ const DataSource = () => {
     axios
       .post("https://api.connecthome.vn/apartment/import-excel", formData)
       .then((res) => {
-        console.log(res.data.arrResult);
         var ws = XLSX.utils.json_to_sheet(res.data.arrResult);
         /* create workbook and export */
         var wb = XLSX.utils.book_new();
@@ -345,7 +344,14 @@ const DataSource = () => {
         XLSX.writeFile(wb, "result.xlsx");
         mutate("https://api.connecthome.vn/apartment");
       })
-      .catch((e) => console.log(e));
+      .catch((e) => {
+        messageApi.open({
+          type: "error",
+          content: e.response.data.message,
+          duration: 5
+        });
+        mutate("https://api.connecthome.vn/apartment");
+      });
   };
 
   return (
