@@ -26,7 +26,7 @@ const ALl = (prop) => {
   const handleDelete = (id) => {
     setIsLoading(true)
     axios
-      .post("http://localhost:3001/apartment/delete", { id: id })
+      .post("https://api.connecthome.vn/apartment/delete", { id: id })
       .then((res) => {
         const newData = data.filter((item) => item._id !== id);
         setData(newData);
@@ -36,7 +36,7 @@ const ALl = (prop) => {
   };
 
   // const { data, error, isLoading } = useSWR(
-  //   `http://localhost:3001/apartment`,
+  //   `https://api.connecthome.vn/apartment`,
   //   fetcher,
   //   {
   //     revalidateIfStale: false,
@@ -46,7 +46,7 @@ const ALl = (prop) => {
   // );
 
   const getAllData = () => {
-    axios.get('http://localhost:3001/apartment').then(res => {
+    axios.get('https://api.connecthome.vn/apartment').then(res => {
       setData(res.data.data)
       setIsLoading(false)
     }).catch(e => console.log(e))
@@ -69,12 +69,12 @@ const ALl = (prop) => {
   const onChangeStatus = (values) => {
     setIsLoading(true)
     axios
-      .post("http://localhost:3001/apartment/change-status", {
+      .post("https://api.connecthome.vn/apartment/change-status", {
         id: values._id,
         status: !values.status,
       })
       .then((res) => {
-        // mutate("http://localhost:3001/apartment");
+        // mutate("https://api.connecthome.vn/apartment");
         getAllData();
       })
       .catch((e) => console.log(e));
@@ -256,12 +256,12 @@ const ALl = (prop) => {
   const actionRequest = (id) => {
     const user = getCookie("user");
     axios
-      .post("http://localhost:3001/apartment/request-data", {
+      .post("https://api.connecthome.vn/apartment/request-data", {
         id: id,
         user: user,
       })
       .then((res) => {
-        mutate("http://localhost:3001/apartment/request");
+        mutate("https://api.connecthome.vn/apartment/request");
         messageApi.open({
           type: "success",
           content: "Đã yêu cầu thành công",
