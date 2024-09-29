@@ -14,27 +14,43 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 const ALl = (prop) => {
   const [role, setRole] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const [dataAll, setDataAll] = useState([]);
+  const [data, setData] = useState([]);
   const [form] = Form.useForm();
+  const [status, setStatus] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
   // useEffect(()=>{
   //   prop.search.length == 0 ? setDataAll(data) : setDataAll(prop.search)
   // },[prop.search])
 
-  const handleDelete = (key) => {
-    const newData = dataAll.filter((item) => item.key !== key);
-    setDataAll(newData);
+  const handleDelete = (id) => {
+    setIsLoading(true)
+    axios
+      .post("http://localhost:3001/apartment/delete", { id: id })
+      .then((res) => {
+        const newData = data.filter((item) => item._id !== id);
+        setData(newData);
+        setIsLoading(false)
+      })
+      .catch((e) => console.log(e));
   };
 
-  const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  // const { data, error, isLoading } = useSWR(
+  //   `http://localhost:3001/apartment`,
+  //   fetcher,
+  //   {
+  //     revalidateIfStale: false,
+  //     revalidateOnFocus: false,
+  //     revalidateOnReconnect: false,
+  //   }
+  // );
+
+  const getAllData = () => {
+    axios.get('http://localhost:3001/apartment').then(res => {
+      setData(res.data.data)
+      setIsLoading(false)
+    }).catch(e => console.log(e))
+  }
 
   useEffect(() => {
     var token = getCookie("token");
@@ -47,17 +63,19 @@ const ALl = (prop) => {
         redirect("/login");
       }
     }
+    getAllData();
   }, [isLoading]);
 
   const onChangeStatus = (values) => {
+    setIsLoading(true)
     axios
-      .post("https://api.connecthome.vn/apartment/change-status", {
+      .post("http://localhost:3001/apartment/change-status", {
         id: values._id,
         status: !values.status,
       })
       .then((res) => {
-        console.log(res);
-        mutate("https://api.connecthome.vn/apartment");
+        // mutate("http://localhost:3001/apartment");
+        getAllData();
       })
       .catch((e) => console.log(e));
   };
@@ -169,10 +187,11 @@ const ALl = (prop) => {
         <>
           <Flex gap="small" wrap>
             <Switch
-              checked={record.status}
+              defaultChecked={record.status}
               onClick={() => {
                 onChangeStatus(record);
               }}
+            // onChange={setStatus(!record.status)}
             ></Switch>
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
@@ -219,6 +238,7 @@ const ALl = (prop) => {
                   on
                   onClick={() => {
                     onDelete(record._id)
+                    handleDelete(record._id)
                   }}
                 >
                   Xoá
@@ -236,25 +256,16 @@ const ALl = (prop) => {
   const actionRequest = (id) => {
     const user = getCookie("user");
     axios
-      .post("https://api.connecthome.vn/apartment/request-data", {
+      .post("http://localhost:3001/apartment/request-data", {
         id: id,
         user: user,
       })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment/request");
+        mutate("http://localhost:3001/apartment/request");
         messageApi.open({
           type: "success",
           content: "Đã yêu cầu thành công",
         });
-      })
-      .catch((e) => console.log(e));
-  };
-
-  const onDelete = (id) => {
-    axios
-      .post("https://api.connecthome.vn/apartment/delete", { id: id })
-      .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
       })
       .catch((e) => console.log(e));
   };
@@ -268,7 +279,7 @@ const ALl = (prop) => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={prop.search.length == 0 ? data?.data : prop.search}
+        dataSource={prop.search.length == 0 ? data : prop.search}
         loading={isLoading}
         rowKey={(record) => record._id}
         size="small"

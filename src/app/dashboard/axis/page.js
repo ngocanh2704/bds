@@ -19,7 +19,7 @@ const Axis = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/axis`,
+    `http://localhost:3001/axis`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -36,7 +36,7 @@ const Axis = () => {
     } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("https://api.connecthome.vn/employee");
+        mutate("http://localhost:3001/employee");
         redirect("/login");
       }
     }
@@ -82,8 +82,8 @@ const Axis = () => {
   };
 
   const onDelete = (id) => {
-    axios.post("https://api.connecthome.vn/axis/delete", { id: id }).then((res) => {
-      mutate("https://api.connecthome.vn/axis");
+    axios.post("http://localhost:3001/axis/delete", { id: id }).then((res) => {
+      mutate("http://localhost:3001/axis");
       messageApi.open({
         type: "success",
         content: res.data.message,

@@ -15,7 +15,7 @@ const Buy = (prop) => {
   const [role, setRole] = useState("");
 
   const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment/khomua`,
+    `http://localhost:3001/apartment/khomua`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -42,13 +42,13 @@ const Buy = (prop) => {
 
   const onChangeStatus = (values) => {
     axios
-      .post("https://api.connecthome.vn/apartment/change-status", {
+      .post("http://localhost:3001/apartment/change-status", {
         id: values._id,
         status: !values.status,
       })
       .then((res) => {
         console.log(res);
-        mutate("https://api.connecthome.vn/apartment/khomua");
+        mutate("http://localhost:3001/apartment/khomua");
       })
       .catch((e) => console.log(e));
   };
