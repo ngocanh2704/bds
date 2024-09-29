@@ -237,7 +237,7 @@ const ALl = (prop) => {
                   danger
                   on
                   onClick={() => {
-                    onDelete(record._id)
+                    // onDelete(record._id)
                     handleDelete(record._id)
                   }}
                 >
