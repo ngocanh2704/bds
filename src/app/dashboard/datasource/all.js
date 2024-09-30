@@ -24,7 +24,6 @@ const ALl = (prop) => {
   // },[prop.search])
 
   const handleDelete = (id) => {
-    setIsLoading(true)
     axios
       .post("https://api.connecthome.vn/apartment/delete", { id: id })
       .then((res) => {
@@ -63,21 +62,37 @@ const ALl = (prop) => {
         redirect("/login");
       }
     }
-    getAllData();
-  }, [isLoading]);
+
+  }, []);
+
+  useEffect(() => {
+    if (prop.search.length != 0) {
+      setData(prop.search)
+    } else {
+      getAllData();
+    }
+  }, [prop.search])
 
   const onChangeStatus = (values) => {
-    setIsLoading(true)
-    axios
-      .post("https://api.connecthome.vn/apartment/change-status", {
-        id: values._id,
-        status: !values.status,
-      })
-      .then((res) => {
-        // mutate("https://api.connecthome.vn/apartment");
-        getAllData();
-      })
-      .catch((e) => console.log(e));
+    data.sort(function (x, y) {
+      // true values first
+      return (x.status === y.status) ? 0 : x.status ? -1 : 1;
+      // false values first
+      // return (x === y)? 0 : x? 1 : -1;
+    });
+    setData(data)
+    // setIsLoading(true)
+    // axios
+    //   .post("https://api.connecthome.vn/apartment/change-status", {
+    //     id: values._id,
+    //     status: !values.status,
+    //   })
+    //   .then((res) => {
+    //     // mutate("https://api.connecthome.vn/apartment");
+    //     // getAllData();
+    //     setIsLoading(false)
+    //   })
+    //   .catch((e) => console.log(e));
   };
 
   const spliceString = (text) => {
@@ -251,7 +266,13 @@ const ALl = (prop) => {
         </>
       ),
     },
-  ];
+    {
+      title: 'Status',
+      dataIndex: 'status',
+      key: 'status',
+      hidden: true,
+    }
+  ].filter(item => !item.hidden);
 
   const actionRequest = (id) => {
     const user = getCookie("user");
@@ -279,7 +300,7 @@ const ALl = (prop) => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={prop.search.length == 0 ? data : prop.search}
+        dataSource={data}
         loading={isLoading}
         rowKey={(record) => record._id}
         size="small"

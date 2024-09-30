@@ -107,8 +107,6 @@ const User = () => {
     });
   };
 
-  console.log(data?.user);
-
   return (
     <>
       {contextHolder}

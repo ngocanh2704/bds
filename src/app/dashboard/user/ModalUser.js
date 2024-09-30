@@ -12,6 +12,8 @@ import {
 } from "antd";
 import axios from "axios";
 import { mutate } from "swr";
+const { Option } = Select;
+
 
 const ModalUser = (prop) => {
   const [form] = Form.useForm();
@@ -46,11 +48,13 @@ const ModalUser = (prop) => {
     axios
       .post("https://api.connecthome.vn/user/detail", { id: id })
       .then((res) => {
+        console.log(res.data.user)
         form.setFieldsValue({
           username: res.data.user.username,
           password: res.data.user.password,
           status: res.data.user.status,
           employee_ID: res.data.user.employee_ID._id,
+          role: res.data.user.role
         });
       })
       .catch((e) => console.log(e));
@@ -69,7 +73,6 @@ const ModalUser = (prop) => {
         label: element.employee_name,
       });
     });
-    console.log(array)
     setData(array);
   };
 
@@ -124,16 +127,17 @@ const ModalUser = (prop) => {
                 options={data}
               ></Select>
             </Form.Item>
-            <Form.Item label="Quyền" name="role">
+            <Form.Item label="Quyền" name="role" initialValue={'staff'}>
               <Select
                 style={{ width: 200 }}
-                options={[
-                  // { value: "admin", label: "Admin" },
-                  { value: "manager", label: "Quản lý" },
-                  { value: "staff", label: "Nhân viên" },
-                ]}
-                defaultValue={{ value: "manager", label: "Quản lý" }}
-              ></Select>
+              // options={[
+              //   // { value: "admin", label: "Admin" },
+              //   { value: "manager", label: "Quản lý" },
+              //   { value: "staff", label: "Nhân viên" },
+              // ]}
+              ><Option value='manager'>Quản lý</Option>
+                <Option value='staff'>Nhân viên</Option>
+              </Select>
             </Form.Item>
           </Form>
         </>
