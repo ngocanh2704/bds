@@ -26,7 +26,6 @@ import dynamic from "next/dynamic";
 import useSWR, { mutate } from "swr";
 import { SearchOutlined } from "@ant-design/icons";
 import { getCookie } from "cookies-next";
-import { DashboardContext } from "@/Context/dashboardContext";
 
 const DynamicAll = dynamic(() => import("./all"));
 const DynamicSale = dynamic(() => import("./sale"));
