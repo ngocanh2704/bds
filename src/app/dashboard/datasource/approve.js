@@ -27,14 +27,20 @@ const Approve = (prop) => {
   // );
 
   const getData = () => {
+    var arr = []
     axios
       .post("https://api.connecthome.vn/apartment/approve-user", {
         user: getCookie("user"),
         role: getCookie("role"),
       })
       .then((res) => {
-        setData(res.data.data);
-        console.log(res);
+        // setData(res.data.data);
+        for (let i = 0; i < res.data.data.length; i++) {
+          const element = res.data.data[i].apartment;
+          element.id = res.data.data[i]._id
+          arr.push(element)
+        }
+        setData(arr)
       })
       .catch((e) => console.log(e));
   };
@@ -52,7 +58,7 @@ const Approve = (prop) => {
     }
 
     getData();
-  }, [prop.key]);
+  }, []);
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -118,16 +124,24 @@ const Approve = (prop) => {
     {
       title: "Giá bán",
       dataIndex: "sale_price",
-      key: "sale_ price",
+      key: "sale_price",
       render: (item) =>
-        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "",
+        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
+      sorter: {
+        compare: (a, b) => a.sale_price - b.sale_price,
+        multiple: 1,
+      },
     },
     {
       title: "Giá thuê",
       dataIndex: "rental_price",
       key: "rental_price",
       render: (item) =>
-        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "",
+        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
+      sorter: {
+        compare: (a, b) => a.rental_price - b.rental_price,
+        multiple: 2,
+      },
     },
     {
       title: "Thông tin bất động sản",
@@ -136,7 +150,7 @@ const Approve = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.area}m<sup>2</sup> - {record.project.project_name} -{" "}
+            - {record.area}m<sup>2</sup> - {record.project?.project_name} -{" "}
             {record.balcony_direction?.balcony_direction_name} -{" "}
             {record.bedrooms}
             PN
@@ -175,18 +189,6 @@ const Approve = (prop) => {
               >
                 Hình ảnh
               </Button>
-            )}
-            {role == "admin" ? (
-              <Button
-                type="primary"
-                danger
-                on
-                onClick={() => onDelete(record._id)}
-              >
-                Xoá
-              </Button>
-            ) : (
-              ""
             )}
           </Flex>
         </>

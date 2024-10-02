@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useImperativeHandle, forwardRef } from "react";
 import { Button, Flex, Table, Input, Form, Space, Tag } from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
@@ -11,18 +11,28 @@ const config = {
 };
 const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
-const Request = (prop) => {
+const Request = forwardRef(function Request(prop, ref) {
   const [role, setRole] = useState("");
+  const [data, setData] = useState([])
+  const [isLoading, setIsLoading] = useState(true)
 
-  const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment/request`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const getRequest = () => {
+    var arr = []
+    axios.get(`https://api.connecthome.vn/apartment/request`).then(res => {
+      for (let i = 0; i < res.data.data.length; i++) {
+        const element = res.data.data[i].apartment;
+        element.id = res.data.data[i]._id
+        arr.push(element)
+      }
+      setData(arr)
+    }).catch(e => console.log(e))
+  }
+
+  useImperativeHandle(ref, () => (console.log('test')))
+
+  useEffect(() => {
+    getRequest()
+  }, [])
 
   useEffect(() => {
     var token = getCookie("token");
@@ -35,7 +45,7 @@ const Request = (prop) => {
         redirect("/login");
       }
     }
-  }, [isLoading]);
+  }, []);
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -106,16 +116,24 @@ const Request = (prop) => {
     {
       title: "Giá bán",
       dataIndex: "sale_price",
-      key: "sale_ price",
+      key: "sale_price",
       render: (item) =>
-        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "",
+        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
+      sorter: {
+        compare: (a, b) => a.sale_price - b.sale_price,
+        multiple: 1,
+      },
     },
     {
       title: "Giá thuê",
       dataIndex: "rental_price",
       key: "rental_price",
       render: (item) =>
-        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "",
+        item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
+      sorter: {
+        compare: (a, b) => a.rental_price - b.rental_price,
+        multiple: 2,
+      },
     },
     {
       title: "Thông tin bất động sản",
@@ -124,7 +142,7 @@ const Request = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.area}m<sup>2</sup> - {record.project.project_name} -{" "}
+            - {record.area}m<sup>2</sup> - {record.project?.project_name} -{" "}
             {record.balcony_direction?.balcony_direction_name} -{" "}
             {record.bedrooms}
             PN
@@ -142,41 +160,35 @@ const Request = (prop) => {
         <>
           <Flex gap="small" wrap>
             {(role == "admin") | (role == "manager") ? (
-              <Button type="primary" onClick={() => actionRequest(record._id)}>
+              <Button type="primary" onClick={() => actionRequest(record.id)}>
                 Duyệt yêu cầu
               </Button>
             ) : (
               ""
             )}
 
-            <Button
-              type="primary"
-              style={{ backgroundColor: "rgb(217 5 255)" }}
-              onClick={() => {
-                prop.changeOn();
-                prop.changeId(record._id);
-              }}
-            >
-              Hình ảnh
-            </Button>
-            {(role == "admin") | (role == "manager") ? (
-              <>
-                <Button
-                  type="primary"
-                  style={{ backgroundColor: "rgb(250, 173, 20)" }}
-                  onClick={() => {
-                    prop.changeOpen();
-                    prop.changeId(record._id);
-                  }}
-                >
-                  Sửa
-                </Button>
-                <Button type="primary" danger on onClick={() => onDelete(item)}>
-                  Xoá
-                </Button>
-              </>
+            {record.image.length == 0 ? (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "#bfbfbf" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
             ) : (
-              ""
+              <Button
+                type="primary"
+                style={{ backgroundColor: "rgb(217 5 255)" }}
+                onClick={() => {
+                  prop.changeOn();
+                  prop.changeId(record._id);
+                }}
+              >
+                Hình ảnh
+              </Button>
             )}
           </Flex>
         </>
@@ -191,7 +203,7 @@ const Request = (prop) => {
         user: getCookie("user"),
       })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment/request");
+        getRequest()
       })
       .catch((e) => console.log(e));
   };
@@ -213,18 +225,18 @@ const Request = (prop) => {
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={data?.data}
-        loading={isLoading}
-        rowKey={(record) => record._id}
+        dataSource={role == 'staff' ? [] : data}
+        // loading={isLoading}
+        rowKey={(record) => record.id}
         size="small"
         pagination={{
           defaultPageSize: 20,
-          pageSizeOptions: [20,30, 40, 50],
+          pageSizeOptions: [20, 30, 40, 50],
           showSizeChanger: true
         }}
       />
     </>
   );
-};
+});
 
 export default Request;

@@ -74,25 +74,18 @@ const ALl = (prop) => {
   }, [prop.search])
 
   const onChangeStatus = (values) => {
-    data.sort(function (x, y) {
-      // true values first
-      return (x.status === y.status) ? 0 : x.status ? -1 : 1;
-      // false values first
-      // return (x === y)? 0 : x? 1 : -1;
-    });
-    setData(data)
-    // setIsLoading(true)
-    // axios
-    //   .post("https://api.connecthome.vn/apartment/change-status", {
-    //     id: values._id,
-    //     status: !values.status,
-    //   })
-    //   .then((res) => {
-    //     // mutate("https://api.connecthome.vn/apartment");
-    //     // getAllData();
-    //     setIsLoading(false)
-    //   })
-    //   .catch((e) => console.log(e));
+    setIsLoading(true)
+    axios
+      .post("https://api.connecthome.vn/apartment/change-status", {
+        id: values._id,
+        status: !values.status,
+      })
+      .then((res) => {
+        // mutate("https://api.connecthome.vn/apartment");
+        // getAllData();
+        setIsLoading(false)
+      })
+      .catch((e) => console.log(e));
   };
 
   const spliceString = (text) => {
@@ -183,16 +176,15 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.project?.project_name}-{record.area}m<sup>2</sup> -{" "}
-            {record.bedrooms}PN -{" "}
-            {record.balcony_direction?.balcony_direction_name}
+            - {record.area}m<sup>2</sup> - {record.project.project_name} -{" "}
+            {record.balcony_direction?.balcony_direction_name} -{" "}
+            {record.bedrooms}
+            PN
           </p>
-          <p>- {record.properties?.property_name}</p>
-          <p>- {record.furnished?.furnished_name}</p>
           <p>- {record.notes}</p>
+          <p>- {record.properties?.property_name}</p>
         </>
       ),
-      responsive: ["sm"],
     },
     {
       title: "Action",
@@ -201,13 +193,13 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            <Switch
+            {role == 'staff' ? '' : <Switch
               defaultChecked={record.status}
               onClick={() => {
                 onChangeStatus(record);
               }}
             // onChange={setStatus(!record.status)}
-            ></Switch>
+            ></Switch>}
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>

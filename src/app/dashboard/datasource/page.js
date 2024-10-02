@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import * as XLSX from "xlsx";
 import {
   Button,
@@ -26,6 +26,7 @@ import dynamic from "next/dynamic";
 import useSWR, { mutate } from "swr";
 import { SearchOutlined } from "@ant-design/icons";
 import { getCookie } from "cookies-next";
+import { DashboardContext } from "@/Context/dashboardContext";
 
 const DynamicAll = dynamic(() => import("./all"));
 const DynamicSale = dynamic(() => import("./sale"));
@@ -53,6 +54,8 @@ const DataSource = () => {
   const [furnished, setFurnished] = useState([]);
   const [dataSearch, setDataSearch] = useState([]);
 
+  const childRef = useRef()
+
   const changeOpen = () => {
     setOpen(!open);
   };
@@ -65,15 +68,15 @@ const DataSource = () => {
     setIsLoading(!isLoading);
   };
 
-  const onChange = (key) => {
-    setKey(key);
-    const checkKey = {
-      1: mutate("httpe//localhost:3001/apartment"),
-      2: mutate("https://api.connecthome.vn/apartment/khosale"),
-      3: mutate("https://api.connecthome.vn/apartment/khomua"),
-    };
-    checkKey(key);
-  };
+  // const onChange = (key) => {
+  //   setKey(key);
+  //   const checkKey = {
+  //     1: mutate("httpe//localhost:3001/apartment"),
+  //     2: mutate("https://api.connecthome.vn/apartment/khosale"),
+  //     3: mutate("https://api.connecthome.vn/apartment/khomua"),
+  //   };
+  //   checkKey(key);
+  // };
   const changeId = (id) => {
     setId(id);
   };
@@ -136,6 +139,8 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
+          ref={childRef}
+        // key={key}
         />
       ),
     },
@@ -151,7 +156,7 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
-          key={key}
+        // key={key}
         />
       ),
     },
@@ -160,6 +165,7 @@ const DataSource = () => {
   const yeuCauDongLoat = (items) => {
     setItemsYeuCau(items);
   };
+
   const onClickYeuCauDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
@@ -168,7 +174,6 @@ const DataSource = () => {
           user: getCookie("user"),
         })
         .then((res) => {
-          console.log(res);
         })
         .catch((e) => console.log(e));
     });
@@ -198,10 +203,10 @@ const DataSource = () => {
     itemsYeuCau.forEach((item) => {
       axios
         .post("https://api.connecthome.vn/apartment/approve-data", { id: item })
-        .then((res) => {})
+        .then((res) => { })
         .catch((e) => console.log(e));
     });
-    mutate("https://api.connecthome.vn/apartment/request");
+    childRef.current?.getRequest()
     messageApi.open({
       type: "success",
       content: "Đã duyệt thành công",
@@ -480,7 +485,7 @@ const DataSource = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Tabs defaultActiveKey="1" items={items} onChange={onChange} />
+      <Tabs defaultActiveKey="1" items={items} destroyInactiveTabPane={true} />
     </>
   );
 };
