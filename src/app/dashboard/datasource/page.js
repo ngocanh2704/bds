@@ -67,15 +67,15 @@ const DataSource = () => {
     setIsLoading(!isLoading);
   };
 
-  // const onChange = (key) => {
-  //   setKey(key);
-  //   const checkKey = {
-  //     1: mutate("httpe//localhost:3001/apartment"),
-  //     2: mutate("https://api.connecthome.vn/apartment/khosale"),
-  //     3: mutate("https://api.connecthome.vn/apartment/khomua"),
-  //   };
-  //   checkKey(key);
-  // };
+  const onChange = (key) => {
+    setKey(key);
+    const checkKey = {
+      1: mutate("httpe//localhost:3001/apartment"),
+      2: mutate("https://api.connecthome.vn/apartment/khosale"),
+      3: mutate("https://api.connecthome.vn/apartment/khomua"),
+    };
+    checkKey(key);
+  };
   const changeId = (id) => {
     setId(id);
   };
@@ -484,7 +484,7 @@ const DataSource = () => {
           </Button>
         </Form.Item>
       </Form>
-      <Tabs defaultActiveKey="1" items={items} destroyInactiveTabPane={true} />
+      <Tabs defaultActiveKey="1" items={items} destroyInactiveTabPane={true} onChange={onChange} />
     </>
   );
 };

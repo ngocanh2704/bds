@@ -24,6 +24,8 @@ const Buy = (prop) => {
     }
   );
 
+  const dataStaff = (data?.data.filter(item=>item.status == true))
+
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
       // console.log(
@@ -161,10 +163,11 @@ const Buy = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            <Switch
+            {role == 'staff' ? '' : <Switch
               checked={record.status}
               onClick={() => onChangeStatus(record)}
-            ></Switch>
+            ></Switch>}
+
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
             </Button>
@@ -228,7 +231,7 @@ const Buy = (prop) => {
         ...rowSelection,
       }}
       columns={columns}
-      dataSource={data?.data}
+      dataSource={role == 'staff' ? dataStaff :data?.data}
       size="small"
       pagination={{
         defaultPageSize: 20,

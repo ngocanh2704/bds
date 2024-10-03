@@ -45,8 +45,13 @@ const ALl = (prop) => {
   // );
 
   const getAllData = () => {
+    var roleStaff = getCookie('role')
     axios.get('https://api.connecthome.vn/apartment').then(res => {
-      setData(res.data.data)
+      if (roleStaff == 'staff') {
+        setData(res.data.data.filter(item => item.status == true))
+      } else {
+        setData(res.data.data)
+      }
       setIsLoading(false)
     }).catch(e => console.log(e))
   }
