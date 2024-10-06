@@ -5,6 +5,12 @@ import { Button, Flex, Table, Tag, Switch } from "antd";
 import { getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import useSWR, { mutate } from "swr";
+import {
+  actChangeStatusApartment,
+  actDeleteApartment,
+  actThueApartment,
+} from "@/actions/actionApartment";
+import { useDispatch, useSelector } from "react-redux";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -13,18 +19,16 @@ const config = {
 const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 const Buy = (prop) => {
   const [role, setRole] = useState("");
+  const dispatch = useDispatch();
+  const getData = () => dispatch(actThueApartment());
+  const onChangeStatus = (values) => dispatch(actChangeStatusApartment(values));
+  const handleDelete = (id) => dispatch(actDeleteApartment(id));
+  const loading = useSelector(state=>state.apartment.isLoading)
+  useEffect(() => {
+    getData();
+  }, []);
 
-  const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment/khomua`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
-
-  const dataStaff = (data?.data.filter(item=>item.status == true))
+  const data = useSelector((state) => state.apartment.data);
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -40,19 +44,6 @@ const Buy = (prop) => {
       // Column configuration not to be checked
       name: record.name,
     }),
-  };
-
-  const onChangeStatus = (values) => {
-    axios
-      .post("https://api.connecthome.vn/apartment/change-status", {
-        id: values._id,
-        status: !values.status,
-      })
-      .then((res) => {
-        console.log(res);
-        mutate("https://api.connecthome.vn/apartment/khomua");
-      })
-      .catch((e) => console.log(e));
   };
 
   const spliceString = (text) => {
@@ -73,7 +64,7 @@ const Buy = (prop) => {
         redirect("/login");
       }
     }
-  }, [prop.data, isLoading]);
+  }, [prop.data]);
 
   const columns = [
     {
@@ -163,10 +154,14 @@ const Buy = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            {role == 'staff' ? '' : <Switch
-              checked={record.status}
-              onClick={() => onChangeStatus(record)}
-            ></Switch>}
+            {role == "staff" ? (
+              ""
+            ) : (
+              <Switch
+                checked={record.status}
+                onClick={() => onChangeStatus(record)}
+              ></Switch>
+            )}
 
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
@@ -211,7 +206,7 @@ const Buy = (prop) => {
                   type="primary"
                   danger
                   on
-                  onClick={() => onDelete(record._id)}
+                  onClick={() => handleDelete(record._id)}
                 >
                   Xoá
                 </Button>
@@ -231,7 +226,8 @@ const Buy = (prop) => {
         ...rowSelection,
       }}
       columns={columns}
-      dataSource={role == 'staff' ? dataStaff :data?.data}
+      loading={loading}
+      dataSource={data}
       size="small"
       pagination={{
         defaultPageSize: 20,

@@ -18,7 +18,7 @@ const Request = forwardRef(function Request(prop, ref) {
 
   const getRequest = () => {
     var arr = []
-    axios.get(`https://api.connecthome.vn/apartment/request`).then(res => {
+    axios.get(`http://localhost:3001/apartment/request`).then(res => {
       for (let i = 0; i < res.data.data.length; i++) {
         const element = res.data.data[i].apartment;
         element.id = res.data.data[i]._id
@@ -198,7 +198,7 @@ const Request = forwardRef(function Request(prop, ref) {
 
   const actionRequest = (id) => {
     axios
-      .post("https://api.connecthome.vn/apartment/approve-data", {
+      .post("http://localhost:3001/apartment/approve-data", {
         id: id,
         user: getCookie("user"),
       })
@@ -210,9 +210,9 @@ const Request = forwardRef(function Request(prop, ref) {
 
   const onDelete = (id) => {
     axios
-      .post("https://api.connecthome.vn/delete", { id: id })
+      .post("http://localhost:3001/delete", { id: id })
       .then((res) => {
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => console.log(e));
   };

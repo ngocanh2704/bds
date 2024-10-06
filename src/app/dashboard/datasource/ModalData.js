@@ -66,14 +66,14 @@ const ModalData = (prop) => {
         values.sale_price == undefined  ? values.sale_price = '0' : values.sale_price
         values.rental_price == undefined  ? values.rental_price = '0' : values.rental_price 
 
-        var urlEdit = "https://api.connecthome.vn/apartment/edit";
-        var urlCreate = "https://api.connecthome.vn/apartment/create";
+        var urlEdit = "http://localhost:3001/apartment/edit";
+        var urlCreate = "http://localhost:3001/apartment/create";
         axios
           .post(prop.id ? urlEdit : urlCreate, values)
           .then((res) => {
             prop.hideModal();
-            mutate("https://api.connecthome.vn/apartment");
-            mutate("https://api.connecthome.vn/apartment/khosale");
+            mutate("http://localhost:3001/apartment");
+            mutate("http://localhost:3001/apartment/khosale");
           })
           .catch((e) => {
             if(!prop.id){
@@ -89,7 +89,7 @@ const ModalData = (prop) => {
 
   const getDataProject = () => {
     axios
-      .get("https://api.connecthome.vn/project")
+      .get("http://localhost:3001/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -105,7 +105,7 @@ const ModalData = (prop) => {
 
   const getDataAxis = () => {
     axios
-      .get("https://api.connecthome.vn/axis")
+      .get("http://localhost:3001/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -121,7 +121,7 @@ const ModalData = (prop) => {
 
   const getDataBalcon = () => {
     axios
-      .get("https://api.connecthome.vn/balconyDirection")
+      .get("http://localhost:3001/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -137,7 +137,7 @@ const ModalData = (prop) => {
 
   const getDetailApartment = (id) => {
     axios
-      .post("https://api.connecthome.vn/apartment/detail", { id: id })
+      .post("http://localhost:3001/apartment/detail", { id: id })
       .then((res) => {
         console.log(res.data.detail)
         var detail = res.data.detail;
@@ -173,7 +173,7 @@ const ModalData = (prop) => {
 
   const getBuilding = () => {
     axios
-      .get("https://api.connecthome.vn/building")
+      .get("http://localhost:3001/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -189,7 +189,7 @@ const ModalData = (prop) => {
 
   const getProperty = () => {
     axios
-      .get("https://api.connecthome.vn/property")
+      .get("http://localhost:3001/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -205,7 +205,7 @@ const ModalData = (prop) => {
 
   const getFurnished = () => {
     axios
-      .get("https://api.connecthome.vn/furnished")
+      .get("http://localhost:3001/furnished")
       .then((res) => {
         console.log(res)
         var array = [];
@@ -278,7 +278,7 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select options={dataProject}></Select>
+                  <Select options={dataProject} disabled={prop.id? true : false}></Select>
                 </Form.Item>
                 <Form.Item
                   label="Toà"
@@ -290,7 +290,7 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select options={building} />
+                  <Select options={building} disabled={prop.id? true : false}/>
                 </Form.Item>
                 <Form.Item
                   label="Tầng"
@@ -302,7 +302,7 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Input />
+                  <Input disabled={prop.id? true : false}/>
                 </Form.Item>
                 <Form.Item
                   label="Trục căn hộ"
@@ -314,7 +314,7 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select options={dataAxis}></Select>
+                  <Select options={dataAxis} disabled={prop.id? true : false}></Select>
                 </Form.Item>
                 <Form.Item label="Chủ căn hộ" name="owner">
                   <Input />
@@ -365,7 +365,7 @@ const ModalData = (prop) => {
                 </Form.Item>
               </Col>
               <Col span={12}>
-                <Form.Item label="Giá bán" name="sale_price">
+                <Form.Item label="Giá bán" name="sale_price" initialValue={0}>
                   <InputNumber
                     style={{ width: 150 }}
                     formatter={(value) =>
@@ -374,7 +374,7 @@ const ModalData = (prop) => {
                     parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
                   />
                 </Form.Item>
-                <Form.Item label="Giá cho thuê" name="rental_price">
+                <Form.Item label="Giá cho thuê" name="rental_price" initialValue={0}>
                   <InputNumber
                     style={{ width: 150 }}
                     formatter={(value) =>

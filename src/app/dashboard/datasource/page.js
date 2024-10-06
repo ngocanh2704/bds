@@ -14,18 +14,16 @@ import {
   Tabs,
   Upload,
 } from "antd";
-import My from "./my";
-import Sale from "./sale";
-import Buy from "./buy";
-import Approve from "./approve";
-import Request from "./request";
 import axios from "axios";
-import ModalData from "./ModalData";
 import ModalUpload from "./ModalUpload";
 import dynamic from "next/dynamic";
-import useSWR, { mutate } from "swr";
 import { SearchOutlined } from "@ant-design/icons";
 import { getCookie } from "cookies-next";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  actFetchApartment,
+  actSearchApartment,
+} from "@/actions/actionApartment";
 
 const DynamicAll = dynamic(() => import("./all"));
 const DynamicSale = dynamic(() => import("./sale"));
@@ -37,7 +35,7 @@ const fetcher = (url) => axios.get(url).then((res) => res.data);
 
 const DataSource = () => {
   const [dataAll, setDataAll] = useState([]);
-  const [key, setKey] = useState("");
+  const [key, setKey] = useState("1");
   const [open, setOpen] = useState(false);
   const [on, setOn] = useState(false);
   const [id, setId] = useState("");
@@ -53,7 +51,14 @@ const DataSource = () => {
   const [furnished, setFurnished] = useState([]);
   const [dataSearch, setDataSearch] = useState([]);
 
-  const childRef = useRef()
+  const dispatch = useDispatch();
+  const getApartment = () => dispatch(actFetchApartment());
+  const searchApartment = (values, key) =>
+    dispatch(actSearchApartment(values, key));
+
+  useEffect(() => {
+    getApartment();
+  }, []);
 
   const changeOpen = () => {
     setOpen(!open);
@@ -67,14 +72,11 @@ const DataSource = () => {
     setIsLoading(!isLoading);
   };
 
-  const onChange = (key) => {
-    setKey(key);
-    const checkKey = {
-      1: mutate("httpe//localhost:3001/apartment"),
-      2: mutate("https://api.connecthome.vn/apartment/khosale"),
-      3: mutate("https://api.connecthome.vn/apartment/khomua"),
-    };
-    checkKey(key);
+  const onChange = (values) => {
+    setKey(values);
+    if (values == "1") {
+      getApartment();
+    }
   };
   const changeId = (id) => {
     setId(id);
@@ -138,8 +140,6 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
-          ref={childRef}
-        // key={key}
         />
       ),
     },
@@ -155,7 +155,7 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
-        // key={key}
+          // key={key}
         />
       ),
     },
@@ -168,15 +168,14 @@ const DataSource = () => {
   const onClickYeuCauDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://api.connecthome.vn/apartment/request-data", {
+        .post("http://localhost:3001/apartment/request-data", {
           id: item,
           user: getCookie("user"),
         })
-        .then((res) => {
-        })
+        .then((res) => {})
         .catch((e) => console.log(e));
     });
-    mutate("https://api.connecthome.vn/apartment/request");
+    mutate("http://localhost:3001/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã yêu cầu thành công",
@@ -186,9 +185,9 @@ const DataSource = () => {
   const onClickXoaDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://api.connecthome.vn/delete", { id: item })
+        .post("http://localhost:3001/delete", { id: item })
         .then((res) => {
-          mutate("https://api.connecthome.vn/apartment");
+          mutate("http://localhost:3001/apartment");
         })
         .catch((e) => console.log(e));
     });
@@ -201,11 +200,11 @@ const DataSource = () => {
   const onClickDuyetDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("https://api.connecthome.vn/apartment/approve-data", { id: item })
-        .then((res) => { })
+        .post("http://localhost:3001/apartment/approve-data", { id: item })
+        .then((res) => {})
         .catch((e) => console.log(e));
     });
-    childRef.current?.getRequest()
+    childRef.current?.getRequest();
     messageApi.open({
       type: "success",
       content: "Đã duyệt thành công",
@@ -214,7 +213,7 @@ const DataSource = () => {
 
   const getProject = () => {
     axios
-      .get("https://api.connecthome.vn/project")
+      .get("http://localhost:3001/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -230,7 +229,7 @@ const DataSource = () => {
 
   const getBuilding = () => {
     axios
-      .get("https://api.connecthome.vn/building")
+      .get("http://localhost:3001/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -246,7 +245,7 @@ const DataSource = () => {
 
   const getProperty = () => {
     axios
-      .get("https://api.connecthome.vn/property")
+      .get("http://localhost:3001/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -262,7 +261,7 @@ const DataSource = () => {
 
   const getBalconyDirection = () => {
     axios
-      .get("https://api.connecthome.vn/balconyDirection")
+      .get("http://localhost:3001/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -278,7 +277,7 @@ const DataSource = () => {
 
   const getAxis = () => {
     axios
-      .get("https://api.connecthome.vn/axis")
+      .get("http://localhost:3001/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -294,7 +293,7 @@ const DataSource = () => {
 
   const getFurnished = () => {
     axios
-      .get("https://api.connecthome.vn/furnished")
+      .get("http://localhost:3001/furnished")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -319,19 +318,14 @@ const DataSource = () => {
   }, []);
 
   const onFinish = (values) => {
-    axios
-      .post("https://api.connecthome.vn/apartment/search", values)
-      .then((res) => {
-        if (res.data.data.length == 0) {
-          messageApi.open({
-            type: "warning",
-            content: "Không có căn hộ.",
-          });
-        } else {
-          setDataSearch(res.data.data);
-        }
-      })
-      .catch((e) => console.log(e));
+    values.key = key;
+    values.isDelete = false
+    if(key == '2'){
+      values.sale_price = { $gt: 0 };
+    } if(key == '3'){
+      values.rental_price = { $gt: 0 };
+    }
+    searchApartment(values, key);
   };
 
   const uploadExcel = async (options) => {
@@ -339,22 +333,22 @@ const DataSource = () => {
     var formData = new FormData();
     formData.append("file", file);
     axios
-      .post("https://api.connecthome.vn/apartment/import-excel", formData)
+      .post("http://localhost:3001/apartment/import-excel", formData)
       .then((res) => {
         var ws = XLSX.utils.json_to_sheet(res.data.arrResult);
         /* create workbook and export */
         var wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
         XLSX.writeFile(wb, "result.xlsx");
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       })
       .catch((e) => {
         messageApi.open({
           type: "error",
           content: e.response.data.message,
-          duration: 5
+          duration: 5,
         });
-        mutate("https://api.connecthome.vn/apartment");
+        mutate("http://localhost:3001/apartment");
       });
   };
 
@@ -479,12 +473,17 @@ const DataSource = () => {
           </Button>
         </Form.Item>
         <Form.Item>
-          <Button htmlType="reset" onClick={() => setDataSearch([])}>
+          <Button htmlType="reset" onClick={() => getApartment()}>
             reset
           </Button>
         </Form.Item>
       </Form>
-      <Tabs defaultActiveKey="1" items={items} destroyInactiveTabPane={true} onChange={onChange} />
+      <Tabs
+        defaultActiveKey="1"
+        items={items}
+        destroyInactiveTabPane={true}
+        onChange={(key) => onChange(key)}
+      />
     </>
   );
 };

@@ -5,6 +5,8 @@ import { Button, Flex, Table, Tag, Switch } from "antd";
 import { getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import useSWR, { mutate } from "swr";
+import { useDispatch, useSelector } from "react-redux";
+import { actBanApartment, actChangeStatusApartment, banApartment } from "@/actions/actionApartment";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -13,18 +15,28 @@ const config = {
 const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 const Sale = (prop) => {
   const [role, setRole] = useState("");
+  const dispatch = useDispatch();
+  const getData = () => dispatch(actBanApartment());
+  const onChangeStatus = (values) => dispatch(actChangeStatusApartment(values));
+  const loading = useSelector(state=>state.apartment.isLoading)
+  const handleDelete = (id) => dispatch(actDeleteApartment(id))
+  useEffect(() => {
+    getData();
+  }, []);
 
-  const { data, error, isLoading } = useSWR(
-    `https://api.connecthome.vn/apartment/khosale`,
-    fetcher,
-    {
-      revalidateIfStale: false,
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-    }
-  );
+  const data = useSelector((state) => state.apartment.data);
 
-  const dataStaff = (data?.data.filter(item=>item.status == true))
+  // const { data, error, isLoading } = useSWR(
+  //   `http://localhost:3001/apartment/khosale`,
+  //   fetcher,
+  //   {
+  //     revalidateIfStale: false,
+  //     revalidateOnFocus: false,
+  //     revalidateOnReconnect: false,
+  //   }
+  // );
+
+  // const dataStaff = (data?.data.filter(item=>item.status == true))
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -42,18 +54,18 @@ const Sale = (prop) => {
     }),
   };
 
-  const onChangeStatus = (values) => {
-    axios
-      .post("https://api.connecthome.vn/apartment/change-status", {
-        id: values._id,
-        status: !values.status,
-      })
-      .then((res) => {
-        console.log(res);
-        mutate("https://api.connecthome.vn/apartment/khosale");
-      })
-      .catch((e) => console.log(e));
-  };
+  // const onChangeStatus = (values) => {
+  //   axios
+  //     .post("http://localhost:3001/apartment/change-status", {
+  //       id: values._id,
+  //       status: !values.status,
+  //     })
+  //     .then((res) => {
+  //       console.log(res);
+  //       mutate("http://localhost:3001/apartment/khosale");
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -72,7 +84,7 @@ const Sale = (prop) => {
         redirect("/login");
       }
     }
-  }, [prop.data, isLoading]);
+  }, []);
   const columns = [
     {
       title: "STT",
@@ -161,10 +173,14 @@ const Sale = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            {role == 'staff' ? '' : <Switch
-              checked={record.status}
-              onClick={() => onChangeStatus(record)}
-            ></Switch>}
+            {role == "staff" ? (
+              ""
+            ) : (
+              <Switch
+                checked={record.status}
+                onClick={() => onChangeStatus(record)}
+              ></Switch>
+            )}
 
             <Button type="primary" onClick={() => actionRequest(record._id)}>
               Yêu cầu
@@ -209,7 +225,7 @@ const Sale = (prop) => {
                   type="primary"
                   danger
                   on
-                  onClick={() => onDelete(record._id)}
+                  onClick={() => handleDelete(record._id)}
                 >
                   Xoá
                 </Button>
@@ -228,8 +244,9 @@ const Sale = (prop) => {
       rowSelection={{
         ...rowSelection,
       }}
+      loading={loading}
       columns={columns}
-      dataSource={role == 'staff' ? dataStaff :data?.data}
+      dataSource={data}
       size="small"
       pagination={{
         defaultPageSize: 20,
