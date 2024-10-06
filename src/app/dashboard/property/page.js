@@ -14,7 +14,7 @@ const Property = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/property`,
+    `https://api.connecthome.vn/property`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -38,9 +38,9 @@ const Property = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/property/delete", { id: id })
+      .post("https://api.connecthome.vn/property/delete", { id: id })
       .then((res) => {
-        mutate("http://localhost:3001/property");
+        mutate("https://api.connecthome.vn/property");
       });
   };
 

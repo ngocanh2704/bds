@@ -168,14 +168,14 @@ const DataSource = () => {
   const onClickYeuCauDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/apartment/request-data", {
+        .post("https://api.connecthome.vn/apartment/request-data", {
           id: item,
           user: getCookie("user"),
         })
         .then((res) => {})
         .catch((e) => console.log(e));
     });
-    mutate("http://localhost:3001/apartment/request");
+    mutate("https://api.connecthome.vn/apartment/request");
     messageApi.open({
       type: "success",
       content: "Đã yêu cầu thành công",
@@ -185,9 +185,9 @@ const DataSource = () => {
   const onClickXoaDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/delete", { id: item })
+        .post("https://api.connecthome.vn/delete", { id: item })
         .then((res) => {
-          mutate("http://localhost:3001/apartment");
+          mutate("https://api.connecthome.vn/apartment");
         })
         .catch((e) => console.log(e));
     });
@@ -200,7 +200,7 @@ const DataSource = () => {
   const onClickDuyetDongLoat = () => {
     itemsYeuCau.forEach((item) => {
       axios
-        .post("http://localhost:3001/apartment/approve-data", { id: item })
+        .post("https://api.connecthome.vn/apartment/approve-data", { id: item })
         .then((res) => {})
         .catch((e) => console.log(e));
     });
@@ -213,7 +213,7 @@ const DataSource = () => {
 
   const getProject = () => {
     axios
-      .get("http://localhost:3001/project")
+      .get("https://api.connecthome.vn/project")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -229,7 +229,7 @@ const DataSource = () => {
 
   const getBuilding = () => {
     axios
-      .get("http://localhost:3001/building")
+      .get("https://api.connecthome.vn/building")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -245,7 +245,7 @@ const DataSource = () => {
 
   const getProperty = () => {
     axios
-      .get("http://localhost:3001/property")
+      .get("https://api.connecthome.vn/property")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -261,7 +261,7 @@ const DataSource = () => {
 
   const getBalconyDirection = () => {
     axios
-      .get("http://localhost:3001/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -277,7 +277,7 @@ const DataSource = () => {
 
   const getAxis = () => {
     axios
-      .get("http://localhost:3001/axis")
+      .get("https://api.connecthome.vn/axis")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -293,7 +293,7 @@ const DataSource = () => {
 
   const getFurnished = () => {
     axios
-      .get("http://localhost:3001/furnished")
+      .get("https://api.connecthome.vn/furnished")
       .then((res) => {
         var array = [];
         res.data.data.forEach((item) => {
@@ -333,14 +333,14 @@ const DataSource = () => {
     var formData = new FormData();
     formData.append("file", file);
     axios
-      .post("http://localhost:3001/apartment/import-excel", formData)
+      .post("https://api.connecthome.vn/apartment/import-excel", formData)
       .then((res) => {
         var ws = XLSX.utils.json_to_sheet(res.data.arrResult);
         /* create workbook and export */
         var wb = XLSX.utils.book_new();
         XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
         XLSX.writeFile(wb, "result.xlsx");
-        mutate("http://localhost:3001/apartment");
+        mutate("https://api.connecthome.vn/apartment");
       })
       .catch((e) => {
         messageApi.open({
@@ -348,7 +348,7 @@ const DataSource = () => {
           content: e.response.data.message,
           duration: 5,
         });
-        mutate("http://localhost:3001/apartment");
+        mutate("https://api.connecthome.vn/apartment");
       });
   };
 

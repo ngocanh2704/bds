@@ -82,7 +82,7 @@ const Employee = () => {
       render: (_, { cccd_image }) => (
         <>
           <Image
-            src={"http://localhost:3001" + cccd_image}
+            src={"https://api.connecthome.vn" + cccd_image}
             style={{ width: 150, height: 80 }}
             alt="..."
           />
@@ -128,18 +128,18 @@ const Employee = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/employee/delete", { id: id })
+      .post("https://api.connecthome.vn/employee/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",
           content: res.data.message,
         }),
-          mutate("http://localhost:3001/employee");
+          mutate("https://api.connecthome.vn/employee");
       });
   };
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/employee`,
+    `https://api.connecthome.vn/employee`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -156,7 +156,7 @@ const Employee = () => {
     } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("http://localhost:3001/employee");
+        mutate("https://api.connecthome.vn/employee");
         redirect("/login");
       }
     }

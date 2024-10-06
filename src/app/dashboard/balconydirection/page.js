@@ -50,7 +50,7 @@ const BalconyDirection = () => {
 
   const getData = () => {
     axios
-      .get("http://localhost:3001/balconyDirection")
+      .get("https://api.connecthome.vn/balconyDirection")
       .then((res) => {
         console.log(res)
         setData(res.data.data);
@@ -61,7 +61,7 @@ const BalconyDirection = () => {
 
   const onDelete = (id) => {
     axios
-      .post("http://localhost:3001/balconyDirection/delete", { id: id })
+      .post("https://api.connecthome.vn/balconyDirection/delete", { id: id })
       .then((res) => {
         messageApi.open({
           type: "success",

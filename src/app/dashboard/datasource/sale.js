@@ -27,7 +27,7 @@ const Sale = (prop) => {
   const data = useSelector((state) => state.apartment.data);
 
   // const { data, error, isLoading } = useSWR(
-  //   `http://localhost:3001/apartment/khosale`,
+  //   `https://api.connecthome.vn/apartment/khosale`,
   //   fetcher,
   //   {
   //     revalidateIfStale: false,
@@ -56,13 +56,13 @@ const Sale = (prop) => {
 
   // const onChangeStatus = (values) => {
   //   axios
-  //     .post("http://localhost:3001/apartment/change-status", {
+  //     .post("https://api.connecthome.vn/apartment/change-status", {
   //       id: values._id,
   //       status: !values.status,
   //     })
   //     .then((res) => {
   //       console.log(res);
-  //       mutate("http://localhost:3001/apartment/khosale");
+  //       mutate("https://api.connecthome.vn/apartment/khosale");
   //     })
   //     .catch((e) => console.log(e));
   // };

@@ -70,7 +70,7 @@ export const actFetchApartment = () => {
   return (dispatch) => {
     return (
       dispatch(actLoadingApartment()),
-      axios.get("http://localhost:3001/apartment").then((res) => {
+      axios.get("https://api.connecthome.vn/apartment").then((res) => {
         dispatch(fetchApartment(res.data.data));
       })
     );
@@ -82,7 +82,7 @@ export const actChangeStatusApartment = (values) => {
     return (
       dispatch(actLoadingApartment()),
       axios
-        .post("http://localhost:3001/apartment/change-status", {
+        .post("https://api.connecthome.vn/apartment/change-status", {
           id: values._id,
           status: !values.status,
         })
@@ -95,7 +95,7 @@ export const actChangeStatusApartment = (values) => {
 export const actEditApartment = (values) => {
   return (dispatch) => {
     return axios
-      .post("http://localhost:3001/apartment/edit", values)
+      .post("https://api.connecthome.vn/apartment/edit", values)
       .then((res) => dispatch(editApartment(res.data.data)))
       .catch((e) => console.log(e));
   };
@@ -106,7 +106,7 @@ export const actSearchApartment = (values, key) => {
     return (
       dispatch(actLoadingApartment()),
       axios
-        .post("http://localhost:3001/apartment/search", values)
+        .post("https://api.connecthome.vn/apartment/search", values)
         .then((res) => {
           dispatch(searchApartment(res.data.data, key));
         })
@@ -120,7 +120,7 @@ export const actBanApartment = () => {
     return (
       dispatch(actLoadingApartment()),
       axios
-        .get("http://localhost:3001/apartment/khosale")
+        .get("https://api.connecthome.vn/apartment/khosale")
         .then((res) => {
           dispatch(banApartment(res.data.data));
         })
@@ -134,7 +134,7 @@ export const actThueApartment = () => {
     return (
       dispatch(actLoadingApartment()),
       axios
-        .get("http://localhost:3001/apartment/khomua")
+        .get("https://api.connecthome.vn/apartment/khomua")
         .then((res) => {
           dispatch(thueApartment(res.data.data));
         })
@@ -147,7 +147,7 @@ export const actDeleteApartment = (id) => {
   return (dispatch) => {
     dispatch(actLoadingApartment()),
       axios
-        .post("http://localhost:3001/apartment/delete", { id: id })
+        .post("https://api.connecthome.vn/apartment/delete", { id: id })
         .then((res) => {
           dispatch(deleteApartment(id));
         });

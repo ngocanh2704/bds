@@ -19,7 +19,7 @@ const Furnished = () => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const { data, error, isLoading } = useSWR(
-    `http://localhost:3001/furnished`,
+    `https://api.connecthome.vn/furnished`,
     fetcher,
     {
       revalidateIfStale: false,
@@ -36,7 +36,7 @@ const Furnished = () => {
     } else {
       if (jwtDecode(token).exp < currentTime) {
         deleteCookie("token");
-        mutate("http://localhost:3001/furnished");
+        mutate("https://api.connecthome.vn/furnished");
         redirect("/login");
       }
     }
@@ -82,8 +82,8 @@ const Furnished = () => {
   };
 
   const onDelete = (id) => {
-    axios.post("http://localhost:3001/furnished/delete", { id: id }).then((res) => {
-      mutate("http://localhost:3001/furnished");
+    axios.post("https://api.connecthome.vn/furnished/delete", { id: id }).then((res) => {
+      mutate("https://api.connecthome.vn/furnished");
       messageApi.open({
         type: "success",
         content: res.data.message,
