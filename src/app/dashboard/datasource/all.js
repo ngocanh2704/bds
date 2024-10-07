@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   actChangeStatusApartment,
   actDeleteApartment,
+  actRequestApartment,
 } from "@/actions/actionApartment";
 
 const config = {
@@ -29,41 +30,10 @@ const ALl = (prop) => {
   // },[prop.search])
   const dispatch = useDispatch();
   const onChangeStatus = (values) => dispatch(actChangeStatusApartment(values));
-
+  const actionRequest = (id) => dispatch(actRequestApartment(id));
   const dataApartment = useSelector((state) => state.apartment.data);
-  const loading = useSelector(state=>state.apartment.isLoading)
-  const handleDelete = (id) => dispatch(actDeleteApartment(id))
-  // const handleDelete = (id) => {
-  //   axios
-  //     .post("https://api.connecthome.vn/apartment/delete", { id: id })
-  //     .then((res) => {
-  //       const newData = data.filter((item) => item._id !== id);
-  //       setData(newData);
-  //       setIsLoading(false);
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
-  // const { data, error, isLoading } = useSWR(
-  //   `https://api.connecthome.vn/apartment`,
-  //   fetcher,
-  //   {
-  //     revalidateIfStale: false,
-  //     revalidateOnFocus: false,
-  //     revalidateOnReconnect: false,
-  //   }
-  // );
-
-  // const getAllData = () => {
-  //   var roleStaff = getCookie('role')
-  //   axios.get('https://api.connecthome.vn/apartment').then(res => {
-  //     if (roleStaff == 'staff') {
-  //       setData(res.data.data.filter(item => item.status == true))
-  //     } else {
-  //       setData(res.data.data)
-  //     }
-  //     setIsLoading(false)
-  //   }).catch(e => console.log(e))
-  // }
+  const loading = useSelector((state) => state.apartment.isLoading);
+  const handleDelete = (id) => dispatch(actDeleteApartment(id));
 
   useEffect(() => {
     var token = getCookie("token");
@@ -196,11 +166,24 @@ const ALl = (prop) => {
       render: (text, record, index) => (
         <>
           <Flex gap="small" wrap>
-            <Switch
-              onChange={() => onChangeStatus(record)}
-              checked={record.status}
-            ></Switch>
-            <Button type="primary" onClick={() => actionRequest(record._id)}>
+            {role == "staff" ? (
+              ""
+            ) : (
+              <Switch
+                checked={record.status}
+                onClick={() => onChangeStatus(record)}
+              ></Switch>
+            )}
+            <Button
+              type="primary"
+              onClick={() => {
+                actionRequest(record._id),
+                  messageApi.open({
+                    type: "success",
+                    content: "Đã yêu cầu thành công",
+                  });
+              }}
+            >
               Yêu cầu
             </Button>
             {record.image.length == 0 ? (
@@ -266,22 +249,22 @@ const ALl = (prop) => {
     },
   ].filter((item) => !item.hidden);
 
-  const actionRequest = (id) => {
-    const user = getCookie("user");
-    axios
-      .post("https://api.connecthome.vn/apartment/request-data", {
-        id: id,
-        user: user,
-      })
-      .then((res) => {
-        mutate("https://api.connecthome.vn/apartment/request");
-        messageApi.open({
-          type: "success",
-          content: "Đã yêu cầu thành công",
-        });
-      })
-      .catch((e) => console.log(e));
-  };
+  // const actionRequest = (id) => {
+  //   const user = getCookie("user");
+  //   axios
+  //     .post("https://api.connecthome.vn/apartment/request-data", {
+  //       id: id,
+  //       user: user,
+  //     })
+  //     .then((res) => {
+  //       mutate("https://api.connecthome.vn/apartment/request");
+  //       messageApi.open({
+  //         type: "success",
+  //         content: "Đã yêu cầu thành công",
+  //       });
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
 
   return (
     <>

@@ -6,7 +6,7 @@ import { getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 import useSWR, { mutate } from "swr";
 import { useDispatch, useSelector } from "react-redux";
-import { actBanApartment, actChangeStatusApartment, banApartment } from "@/actions/actionApartment";
+import { actBanApartment, actChangeStatusApartment, actRequestApartment, banApartment } from "@/actions/actionApartment";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -18,6 +18,7 @@ const Sale = (prop) => {
   const dispatch = useDispatch();
   const getData = () => dispatch(actBanApartment());
   const onChangeStatus = (values) => dispatch(actChangeStatusApartment(values));
+  const actionRequest = (id) => dispatch(actRequestApartment(id));
   const loading = useSelector(state=>state.apartment.isLoading)
   const handleDelete = (id) => dispatch(actDeleteApartment(id))
   useEffect(() => {
@@ -25,18 +26,6 @@ const Sale = (prop) => {
   }, []);
 
   const data = useSelector((state) => state.apartment.data);
-
-  // const { data, error, isLoading } = useSWR(
-  //   `https://api.connecthome.vn/apartment/khosale`,
-  //   fetcher,
-  //   {
-  //     revalidateIfStale: false,
-  //     revalidateOnFocus: false,
-  //     revalidateOnReconnect: false,
-  //   }
-  // );
-
-  // const dataStaff = (data?.data.filter(item=>item.status == true))
 
   const rowSelection = {
     onChange: (selectedRowKeys, selectedRows) => {
@@ -53,19 +42,6 @@ const Sale = (prop) => {
       name: record.name,
     }),
   };
-
-  // const onChangeStatus = (values) => {
-  //   axios
-  //     .post("https://api.connecthome.vn/apartment/change-status", {
-  //       id: values._id,
-  //       status: !values.status,
-  //     })
-  //     .then((res) => {
-  //       console.log(res);
-  //       mutate("https://api.connecthome.vn/apartment/khosale");
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
 
   const spliceString = (text) => {
     var text = text.charAt(text.lenght);
@@ -247,6 +223,7 @@ const Sale = (prop) => {
       loading={loading}
       columns={columns}
       dataSource={data}
+      rowKey={(record) => record._id}
       size="small"
       pagination={{
         defaultPageSize: 20,

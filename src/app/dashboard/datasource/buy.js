@@ -8,6 +8,7 @@ import useSWR, { mutate } from "swr";
 import {
   actChangeStatusApartment,
   actDeleteApartment,
+  actRequestApartment,
   actThueApartment,
 } from "@/actions/actionApartment";
 import { useDispatch, useSelector } from "react-redux";
@@ -22,6 +23,7 @@ const Buy = (prop) => {
   const dispatch = useDispatch();
   const getData = () => dispatch(actThueApartment());
   const onChangeStatus = (values) => dispatch(actChangeStatusApartment(values));
+  const actionRequest = (id) => dispatch(actRequestApartment(id));
   const handleDelete = (id) => dispatch(actDeleteApartment(id));
   const loading = useSelector(state=>state.apartment.isLoading)
   useEffect(() => {
@@ -228,6 +230,7 @@ const Buy = (prop) => {
       columns={columns}
       loading={loading}
       dataSource={data}
+      rowKey={(record) => record._id}
       size="small"
       pagination={{
         defaultPageSize: 20,

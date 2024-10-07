@@ -8,6 +8,9 @@ const {
   THUE_APARTMENT,
   FETCH_LOADING,
   DELETE_APARTMENT,
+  FETCH_REQUEST_APARTMENT,
+  REQUEST_APARTMENT,
+  APPROVE_APARTMENT,
 } = require("@/actions/actionTypes");
 
 var initialState = { data: [] };
@@ -73,6 +76,21 @@ const apartment = (state = initialState, action) => {
     case DELETE_APARTMENT:
       var id = action.id;
       state.data = state.data.filter((item) => item._id !== id);
+    case FETCH_REQUEST_APARTMENT:
+      var arr = [];
+      for (let i = 0; i < action.data.length; i++) {
+        const element = action.data[i].apartment;
+        element.id = action.data[i]._id;
+        arr.push(element);
+      }
+      state.data = arr;
+    case APPROVE_APARTMENT:
+      var id = action.id;
+      state.data = state.data.filter((item) => item._id !== id);
+      if (role == "staff") {
+        state.data = state.data.filter((item) => item.status == true);
+      }
+      return { ...state, isLoading: false };
     default:
       return { ...state, isLoading: false };
   }

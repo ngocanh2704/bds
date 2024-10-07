@@ -1,10 +1,21 @@
 import axios from "axios";
-import { useEffect, useState, useRef, useImperativeHandle, forwardRef } from "react";
-import { Button, Flex, Table, Input, Form, Space, Tag } from "antd";
+import {
+  useEffect,
+  useState,
+  useRef,
+  useImperativeHandle,
+  forwardRef,
+} from "react";
+import { Button, Flex, Table, Input, Form, Space, Tag,message } from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  actApproveApartment,
+  actFecthRequestApartment,
+} from "@/actions/actionApartment";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -13,26 +24,18 @@ const fetcher = (url) => axios.get(url, config).then((res) => res.data);
 
 const Request = forwardRef(function Request(prop, ref) {
   const [role, setRole] = useState("");
-  const [data, setData] = useState([])
-  const [isLoading, setIsLoading] = useState(true)
+  // const [data, setData] = useState([])
+  const [messageApi, contextHolder] = message.useMessage();
 
-  const getRequest = () => {
-    var arr = []
-    axios.get(`https://api.connecthome.vn/apartment/request`).then(res => {
-      for (let i = 0; i < res.data.data.length; i++) {
-        const element = res.data.data[i].apartment;
-        element.id = res.data.data[i]._id
-        arr.push(element)
-      }
-      setData(arr)
-    }).catch(e => console.log(e))
-  }
-
-  useImperativeHandle(ref, () => (console.log('test')))
+  const dispatch = useDispatch();
+  const getData = () => dispatch(actFecthRequestApartment());
+  const actionRequest = (id) => dispatch(actApproveApartment(id));
+  const loading = useSelector(state=> state.apartment.isLoading)
+  const data = useSelector((state) => state.apartment.data);
 
   useEffect(() => {
-    getRequest()
-  }, [])
+    getData();
+  }, []);
 
   useEffect(() => {
     var token = getCookie("token");
@@ -75,8 +78,8 @@ const Request = forwardRef(function Request(prop, ref) {
   const columns = [
     {
       title: "STT",
-      dataIndex: "_id",
-      key: "_id",
+      dataIndex: "id",
+      key: "id",
       render: (text, record, index) => {
         return <>{index + 1}</>;
       },
@@ -103,15 +106,13 @@ const Request = forwardRef(function Request(prop, ref) {
       title: "Chủ căn hộ",
       dataIndex: "owner",
       key: "owner",
-      render: (item) =>
-        item
+      render: (item) => item,
     },
     {
       title: "Số điện thoại",
       dataIndex: "phone_number",
       key: "phone_number",
-      render: (item) =>
-        item
+      render: (item) => item,
     },
     {
       title: "Giá bán",
@@ -160,7 +161,13 @@ const Request = forwardRef(function Request(prop, ref) {
         <>
           <Flex gap="small" wrap>
             {(role == "admin") | (role == "manager") ? (
-              <Button type="primary" onClick={() => actionRequest(record.id)}>
+              <Button type="primary" onClick={() =>{ actionRequest(record.id)
+                messageApi.open({
+                  type: "success",
+                  content: "Đã duyệt yêu cầu thành công",
+                });
+
+              }}>
                 Duyệt yêu cầu
               </Button>
             ) : (
@@ -196,17 +203,17 @@ const Request = forwardRef(function Request(prop, ref) {
     },
   ];
 
-  const actionRequest = (id) => {
-    axios
-      .post("https://api.connecthome.vn/apartment/approve-data", {
-        id: id,
-        user: getCookie("user"),
-      })
-      .then((res) => {
-        getRequest()
-      })
-      .catch((e) => console.log(e));
-  };
+  // const actionRequest = (id) => {
+  //   axios
+  //     .post("https://api.connecthome.vn/apartment/approve-data", {
+  //       id: id,
+  //       user: getCookie("user"),
+  //     })
+  //     .then((res) => {
+  //       // getData()
+  //     })
+  //     .catch((e) => console.log(e));
+  // };
 
   const onDelete = (id) => {
     axios
@@ -220,19 +227,20 @@ const Request = forwardRef(function Request(prop, ref) {
   return (
     <>
       {/* <Search style={{ marginBottom: 20 }} /> */}
+      {contextHolder}
       <Table
         rowSelection={{
           ...rowSelection,
         }}
         columns={columns}
-        dataSource={role == 'staff' ? [] : data}
-        // loading={isLoading}
+        dataSource={data}
+        loading={loading}
         rowKey={(record) => record.id}
         size="small"
         pagination={{
           defaultPageSize: 20,
           pageSizeOptions: [20, 30, 40, 50],
-          showSizeChanger: true
+          showSizeChanger: true,
         }}
       />
     </>

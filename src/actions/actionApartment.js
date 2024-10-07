@@ -1,14 +1,18 @@
 import axios from "axios";
 import {
+  APPROVE_APARTMENT,
   BAN_APARTMENT,
   CHANGE_STATUS_APARTMENT,
   DELETE_APARTMENT,
   EDIT_APARTMENT,
   FETCH_APARTMENT,
   FETCH_LOADING,
+  FETCH_REQUEST_APARTMENT,
+  REQUEST_APARTMENT,
   SEARCH_APARTMENT,
   THUE_APARTMENT,
 } from "./actionTypes";
+import { getCookie } from "cookies-next";
 
 export const fetchApartment = (data) => {
   return {
@@ -66,6 +70,28 @@ export const deleteApartment = (id) => {
   };
 };
 
+export const fetchRequestApartment = (data) => {
+  return {
+    type: FETCH_REQUEST_APARTMENT,
+    data,
+  };
+};
+
+export const requestApartment = (data) => {
+  return {
+    type: REQUEST_APARTMENT,
+    data,
+  };
+};
+
+export const approveApartment = (id) => {
+  return {
+    type: APPROVE_APARTMENT,
+    id,
+  };
+};
+
+//action
 export const actFetchApartment = () => {
   return (dispatch) => {
     return (
@@ -151,5 +177,44 @@ export const actDeleteApartment = (id) => {
         .then((res) => {
           dispatch(deleteApartment(id));
         });
+  };
+};
+
+export const actFecthRequestApartment = () => {
+  return (dispatch) => {
+    return (
+      dispatch(actLoadingApartment()),
+      axios
+        .get("https://api.connecthome.vn/apartment/request")
+        .then((res) => {
+          dispatch(fetchRequestApartment(res.data.data));
+        })
+        .catch((e) => console.log(e))
+    );
+  };
+};
+
+export const actRequestApartment = (id) => {
+  const user = getCookie("user");
+  return (dispatch) => {
+    return axios
+      .post("https://api.connecthome.vn/apartment/request-data", {
+        id: id,
+        user: user,
+      })
+  };
+};
+
+export const actApproveApartment = (id) => {
+  const user = getCookie("user");
+  return (dispatch) => {
+    return axios
+      .post("https://api.connecthome.vn/apartment/approve-data", {
+        id: id,
+        user: user,
+      })
+      .then((res) => {
+        dispatch(approveApartment(res.data.data.apartment));
+      });
   };
 };

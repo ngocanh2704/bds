@@ -21,7 +21,9 @@ import { SearchOutlined } from "@ant-design/icons";
 import { getCookie } from "cookies-next";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  actApproveApartment,
   actFetchApartment,
+  actRequestApartment,
   actSearchApartment,
 } from "@/actions/actionApartment";
 
@@ -53,6 +55,8 @@ const DataSource = () => {
 
   const dispatch = useDispatch();
   const getApartment = () => dispatch(actFetchApartment());
+  const actionRequest = (id) => dispatch(actRequestApartment(id));
+  const actionApprove = (id) => dispatch(actApproveApartment(id));
   const searchApartment = (values, key) =>
     dispatch(actSearchApartment(values, key));
 
@@ -167,15 +171,16 @@ const DataSource = () => {
 
   const onClickYeuCauDongLoat = () => {
     itemsYeuCau.forEach((item) => {
-      axios
-        .post("https://api.connecthome.vn/apartment/request-data", {
-          id: item,
-          user: getCookie("user"),
-        })
-        .then((res) => {})
-        .catch((e) => console.log(e));
+      // axios
+      //   .post("https://api.connecthome.vn/apartment/request-data", {
+      //     id: item,
+      //     user: getCookie("user"),
+      //   })
+      //   .then((res) => {})
+      //   .catch((e) => console.log(e));
+      actionRequest(item);
     });
-    mutate("https://api.connecthome.vn/apartment/request");
+
     messageApi.open({
       type: "success",
       content: "Đã yêu cầu thành công",
@@ -199,12 +204,8 @@ const DataSource = () => {
 
   const onClickDuyetDongLoat = () => {
     itemsYeuCau.forEach((item) => {
-      axios
-        .post("https://api.connecthome.vn/apartment/approve-data", { id: item })
-        .then((res) => {})
-        .catch((e) => console.log(e));
+      actionApprove(item);
     });
-    childRef.current?.getRequest();
     messageApi.open({
       type: "success",
       content: "Đã duyệt thành công",
@@ -319,10 +320,11 @@ const DataSource = () => {
 
   const onFinish = (values) => {
     values.key = key;
-    values.isDelete = false
-    if(key == '2'){
+    values.isDelete = false;
+    if (key == "2") {
       values.sale_price = { $gt: 0 };
-    } if(key == '3'){
+    }
+    if (key == "3") {
       values.rental_price = { $gt: 0 };
     }
     searchApartment(values, key);
