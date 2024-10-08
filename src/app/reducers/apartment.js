@@ -76,7 +76,9 @@ const apartment = (state = initialState, action) => {
     case DELETE_APARTMENT:
       var id = action.id;
       state.data = state.data.filter((item) => item._id !== id);
+      return { ...state, isLoading: false };
     case FETCH_REQUEST_APARTMENT:
+      var role = getCookie("role");
       var arr = [];
       for (let i = 0; i < action.data.length; i++) {
         const element = action.data[i].apartment;
@@ -84,8 +86,13 @@ const apartment = (state = initialState, action) => {
         arr.push(element);
       }
       state.data = arr;
+      if (role == "staff") {
+        state.data = state.data.filter((item) => item.status == true);
+      }
+      return { ...state, isLoading: false };
     case APPROVE_APARTMENT:
       var id = action.id;
+      var role = getCookie("role");
       state.data = state.data.filter((item) => item._id !== id);
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);

@@ -131,7 +131,7 @@ const Sale = (prop) => {
       render: (text, record, index) => (
         <>
           <p>
-            - {record.project.project_name}-{record.area}m<sup>2</sup> -{" "}
+            - {record.project?.project_name}-{record.area}m<sup>2</sup> -{" "}
             {record.bedrooms}PN -{" "}
             {record.balcony_direction?.balcony_direction_name}
           </p>
