@@ -149,7 +149,7 @@ const DataSource = () => {
     },
     {
       key: "6",
-      label: "Yêu cầu số điện thoại",
+      label: "Số điện thoại được duyệt",
       children: (
         <DynamicApprove
           changeOn={() => changeOn()}
