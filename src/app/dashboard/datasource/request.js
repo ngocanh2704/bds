@@ -106,13 +106,13 @@ const Request = forwardRef(function Request(prop, ref) {
       title: "Chủ căn hộ",
       dataIndex: "owner",
       key: "owner",
-      render: (item) => item,
+      render: (item) => (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
     },
     {
       title: "Số điện thoại",
       dataIndex: "phone_number",
       key: "phone_number",
-      render: (item) => item,
+      render: (item) => (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
     },
     {
       title: "Giá bán",
