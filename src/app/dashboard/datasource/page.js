@@ -134,7 +134,7 @@ const DataSource = () => {
     },
     {
       key: "4",
-      label: "Duyệt yêu cầu số điện thoại",
+      label: "Số điện thoại yêu cầu",
       children: (
         <DynamicRequest
           changeOn={() => changeOn()}
