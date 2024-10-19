@@ -9,6 +9,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   actChangeStatusApartment,
   actDeleteApartment,
+  actFetchApartment,
   actRequestApartment,
 } from "@/actions/actionApartment";
 
@@ -33,7 +34,10 @@ const ALl = (prop) => {
   const actionRequest = (id) => dispatch(actRequestApartment(id));
   const dataApartment = useSelector((state) => state.apartment.data);
   const loading = useSelector((state) => state.apartment.isLoading);
+  const total_page = useSelector((state) => state.apartment.total_page);
+  console.log(total_page);
   const handleDelete = (id) => dispatch(actDeleteApartment(id));
+  const getApartment = (page) => dispatch(actFetchApartment(page));
 
   useEffect(() => {
     var token = getCookie("token");
@@ -249,23 +253,6 @@ const ALl = (prop) => {
     },
   ].filter((item) => !item.hidden);
 
-  // const actionRequest = (id) => {
-  //   const user = getCookie("user");
-  //   axios
-  //     .post("https://api.connecthome.vn/apartment/request-data", {
-  //       id: id,
-  //       user: user,
-  //     })
-  //     .then((res) => {
-  //       mutate("https://api.connecthome.vn/apartment/request");
-  //       messageApi.open({
-  //         type: "success",
-  //         content: "Đã yêu cầu thành công",
-  //       });
-  //     })
-  //     .catch((e) => console.log(e));
-  // };
-
   return (
     <>
       {/* <Search style={{ marginBottom: 20 }} /> */}
@@ -279,10 +266,13 @@ const ALl = (prop) => {
         loading={loading}
         rowKey={(record) => record._id}
         size="small"
+        onChange={(pagination) => {
+          getApartment(pagination.current);
+        }}
         pagination={{
           defaultPageSize: 20,
-          pageSizeOptions: [20, 30, 40, 50],
-          showSizeChanger: true,
+          total: total_page,
+          showSizeChanger: false
         }}
       />
     </>

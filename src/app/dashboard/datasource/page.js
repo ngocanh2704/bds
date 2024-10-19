@@ -443,32 +443,28 @@ const DataSource = () => {
             placeholder="Trục căn"
           ></Select>
         </Form.Item>
-        {(key == 2) | (key == 3) ? (
-          <>
-            <Form.Item initialValue={0}>
-              <InputNumber
-                placeholder="Giá từ"
-                style={{ width: 120 }}
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                }
-                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-              />
-            </Form.Item>
-            <Form.Item initialValue={0}>
-              <InputNumber
-                placeholder="Đến giá"
-                style={{ width: 120 }}
-                formatter={(value) =>
-                  `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-                }
-                parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-              />
-            </Form.Item>
-          </>
-        ) : (
-          ""
-        )}
+
+        <Form.Item name={"minPrice"} >
+          <InputNumber
+            placeholder="Giá từ"
+            style={{ width: 120 }}
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
+            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+          />
+        </Form.Item>
+        <Form.Item name="maxPrice" >
+          <InputNumber
+            placeholder="Đến giá"
+            style={{ width: 120 }}
+            formatter={(value) =>
+              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
+            }
+            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+          />
+        </Form.Item>
+
         <Form.Item>
           <Button type="primary" htmlType="submit">
             <SearchOutlined />

@@ -21,14 +21,14 @@ const apartment = (state = initialState, action) => {
       return { ...state, isLoading: true };
     case FETCH_APARTMENT:
       var role = getCookie("role");
-      state.data = action.data;
+      state.data = action.data.data;
       state.data = state.data.sort(function (x, y) {
         return x.status === y.status ? 0 : x.status ? -1 : 1;
       });
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);
       }
-      return { ...state, isLoading: false };
+      return { ...state, isLoading: false, total_page: action.data.total_page };
     case CHANGE_STATUS_APARTMENT:
       var stateIndex = state.data.findIndex(
         (item) => item._id == action.data._id
@@ -41,11 +41,23 @@ const apartment = (state = initialState, action) => {
       return { ...state, isLoading: false };
     case SEARCH_APARTMENT:
       var role = getCookie("role");
+      var values = action.values;
+      console.log(values);
       state.data = action.data;
       var key = action.key;
       state.data = state.data.sort(function (x, y) {
         return x.status === y.status ? 0 : x.status ? -1 : 1;
       });
+
+      if (values.minPrice !== undefined && values.maxPrice !== undefined) {
+        state.data = state.data.filter((item) => {
+          return (
+            item.sale_price >= values.minPrice &&
+            item.sale_price <= values.maxPrice
+          );
+        });
+      }
+
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);
       }
