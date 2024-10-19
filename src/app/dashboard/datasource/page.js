@@ -443,8 +443,20 @@ const DataSource = () => {
             placeholder="Trục căn"
           ></Select>
         </Form.Item>
+        <Form.Item name="price">
+          <Select
+            style={{ width: 170 }}
+            options={[
+              { value: "1", label: "Giá bán thấp" },
+              { value: "2", label: "Giá bán cao" },
+              { value: "3", label: "Giá thuê thấp" },
+              { value: "4", label: "Giá thuê cao" },
+            ]}
+            placeholder="Giá"
+          ></Select>
+        </Form.Item>
 
-        <Form.Item name={"minPrice"} >
+        {/* <Form.Item name={"minPrice"} >
           <InputNumber
             placeholder="Giá từ"
             style={{ width: 120 }}
@@ -463,7 +475,7 @@ const DataSource = () => {
             }
             parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
           />
-        </Form.Item>
+        </Form.Item> */}
 
         <Form.Item>
           <Button type="primary" htmlType="submit">
