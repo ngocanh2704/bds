@@ -115,10 +115,6 @@ const Buy = (prop) => {
       key: "sale_price",
       render: (item) =>
         item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
-      sorter: {
-        compare: (a, b) => a.sale_price - b.sale_price,
-        multiple: 1,
-      },
     },
     {
       title: "Giá thuê",
@@ -126,10 +122,6 @@ const Buy = (prop) => {
       key: "rental_price",
       render: (item) =>
         item ? `${item}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".") : 0,
-      sorter: {
-        compare: (a, b) => a.rental_price - b.rental_price,
-        multiple: 2,
-      },
     },
     {
       title: "Thông tin bất động sản",

@@ -42,21 +42,11 @@ const apartment = (state = initialState, action) => {
     case SEARCH_APARTMENT:
       var role = getCookie("role");
       var values = action.values;
-      console.log(values);
-      state.data = action.data;
+      state.data = action.data.data;
       var key = action.key;
       state.data = state.data.sort(function (x, y) {
         return x.status === y.status ? 0 : x.status ? -1 : 1;
       });
-
-      if (values.minPrice !== undefined && values.maxPrice !== undefined) {
-        state.data = state.data.filter((item) => {
-          return (
-            item.sale_price >= values.minPrice &&
-            item.sale_price <= values.maxPrice
-          );
-        });
-      }
 
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);
@@ -64,7 +54,7 @@ const apartment = (state = initialState, action) => {
       if (key == "2") {
         console.log(state.data.filter((item) => item.sale_price > 0));
       }
-      return { ...state, isLoading: false };
+      return { ...state, isLoading: false,total_page: action.data.total_page, search: true, values: values, key: key };
     case BAN_APARTMENT:
       var role = getCookie("role");
       state.data = action.data;

@@ -11,6 +11,7 @@ import {
   actDeleteApartment,
   actFetchApartment,
   actRequestApartment,
+  actSearchApartment,
 } from "@/actions/actionApartment";
 
 const config = {
@@ -35,9 +36,13 @@ const ALl = (prop) => {
   const dataApartment = useSelector((state) => state.apartment.data);
   const loading = useSelector((state) => state.apartment.isLoading);
   const total_page = useSelector((state) => state.apartment.total_page);
-  console.log(total_page);
+  const chechSearch = useSelector((state) => state.apartment.search);
+  const valuesSearch = useSelector((state) => state.apartment.values);
+  const keySearch = useSelector((state) => state.apartment.key);
   const handleDelete = (id) => dispatch(actDeleteApartment(id));
   const getApartment = (page) => dispatch(actFetchApartment(page));
+  const searchApartment = (values, key,page) =>
+    dispatch(actSearchApartment(values, key,page));
 
   useEffect(() => {
     var token = getCookie("token");
@@ -259,12 +264,14 @@ const ALl = (prop) => {
         rowKey={(record) => record._id}
         size="small"
         onChange={(pagination) => {
-          getApartment(pagination.current);
+          chechSearch == true
+            ? searchApartment(valuesSearch, keySearch, pagination.current)
+            : getApartment(pagination.current);
         }}
         pagination={{
           defaultPageSize: 20,
           total: total_page,
-          showSizeChanger: false
+          showSizeChanger: false,
         }}
       />
     </>

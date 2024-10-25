@@ -327,6 +327,24 @@ const DataSource = () => {
     if (key == "3") {
       values.rental_price = { $gt: 0 };
     }
+    if (values.minSalePrice && values.maxSalePrice) {
+      if (values.minSalePrice <= values.maxSalePrice) {
+        values.sale_price = {
+          $gte: values.minSalePrice,
+          $lte: values.maxSalePrice,
+        };
+      }
+    }
+
+    if (values.minRentalPrice && values.maxRentalPrice) {
+      if (values.minRentalPrice <= values.maxRentalPrice) {
+        values.rental_price = {
+          $gte: values.minRentalPrice,
+          $lte: values.maxRentalPrice,
+        };
+      }
+    }
+    // console.log(values);
     searchApartment(values, key);
   };
 
@@ -387,106 +405,130 @@ const DataSource = () => {
       </Flex>
       <ModalUpload open={on} hideModal={() => changeOn()} id={id} />
       <DynamicModalData open={open} hideModal={() => changeOpen()} id={id} />
+
       <Form layout="inline" onFinish={onFinish}>
-        <Form.Item name="project_id">
-          <Select
-            style={{ width: 120 }}
-            options={project}
-            placeholder="Chọn dự án"
-          ></Select>
-        </Form.Item>
-        <Form.Item name={"building_id"}>
-          <Select
-            style={{ width: 120 }}
-            options={building}
-            placeholder="Chọn toà"
-          ></Select>
-        </Form.Item>
-        <Form.Item name={"furnished"}>
-          <Select
-            style={{ width: 150 }}
-            options={furnished}
-            placeholder="Chọn nội thất"
-          ></Select>
-        </Form.Item>
-        <Form.Item name={"property_id"}>
-          <Select
-            style={{ width: 150 }}
-            options={property}
-            placeholder="Chọn loại BDS"
-          ></Select>
-        </Form.Item>
-        <Form.Item name="balconyDirection_id">
-          <Select
-            style={{ width: 190 }}
-            options={balconyDirection}
-            placeholder="Chọn hướng ban công"
-          ></Select>
-        </Form.Item>
-        <Form.Item name="bedrooms">
-          <Select
-            style={{ width: 170 }}
-            options={[
-              { value: "1", label: "1" },
-              { value: "2", label: "2" },
-              { value: "3", label: "3" },
-              { value: "4", label: "4" },
-              { value: "5", label: "5" },
-            ]}
-            placeholder="Chọn số phòng ngủ"
-          ></Select>
-        </Form.Item>
-        <Form.Item name="axis_id">
-          <Select
-            style={{ width: 100 }}
-            options={axis}
-            placeholder="Trục căn"
-          ></Select>
-        </Form.Item>
-        <Form.Item name="price">
-          <Select
-            style={{ width: 170 }}
-            options={[
-              { value: "1", label: "Giá bán thấp" },
-              { value: "2", label: "Giá bán cao" },
-              { value: "3", label: "Giá thuê thấp" },
-              { value: "4", label: "Giá thuê cao" },
-            ]}
-            placeholder="Giá"
-          ></Select>
-        </Form.Item>
+        <Row>
+          <Form.Item name="project_id">
+            <Select
+              style={{ width: 120 }}
+              options={project}
+              placeholder="Chọn dự án"
+            ></Select>
+          </Form.Item>
+          <Form.Item name={"building_id"}>
+            <Select
+              style={{ width: 120 }}
+              options={building}
+              placeholder="Chọn toà"
+            ></Select>
+          </Form.Item>
+          <Form.Item name={"furnished"}>
+            <Select
+              style={{ width: 150 }}
+              options={furnished}
+              placeholder="Chọn nội thất"
+            ></Select>
+          </Form.Item>
+          <Form.Item name={"property_id"}>
+            <Select
+              style={{ width: 150 }}
+              options={property}
+              placeholder="Chọn loại BDS"
+            ></Select>
+          </Form.Item>
+          <Form.Item name="balconyDirection_id">
+            <Select
+              style={{ width: 190 }}
+              options={balconyDirection}
+              placeholder="Chọn hướng ban công"
+            ></Select>
+          </Form.Item>
+          <Form.Item name="bedrooms">
+            <Select
+              style={{ width: 170 }}
+              options={[
+                { value: "1", label: "1" },
+                { value: "2", label: "2" },
+                { value: "3", label: "3" },
+                { value: "4", label: "4" },
+                { value: "5", label: "5" },
+              ]}
+              placeholder="Chọn số phòng ngủ"
+            ></Select>
+          </Form.Item>
+          <Form.Item name="axis_id">
+            <Select
+              style={{ width: 100 }}
+              options={axis}
+              placeholder="Trục căn"
+            ></Select>
+          </Form.Item>
+        </Row>
+        <Row style={{ marginTop: 20 }}>
+          <Form.Item name="price">
+            <Select
+              style={{ width: 120 }}
+              options={[
+                { value: "1", label: "Giá bán thấp" },
+                { value: "2", label: "Giá bán cao" },
+                { value: "3", label: "Giá thuê thấp" },
+                { value: "4", label: "Giá thuê cao" },
+              ]}
+              placeholder="Giá"
+            ></Select>
+          </Form.Item>
 
-        {/* <Form.Item name={"minPrice"} >
-          <InputNumber
-            placeholder="Giá từ"
-            style={{ width: 120 }}
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
-            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-          />
-        </Form.Item>
-        <Form.Item name="maxPrice" >
-          <InputNumber
-            placeholder="Đến giá"
-            style={{ width: 120 }}
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ".")
-            }
-            parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
-          />
-        </Form.Item> */}
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit">
-            <SearchOutlined />
-          </Button>
-        </Form.Item>
-        <Form.Item>
-          <Button htmlType="reset" onClick={() => getApartment()}>
-            reset
-          </Button>
-        </Form.Item>
+          <Form.Item name="minSalePrice">
+            <InputNumber
+              placeholder="Giá bán từ"
+              style={{ width: 120 }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            />
+          </Form.Item>
+          <Form.Item name="maxSalePrice">
+            <InputNumber
+              placeholder="Đến giá"
+              style={{ width: 120 }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            />
+          </Form.Item>
+          <Form.Item name={"minRentalPrice"}>
+            <InputNumber
+              placeholder="Giá thuê từ"
+              style={{ width: 120 }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            />
+          </Form.Item>
+          <Form.Item name="maxRentalPrice">
+            <InputNumber
+              placeholder="Đến giá"
+              style={{ width: 120 }}
+              formatter={(value) =>
+                `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
+            />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit">
+              <SearchOutlined />
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <Button htmlType="reset" onClick={() => getApartment()}>
+              reset
+            </Button>
+          </Form.Item>
+        </Row>
       </Form>
       <Tabs
         defaultActiveKey="1"

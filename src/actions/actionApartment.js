@@ -40,7 +40,7 @@ export const searchApartment = (data, key, values) => {
     type: SEARCH_APARTMENT,
     data,
     key,
-    values
+    values,
   };
 };
 
@@ -128,14 +128,15 @@ export const actEditApartment = (values) => {
   };
 };
 
-export const actSearchApartment = (values, key) => {
+export const actSearchApartment = (values, key, page) => {
+  values.page = page
   return (dispatch) => {
     return (
       dispatch(actLoadingApartment()),
       axios
         .post("https://api.connecthome.vn/apartment/search", values)
         .then((res) => {
-          dispatch(searchApartment(res.data.data, key, values));
+          dispatch(searchApartment(res.data, key, values));
         })
         .catch((e) => console.log(e))
     );
@@ -188,7 +189,7 @@ export const actFecthRequestApartment = () => {
       axios
         .get("https://api.connecthome.vn/apartment/request")
         .then((res) => {
-          console.log(res)
+          console.log(res);
           dispatch(fetchRequestApartment(res.data.data));
         })
         .catch((e) => console.log(e))
@@ -199,11 +200,10 @@ export const actFecthRequestApartment = () => {
 export const actRequestApartment = (id) => {
   const user = getCookie("user");
   return (dispatch) => {
-    return axios
-      .post("https://api.connecthome.vn/apartment/request-data", {
-        id: id,
-        user: user,
-      })
+    return axios.post("https://api.connecthome.vn/apartment/request-data", {
+      id: id,
+      user: user,
+    });
   };
 };
 
