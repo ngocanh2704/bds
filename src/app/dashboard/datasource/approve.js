@@ -1,10 +1,12 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { Button, Flex, Table, Input, Form, Space, Tag } from "antd";
+import { Button, Flex, Table, Input, Form, Space, Tag, Popconfirm, message } from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
 import { redirect } from "next/navigation";
+import { useDispatch } from "react-redux";
+import { actDeleteRequestApproveApartment } from "@/actions/actionApartment";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -25,9 +27,11 @@ const Approve = (prop) => {
   //     revalidateOnReconnect: false,
   //   }
   // );
+  const dispatch = useDispatch();
+  const handleDelete = (id) => dispatch(actDeleteRequestApproveApartment(id));
 
   const getData = () => {
-    var arr = []
+    var arr = [];
     axios
       .post("https://api.connecthome.vn/apartment/approve-user", {
         user: getCookie("user"),
@@ -37,10 +41,10 @@ const Approve = (prop) => {
         // setData(res.data.data);
         for (let i = 0; i < res.data.data.length; i++) {
           const element = res.data.data[i].apartment;
-          element.id = res.data.data[i]._id
-          arr.push(element)
+          element.id = res.data.data[i]._id;
+          arr.push(element);
         }
-        setData(arr)
+        setData(arr);
       })
       .catch((e) => console.log(e));
   };
@@ -84,6 +88,17 @@ const Approve = (prop) => {
   useEffect(() => {
     setRole(getCookie("role"));
   }, []);
+
+  const confirm = (id) => {
+    // message.success("Click on Yes");
+    handleDelete(id);
+    message.success("Căn hộ đã được xoá thành công.");
+    getData();
+  };
+
+  const cancel = (e) => {
+    message.error("Bạn đã huỷ thao tác.");
+  };
 
   const columns = [
     {
@@ -168,16 +183,30 @@ const Approve = (prop) => {
         <>
           <Flex gap="small" wrap>
             {record.image[0] == undefined ? (
-              <Button
-                type="primary"
-                style={{ backgroundColor: "#bfbfbf" }}
-                onClick={() => {
-                  prop.changeOn();
-                  prop.changeId(record._id);
-                }}
-              >
-                Hình ảnh
-              </Button>
+              <>
+                <Button
+                  type="primary"
+                  style={{ backgroundColor: "#bfbfbf" }}
+                  onClick={() => {
+                    prop.changeOn();
+                    prop.changeId(record._id);
+                  }}
+                >
+                  Hình ảnh
+                </Button>
+                <Popconfirm
+                  title="Xoá căn hộ"
+                  description={`Bạn có muốn xoá căn hộ?`}
+                  onConfirm={() => confirm(record.id)}
+                  onCancel={cancel}
+                  okText="Có"
+                  cancelText="Không"
+                >
+                  <Button type="primary" danger>
+                    Xoá
+                  </Button>
+                </Popconfirm>
+              </>
             ) : (
               <Button
                 type="primary"
@@ -219,8 +248,8 @@ const Approve = (prop) => {
         size="small"
         pagination={{
           defaultPageSize: 20,
-          pageSizeOptions: [20,30, 40, 50],
-          showSizeChanger: true
+          pageSizeOptions: [20, 30, 40, 50],
+          showSizeChanger: true,
         }}
       />
     </>

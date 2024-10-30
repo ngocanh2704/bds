@@ -11,6 +11,7 @@ const {
   FETCH_REQUEST_APARTMENT,
   REQUEST_APARTMENT,
   APPROVE_APARTMENT,
+  DELETE_REQUEST_APPROVE,
 } = require("@/actions/actionTypes");
 
 var initialState = { data: [] };
@@ -22,9 +23,9 @@ const apartment = (state = initialState, action) => {
     case FETCH_APARTMENT:
       var role = getCookie("role");
       state.data = action.data.data;
-      state.data = state.data.sort(function (x, y) {
-        return x.status === y.status ? 0 : x.status ? -1 : 1;
-      });
+      // state.data = state.data.sort(function (x, y) {
+      //   return x.status === y.status ? 0 : x.status ? -1 : 1;
+      // });
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);
       }
@@ -35,9 +36,9 @@ const apartment = (state = initialState, action) => {
       );
       state.data[stateIndex].status = action.data.status;
       state.data[stateIndex].color = action.data.color;
-      state.data = state.data.sort(function (x, y) {
-        return x.status === y.status ? 0 : x.status ? -1 : 1;
-      });
+      // state.data = state.data.sort(function (x, y) {
+      //   return x.status === y.status ? 0 : x.status ? -1 : 1;
+      // });
       return { ...state, isLoading: false };
     case SEARCH_APARTMENT:
       var role = getCookie("role");
@@ -54,7 +55,14 @@ const apartment = (state = initialState, action) => {
       if (key == "2") {
         console.log(state.data.filter((item) => item.sale_price > 0));
       }
-      return { ...state, isLoading: false,total_page: action.data.total_page, search: true, values: values, key: key };
+      return {
+        ...state,
+        isLoading: false,
+        total_page: action.data.total_page,
+        search: true,
+        values: values,
+        key: key,
+      };
     case BAN_APARTMENT:
       var role = getCookie("role");
       state.data = action.data;
@@ -100,6 +108,11 @@ const apartment = (state = initialState, action) => {
         state.data = state.data.filter((item) => item.status == true);
       }
       return { ...state, isLoading: false };
+    case DELETE_REQUEST_APPROVE: {
+      var id = action.id;
+      state.data = state.data.filter((item) => item._id !== id);
+      return { ...state, isLoading: false };
+    }
     default:
       return { ...state, isLoading: false };
   }

@@ -102,36 +102,36 @@ const DataSource = () => {
         />
       ),
     },
-    {
-      key: "2",
-      label: "Kho bán",
-      children: (
-        <DynamicSale
-          changeOn={() => changeOn()}
-          data={key}
-          changeOpen={() => changeOpen()}
-          changeId={(id) => changeId(id)}
-          onDelete={() => onDelete(id)}
-          changeLoading={() => changeLoading()}
-          yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
-        />
-      ),
-    },
-    {
-      key: "3",
-      label: "Kho Thuê",
-      children: (
-        <DynamicBuy
-          changeOn={() => changeOn()}
-          data={dataAll}
-          changeOpen={() => changeOpen()}
-          changeId={(id) => changeId(id)}
-          onDelete={() => onDelete(id)}
-          changeLoading={() => changeLoading()}
-          yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
-        />
-      ),
-    },
+    // {
+    //   key: "2",
+    //   label: "Kho bán",
+    //   children: (
+    //     <DynamicSale
+    //       changeOn={() => changeOn()}
+    //       data={key}
+    //       changeOpen={() => changeOpen()}
+    //       changeId={(id) => changeId(id)}
+    //       onDelete={() => onDelete(id)}
+    //       changeLoading={() => changeLoading()}
+    //       yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
+    //     />
+    //   ),
+    // },
+    // {
+    //   key: "3",
+    //   label: "Kho Thuê",
+    //   children: (
+    //     <DynamicBuy
+    //       changeOn={() => changeOn()}
+    //       data={dataAll}
+    //       changeOpen={() => changeOpen()}
+    //       changeId={(id) => changeId(id)}
+    //       onDelete={() => onDelete(id)}
+    //       changeLoading={() => changeLoading()}
+    //       yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
+    //     />
+    //   ),
+    // },
     {
       key: "4",
       label: "Số điện thoại yêu cầu",

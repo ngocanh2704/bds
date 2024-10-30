@@ -4,6 +4,7 @@ import {
   BAN_APARTMENT,
   CHANGE_STATUS_APARTMENT,
   DELETE_APARTMENT,
+  DELETE_REQUEST_APPROVE,
   EDIT_APARTMENT,
   FETCH_APARTMENT,
   FETCH_LOADING,
@@ -71,6 +72,13 @@ export const deleteApartment = (id) => {
   };
 };
 
+export const deleteRequestApproveApartment = (id) => {
+  return {
+    type: DELETE_REQUEST_APPROVE,
+    id,
+  };
+};
+
 export const fetchRequestApartment = (data) => {
   return {
     type: FETCH_REQUEST_APARTMENT,
@@ -129,7 +137,7 @@ export const actEditApartment = (values) => {
 };
 
 export const actSearchApartment = (values, key, page) => {
-  values.page = page
+  values.page = page;
   return (dispatch) => {
     return (
       dispatch(actLoadingApartment()),
@@ -178,6 +186,19 @@ export const actDeleteApartment = (id) => {
         .post("https://api.connecthome.vn/apartment/delete", { id: id })
         .then((res) => {
           dispatch(deleteApartment(id));
+        });
+  };
+};
+
+export const actDeleteRequestApproveApartment = (id) => {
+  return (dispatch) => {
+    dispatch(actLoadingApartment()),
+      axios
+        .post("https://api.connecthome.vn/apartment/remove-request-approve", {
+          id: id,
+        })
+        .then((res) => {
+          dispatch(deleteRequestApproveApartment(id));
         });
   };
 };

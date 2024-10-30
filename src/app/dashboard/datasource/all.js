@@ -1,6 +1,16 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { Button, Flex, Table, Switch, Form, Space, Tag, message } from "antd";
+import {
+  Button,
+  Flex,
+  Table,
+  Switch,
+  Form,
+  Space,
+  Tag,
+  message,
+  Popconfirm,
+} from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
@@ -24,8 +34,7 @@ const ALl = (prop) => {
   const [messageApi, contextHolder] = message.useMessage();
   const [data, setData] = useState([]);
   const [form] = Form.useForm();
-  const [status, setStatus] = useState("");
-  const [isLoading, setIsLoading] = useState(true);
+  const [page, setPage] = useState(1);
 
   // useEffect(()=>{
   //   prop.search.length == 0 ? setDataAll(data) : setDataAll(prop.search)
@@ -41,8 +50,8 @@ const ALl = (prop) => {
   const keySearch = useSelector((state) => state.apartment.key);
   const handleDelete = (id) => dispatch(actDeleteApartment(id));
   const getApartment = (page) => dispatch(actFetchApartment(page));
-  const searchApartment = (values, key,page) =>
-    dispatch(actSearchApartment(values, key,page));
+  const searchApartment = (values, key, page) =>
+    dispatch(actSearchApartment(values, key, page));
 
   useEffect(() => {
     var token = getCookie("token");
@@ -87,6 +96,25 @@ const ALl = (prop) => {
   useEffect(() => {
     setRole(getCookie("role"));
   }, []);
+
+  const confirm = (id) => {
+    // message.success("Click on Yes");
+    handleDelete(id);
+    message.success("Căn hộ đã được xoá thành công.");
+    chechSearch == true
+      ? searchApartment(valuesSearch, keySearch, page)
+      : getApartment(page);
+  };
+  const cancel = (e) => {
+    message.error("Bạn đã huỷ thao tác.");
+  };
+
+  const changeStatus = (record) => {
+    onChangeStatus(record);
+    chechSearch == true
+      ? searchApartment(valuesSearch, keySearch, page)
+      : getApartment(page);
+  };
 
   const columns = [
     {
@@ -172,7 +200,9 @@ const ALl = (prop) => {
             ) : (
               <Switch
                 checked={record.status}
-                onClick={() => onChangeStatus(record)}
+                onClick={() => {
+                  changeStatus(record);
+                }}
               ></Switch>
             )}
             <Button
@@ -223,17 +253,29 @@ const ALl = (prop) => {
                 >
                   Sửa
                 </Button>
-                <Button
+                {/* <Button
                   type="primary"
                   danger
                   on
                   onClick={() => {
                     // onDelete(record._id)
-                    handleDelete(record._id);
+                    // handleDelete(record._id);
                   }}
                 >
                   Xoá
-                </Button>
+                </Button> */}
+                <Popconfirm
+                  title="Xoá căn hộ"
+                  description={`Bạn có muốn xoá căn hộ?`}
+                  onConfirm={() => confirm(record._id)}
+                  onCancel={cancel}
+                  okText="Có"
+                  cancelText="Không"
+                >
+                  <Button type="primary" danger>
+                    Xoá
+                  </Button>
+                </Popconfirm>
               </>
             ) : (
               ""
@@ -264,12 +306,13 @@ const ALl = (prop) => {
         rowKey={(record) => record._id}
         size="small"
         onChange={(pagination) => {
+          setPage(pagination.current);
           chechSearch == true
             ? searchApartment(valuesSearch, keySearch, pagination.current)
             : getApartment(pagination.current);
         }}
         pagination={{
-          defaultPageSize: 20,
+          defaultPageSize: 50,
           total: total_page,
           showSizeChanger: false,
         }}

@@ -6,7 +6,17 @@ import {
   useImperativeHandle,
   forwardRef,
 } from "react";
-import { Button, Flex, Table, Input, Form, Space, Tag,message } from "antd";
+import {
+  Button,
+  Flex,
+  Table,
+  Input,
+  Form,
+  Space,
+  Tag,
+  message,
+  Popconfirm,
+} from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
@@ -14,6 +24,7 @@ import { redirect } from "next/navigation";
 import { useDispatch, useSelector } from "react-redux";
 import {
   actApproveApartment,
+  actDeleteRequestApproveApartment,
   actFecthRequestApartment,
 } from "@/actions/actionApartment";
 
@@ -30,7 +41,8 @@ const Request = forwardRef(function Request(prop, ref) {
   const dispatch = useDispatch();
   const getData = () => dispatch(actFecthRequestApartment());
   const actionRequest = (id) => dispatch(actApproveApartment(id));
-  const loading = useSelector(state=> state.apartment.isLoading)
+  const handleDelete = (id) => dispatch(actDeleteRequestApproveApartment(id));
+  const loading = useSelector((state) => state.apartment.isLoading);
   const data = useSelector((state) => state.apartment.data);
 
   useEffect(() => {
@@ -75,6 +87,17 @@ const Request = forwardRef(function Request(prop, ref) {
     setRole(getCookie("role"));
   }, []);
 
+  const confirm = (id) => {
+    // message.success("Click on Yes");
+    handleDelete(id);
+    message.success("Căn hộ đã được xoá thành công.");
+    getData();
+  };
+
+  const cancel = (e) => {
+    message.error("Bạn đã huỷ thao tác.");
+  };
+
   const columns = [
     {
       title: "STT",
@@ -106,13 +129,15 @@ const Request = forwardRef(function Request(prop, ref) {
       title: "Chủ căn hộ",
       dataIndex: "owner",
       key: "owner",
-      render: (item) => (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+      render: (item) =>
+        (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
     },
     {
       title: "Số điện thoại",
       dataIndex: "phone_number",
       key: "phone_number",
-      render: (item) => (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
+      render: (item) =>
+        (role == "admin") | (role == "manager") ? item : "xxxxxxxx",
     },
     {
       title: "Giá bán",
@@ -161,15 +186,32 @@ const Request = forwardRef(function Request(prop, ref) {
         <>
           <Flex gap="small" wrap>
             {(role == "admin") | (role == "manager") ? (
-              <Button type="primary" onClick={() =>{ actionRequest(record.id)
-                messageApi.open({
-                  type: "success",
-                  content: "Đã duyệt yêu cầu thành công",
-                });
-
-              }}>
-                Duyệt yêu cầu
-              </Button>
+              <>
+                <Button
+                  type="primary"
+                  onClick={() => {
+                    actionRequest(record.id);
+                    messageApi.open({
+                      type: "success",
+                      content: "Đã duyệt yêu cầu thành công",
+                    });
+                  }}
+                >
+                  Duyệt yêu cầu
+                </Button>
+                <Popconfirm
+                  title="Xoá căn hộ"
+                  description={`Bạn có muốn xoá căn hộ?`}
+                  onConfirm={() => confirm(record.id)}
+                  onCancel={cancel}
+                  okText="Có"
+                  cancelText="Không"
+                >
+                  <Button type="primary" danger>
+                    Xoá
+                  </Button>
+                </Popconfirm>
+              </>
             ) : (
               ""
             )}
