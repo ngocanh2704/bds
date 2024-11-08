@@ -1,6 +1,16 @@
 import axios from "axios";
 import { useEffect, useState, useRef } from "react";
-import { Button, Flex, Table, Input, Form, Space, Tag, Popconfirm, message } from "antd";
+import {
+  Button,
+  Flex,
+  Table,
+  Input,
+  Form,
+  Space,
+  Tag,
+  Popconfirm,
+  message,
+} from "antd";
 import { deleteCookie, getCookie } from "cookies-next";
 import useSWR, { mutate } from "swr";
 import { jwtDecode } from "jwt-decode";
@@ -194,18 +204,6 @@ const Approve = (prop) => {
                 >
                   Hình ảnh
                 </Button>
-                <Popconfirm
-                  title="Xoá căn hộ"
-                  description={`Bạn có muốn xoá căn hộ?`}
-                  onConfirm={() => confirm(record.id)}
-                  onCancel={cancel}
-                  okText="Có"
-                  cancelText="Không"
-                >
-                  <Button type="primary" danger>
-                    Xoá
-                  </Button>
-                </Popconfirm>
               </>
             ) : (
               <Button
@@ -218,6 +216,22 @@ const Approve = (prop) => {
               >
                 Hình ảnh
               </Button>
+            )}
+            {role == "staff" ? (
+              ""
+            ) : (
+              <Popconfirm
+                title="Xoá yêu cầu"
+                description={`Bạn có muốn xoá yêu cầu?`}
+                onConfirm={() => confirm(record.id)}
+                onCancel={cancel}
+                okText="Có"
+                cancelText="Không"
+              >
+                <Button type="primary" danger>
+                  Xoá
+                </Button>
+              </Popconfirm>
             )}
           </Flex>
         </>

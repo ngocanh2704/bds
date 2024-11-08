@@ -200,8 +200,8 @@ const Request = forwardRef(function Request(prop, ref) {
                   Duyệt yêu cầu
                 </Button>
                 <Popconfirm
-                  title="Xoá căn hộ"
-                  description={`Bạn có muốn xoá căn hộ?`}
+                  title="Xoá yêu cầu"
+                  description={`Bạn có muốn xoá yêu cầu?`}
                   onConfirm={() => confirm(record.id)}
                   onCancel={cancel}
                   okText="Có"

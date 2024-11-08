@@ -469,10 +469,10 @@ const DataSource = () => {
             <Select
               style={{ width: 120 }}
               options={[
-                { value: "1", label: "Giá bán thấp" },
-                { value: "2", label: "Giá bán cao" },
-                { value: "3", label: "Giá thuê thấp" },
-                { value: "4", label: "Giá thuê cao" },
+                { value: "1", label: "Giá bán tăng dần" },
+                { value: "2", label: "Giá bán giảm dần" },
+                { value: "3", label: "Giá thuê tăng dần" },
+                { value: "4", label: "Giá thuê giảm dần" },
               ]}
               placeholder="Giá"
             ></Select>
