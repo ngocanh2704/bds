@@ -52,7 +52,7 @@ const ALl = (prop) => {
   const getApartment = (page) => dispatch(actFetchApartment(page));
   const searchApartment = (values, key, page) =>
     dispatch(actSearchApartment(values, key, page));
-
+console.log(total_page)
   useEffect(() => {
     var token = getCookie("token");
     const currentTime = Date.now() / 1000;

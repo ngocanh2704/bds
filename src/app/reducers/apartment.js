@@ -29,7 +29,7 @@ const apartment = (state = initialState, action) => {
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);
       }
-      return { ...state, isLoading: false, total_page: action.data.total_page };
+      return { ...state, isLoading: false, total_page: action.data.total_page, search: false };
     case CHANGE_STATUS_APARTMENT:
       var stateIndex = state.data.findIndex(
         (item) => item._id == action.data._id
