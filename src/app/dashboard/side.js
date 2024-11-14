@@ -36,6 +36,7 @@ const Side = () => {
         "9"
       ),
       getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
+      getItem(<Link href="/dashboard/customer">Khách hàng</Link>, "11"),
     ]),
   ];
 

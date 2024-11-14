@@ -375,7 +375,6 @@ const DataSource = () => {
   return (
     <>
       {contextHolder}
-
       <Flex gap={"small"} wrap>
         <Button
           type="primary"
@@ -467,7 +466,7 @@ const DataSource = () => {
         <Row style={{ marginTop: 20 }}>
           <Form.Item name="price">
             <Select
-              style={{ width: 120 }}
+              style={{ width: 170 }}
               options={[
                 { value: "1", label: "Giá bán tăng dần" },
                 { value: "2", label: "Giá bán giảm dần" },

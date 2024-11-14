@@ -45,7 +45,6 @@ const CreateEmployee = (prop) => {
   const dateFormat = "DD/MM/YYYY";
   const onFinish = () => {
     var values = form.getFieldsValue();
-    console.log(values)
     const formData = new FormData();
     fileList.forEach((file) => {
       formData.append("cccd_image", file);
