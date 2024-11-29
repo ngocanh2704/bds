@@ -321,10 +321,10 @@ const DataSource = () => {
   const onFinish = (values) => {
     values.key = key;
     values.isDelete = false;
-    if (key == "2") {
+    if (values.price == 1 | values.price == 2) {
       values.sale_price = { $gt: 0 };
     }
-    if (key == "3") {
+    if (values.price == 3 | values.price == 4) {
       values.rental_price = { $gt: 0 };
     }
     if (values.minSalePrice && values.maxSalePrice) {

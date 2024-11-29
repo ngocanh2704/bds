@@ -145,7 +145,6 @@ export const actEditApartment = (values) => {
 
 export const actSearchApartment = (values, key, page) => {
   values.page = page;
-  console.log(page);
   return (dispatch) => {
     return (
       dispatch(actLoadingApartment()),
