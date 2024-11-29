@@ -42,10 +42,12 @@ const apartment = (state = initialState, action) => {
       state.data.unshift(action.data);
       return { ...state, isLoading: false };
     case EDIT_APARTMENT:
+      console.log(action)
       var stateIndex = state.data.findIndex(
         (item) => item._id == action.data._id
       );
       state.data[stateIndex] = action.data;
+      return { ...state, isLoading: false };
     case CHANGE_STATUS_APARTMENT:
       var stateIndex = state.data.findIndex(
         (item) => item._id == action.data._id
