@@ -16,6 +16,9 @@ import {
 import axios from "axios";
 import moment from "moment";
 import { mutate } from "swr";
+import { useDispatch } from "react-redux";
+import { actCreateApartment, actEditApartmen } from "@/actions/actionApartment";
+import { getCookie } from "cookies-next";
 
 const ModalData = (prop) => {
   const [form] = Form.useForm();
@@ -32,12 +35,17 @@ const ModalData = (prop) => {
   const [messageApi, contextHolder] = message.useMessage();
   const dateFormat = "DD/MM/YYYY";
 
+  const dispatch = useDispatch();
+  const createApartment = (values, hideModal) =>
+    dispatch(actCreateApartment(values, hideModal));
+  const editApartment = (values, hideModal) =>
+    dispatch(actEditApartmen(values, hideModal));
   const onFinish = async () => {
     var values = form.getFieldsValue();
-    var axisName =  (dataAxis.find(item => item.value == values.axis))
-    var buildingName = building.find(item => item.value == values.building)
-    var apartment_name = (buildingName.label + values.floor + axisName.label )
-   values.apartment_name = (apartment_name)
+    var axisName = dataAxis.find((item) => item.value == values.axis);
+    var buildingName = building.find((item) => item.value == values.building);
+    var apartment_name = buildingName.label + values.floor + axisName.label;
+    values.apartment_name = apartment_name;
     form
       .validateFields()
       .then((res) => {
@@ -50,39 +58,50 @@ const ModalData = (prop) => {
         }
 
         if (values.status == false) {
-          values.color = '#bfbfbf'
+          values.color = "#bfbfbf";
         }
 
-        if (values.color == '#fbff00') {
-          values.color = "#fbff00"
-        } else if (values.color == '#ff4d4f') {
-          values.color = "#ff4d4f"
-        } else if (values.color == 'rgb(88 206 79)') {
-          values.color == 'rgb(88 206 79)'
-        } else if (values.color == '#ffa416c4') {
-          values.color == '#ffa416c4'
+        if (values.color == "#fbff00") {
+          values.color = "#fbff00";
+        } else if (values.color == "#ff4d4f") {
+          values.color = "#ff4d4f";
+        } else if (values.color == "rgb(88 206 79)") {
+          values.color == "rgb(88 206 79)";
+        } else if (values.color == "#ffa416c4") {
+          values.color == "#ffa416c4";
         }
 
-        values.sale_price == undefined  ? values.sale_price = '0' : values.sale_price
-        values.rental_price == undefined  ? values.rental_price = '0' : values.rental_price 
+        values.sale_price == undefined
+          ? (values.sale_price = "0")
+          : values.sale_price;
+        values.rental_price == undefined
+          ? (values.rental_price = "0")
+          : values.rental_price;
 
-        var urlEdit = "https://api.connecthome.vn/apartment/edit";
-        var urlCreate = "https://api.connecthome.vn/apartment/create";
-        axios
-          .post(prop.id ? urlEdit : urlCreate, values)
-          .then((res) => {
-            prop.hideModal();
-            mutate("https://api.connecthome.vn/apartment");
-            mutate("https://api.connecthome.vn/apartment/khosale");
-          })
-          .catch((e) => {
-            if(!prop.id){
-              messageApi.open({
-                type: 'error',
-                content: 'Căn hộ đã tồn tại',
-              });
-            }
-          });
+        values.user = getCookie('user')
+        console.log(prop.id);
+        if(prop.id){
+          editApartment(values, prop.hideModal())
+        }else {
+          createApartment(values, prop.hideModal());
+        }
+        
+
+        // axios
+        //   .post(prop.id ? urlEdit : urlCreate, values)
+        //   .then((res) => {
+        //     prop.hideModal();
+        //     mutate("https://api.connecthome.vn/apartment");
+        //     mutate("https://api.connecthome.vn/apartment/khosale");
+        //   })
+        //   .catch((e) => {
+        //     if(!prop.id){
+        //       messageApi.open({
+        //         type: 'error',
+        //         content: 'Căn hộ đã tồn tại',
+        //       });
+        //     }
+        //   });
       })
       .catch((e) => console.log(e));
   };
@@ -139,7 +158,6 @@ const ModalData = (prop) => {
     axios
       .post("https://api.connecthome.vn/apartment/detail", { id: id })
       .then((res) => {
-        console.log(res.data.detail)
         var detail = res.data.detail;
         var available = [
           moment(detail.available_from),
@@ -165,7 +183,7 @@ const ModalData = (prop) => {
           status: detail.status,
           notes: detail.notes,
           available: available,
-          color: detail.color
+          color: detail.color,
         });
       })
       .catch((e) => console.log(e));
@@ -207,7 +225,7 @@ const ModalData = (prop) => {
     axios
       .get("https://api.connecthome.vn/furnished")
       .then((res) => {
-        console.log(res)
+        console.log(res);
         var array = [];
         res.data.data.forEach((item) => {
           array.push({
@@ -234,7 +252,7 @@ const ModalData = (prop) => {
     getDataBalcon();
     getBuilding();
     getProperty();
-    getFurnished()
+    getFurnished();
   }, []);
   return (
     <>
@@ -278,7 +296,10 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select options={dataProject} disabled={prop.id? true : false}></Select>
+                  <Select
+                    options={dataProject}
+                    disabled={prop.id ? true : false}
+                  ></Select>
                 </Form.Item>
                 <Form.Item
                   label="Toà"
@@ -290,7 +311,10 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select options={building} disabled={prop.id? true : false}/>
+                  <Select
+                    options={building}
+                    disabled={prop.id ? true : false}
+                  />
                 </Form.Item>
                 <Form.Item
                   label="Tầng"
@@ -302,7 +326,7 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Input disabled={prop.id? true : false}/>
+                  <Input disabled={prop.id ? true : false} />
                 </Form.Item>
                 <Form.Item
                   label="Trục căn hộ"
@@ -314,7 +338,10 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select options={dataAxis} disabled={prop.id? true : false}></Select>
+                  <Select
+                    options={dataAxis}
+                    disabled={prop.id ? true : false}
+                  ></Select>
                 </Form.Item>
                 <Form.Item label="Chủ căn hộ" name="owner">
                   <Input />
@@ -322,12 +349,16 @@ const ModalData = (prop) => {
                 <Form.Item label="Số điện thoại" name="phone_number">
                   <Input />
                 </Form.Item>
-                <Form.Item label="Loại bất động sản" name="property" rules={[
-                  {
-                    required: true,
-                    message: "Vui lòng loại bất động sản",
-                  },
-                ]}>
+                <Form.Item
+                  label="Loại bất động sản"
+                  name="property"
+                  rules={[
+                    {
+                      required: true,
+                      message: "Vui lòng loại bất động sản",
+                    },
+                  ]}
+                >
                   <Select options={property} />
                 </Form.Item>
                 <Form.Item label="Diện tích" name="area">
@@ -374,7 +405,11 @@ const ModalData = (prop) => {
                     parser={(value) => value?.replace(/\$\s?|(,*)/g, "")}
                   />
                 </Form.Item>
-                <Form.Item label="Giá cho thuê" name="rental_price" initialValue={0}>
+                <Form.Item
+                  label="Giá cho thuê"
+                  name="rental_price"
+                  initialValue={0}
+                >
                   <InputNumber
                     style={{ width: 150 }}
                     formatter={(value) =>
@@ -396,9 +431,7 @@ const ModalData = (prop) => {
                     },
                   ]}
                 >
-                  <Select
-                    options={furnished}
-                  ></Select>
+                  <Select options={furnished}></Select>
                 </Form.Item>
                 <Form.Item
                   label="Số ban công"
@@ -430,6 +463,7 @@ const ModalData = (prop) => {
                 <Form.Item
                   label="Thời gian cập nhật căn hộ"
                   name="last_updated"
+                  hidden
                 >
                   <DatePicker format={dateFormat} />
                 </Form.Item>
@@ -450,11 +484,19 @@ const ModalData = (prop) => {
                 <Form.Item label="Ghi chú" name="notes">
                   <TextArea />
                 </Form.Item>
-                <Form.Item label="Đánh dấu" name="color" initialValue={'#ffffff'}>
+                <Form.Item
+                  label="Đánh dấu"
+                  name="color"
+                  initialValue={"#ffffff"}
+                >
                   <Select
                     options={[
                       { value: "#fbff00", label: "Vàng (căn giá rẻ)" },
-                      { value: "#ff4d4f", label: "Đỏ (căn ngoại giao, không nên gọi trực tiếp chủ nhà ) " },
+                      {
+                        value: "#ff4d4f",
+                        label:
+                          "Đỏ (căn ngoại giao, không nên gọi trực tiếp chủ nhà ) ",
+                      },
                       { value: "rgb(88 206 79)", label: "Xanh" },
                       { value: "#ffa416c4", label: "Cam (căn kết hợp)" },
                       { value: "#ffffff", label: "Mặc định" },

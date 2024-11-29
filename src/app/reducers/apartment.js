@@ -12,6 +12,8 @@ const {
   REQUEST_APARTMENT,
   APPROVE_APARTMENT,
   DELETE_REQUEST_APPROVE,
+  EDIT_APARTMENT,
+  CREATE_APARTMENT,
 } = require("@/actions/actionTypes");
 
 var initialState = { data: [] };
@@ -29,7 +31,21 @@ const apartment = (state = initialState, action) => {
       if (role == "staff") {
         state.data = state.data.filter((item) => item.status == true);
       }
-      return { ...state, isLoading: false, total_page: action.data.total_page, search: false };
+      return {
+        ...state,
+        isLoading: false,
+        total_page: action.data.total_page,
+        search: false,
+        page: action.data.page,
+      };
+    case CREATE_APARTMENT:
+      state.data.unshift(action.data);
+      return { ...state, isLoading: false };
+    case EDIT_APARTMENT:
+      var stateIndex = state.data.findIndex(
+        (item) => item._id == action.data._id
+      );
+      state.data[stateIndex] = action.data;
     case CHANGE_STATUS_APARTMENT:
       var stateIndex = state.data.findIndex(
         (item) => item._id == action.data._id
@@ -62,6 +78,7 @@ const apartment = (state = initialState, action) => {
         search: true,
         values: values,
         key: key,
+        page: action.data.page,
       };
     case BAN_APARTMENT:
       var role = getCookie("role");

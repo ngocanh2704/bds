@@ -23,6 +23,7 @@ import {
   actRequestApartment,
   actSearchApartment,
 } from "@/actions/actionApartment";
+import moment from "moment";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -48,11 +49,12 @@ const ALl = (prop) => {
   const chechSearch = useSelector((state) => state.apartment.search);
   const valuesSearch = useSelector((state) => state.apartment.values);
   const keySearch = useSelector((state) => state.apartment.key);
+  const curPage = useSelector((state) => state.apartment.page);
   const handleDelete = (id) => dispatch(actDeleteApartment(id));
   const getApartment = (page) => dispatch(actFetchApartment(page));
   const searchApartment = (values, key, page) =>
     dispatch(actSearchApartment(values, key, page));
-console.log(total_page)
+  console.log(total_page);
   useEffect(() => {
     var token = getCookie("token");
     const currentTime = Date.now() / 1000;
@@ -185,6 +187,12 @@ console.log(total_page)
           <p>- {record.properties?.property_name}</p>
           <p>- {record.furnished?.furnished_name}</p>
           <p>- {record.notes}</p>
+          <p>
+            -{" "}
+            {record.user_id?.employee_ID?.employee_name ?record.user_id?.employee_ID?.employee_name  +
+              " đã cập nhật ngày " +
+              moment(record.updatedAt).format("DD/MM/YYYY"): ''}
+          </p>
         </>
       ),
     },
@@ -315,6 +323,7 @@ console.log(total_page)
           defaultPageSize: 50,
           total: total_page,
           showSizeChanger: false,
+          current: curPage == undefined ? 1 : page,
         }}
       />
     </>

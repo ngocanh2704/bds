@@ -3,6 +3,7 @@ import {
   APPROVE_APARTMENT,
   BAN_APARTMENT,
   CHANGE_STATUS_APARTMENT,
+  CREATE_APARTMENT,
   DELETE_APARTMENT,
   DELETE_REQUEST_APPROVE,
   EDIT_APARTMENT,
@@ -13,7 +14,6 @@ import {
   SEARCH_APARTMENT,
   THUE_APARTMENT,
 } from "./actionTypes";
-import { getCookie } from "cookies-next";
 
 export const fetchApartment = (data) => {
   return {
@@ -29,10 +29,10 @@ export const changeStatusApartment = (data) => {
   };
 };
 
-export const editApartment = (values) => {
+export const editApartment = (data) => {
   return {
     type: EDIT_APARTMENT,
-    values,
+    data,
   };
 };
 
@@ -100,6 +100,13 @@ export const approveApartment = (id) => {
   };
 };
 
+export const createApartment = (data) => {
+  return {
+    type: CREATE_APARTMENT,
+    data,
+  };
+};
+
 //action
 export const actFetchApartment = (page) => {
   return (dispatch) => {
@@ -138,7 +145,7 @@ export const actEditApartment = (values) => {
 
 export const actSearchApartment = (values, key, page) => {
   values.page = page;
-  console.log(page)
+  console.log(page);
   return (dispatch) => {
     return (
       dispatch(actLoadingApartment()),
@@ -240,5 +247,35 @@ export const actApproveApartment = (id) => {
       .then((res) => {
         dispatch(approveApartment(res.data.data.apartment));
       });
+  };
+};
+
+export const actCreateApartment = (values, hideModal) => {
+  return (dispatch) => {
+    return (
+      dispatch(actLoadingApartment()),
+      axios
+        .post("https://api.connecthome.vn/apartment/create", values)
+        .then((res) => {
+          dispatch(createApartment(res.data.data));
+          hideModal;
+        })
+        .catch((e) => console.log(e))
+    );
+  };
+};
+
+export const actEditApartmen = (values, hideModal) => {
+  return (dispatch) => {
+    return (
+      dispatch(actLoadingApartment()),
+      axios
+        .post("https://api.connecthome.vn/apartment/edit", values)
+        .then((res) => {
+          dispatch(editApartment(res.data.data));
+          hideModal;
+        })
+        .catch((e) => console.log(e))
+    );
   };
 };
