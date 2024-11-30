@@ -14,10 +14,12 @@ const Customer = () => {
   const data = useSelector((state) => state.customer.data);
   const handleDelete = (id) => dispatch(actDeleteCustomer(id));
   const mergeValue = new Set();
+  const mergeBod = new Set();
 
   useEffect(() => {
     getData();
     mergeValue.clear();
+    mergeBod.clear();
   }, []);
 
   const onFinish = (values) => {
@@ -69,21 +71,21 @@ const Customer = () => {
       dataIndex: "bod",
       key: "bod",
       render: (record) => moment(record).format("DD/MM/YYYY"),
-      onCell: (record, index) => {
-        // return   moment(record.bod).format("DD/MM/YYYY")
-        if (mergeValue.has(record.bod)) {
-          return { rowSpan: 0 };
-        } else {
-          const rowCount = data.filter(
-            (item) =>
-              moment(item.bod).format("DD/MM/YYYY") ===
-              moment(record.bod).format("DD/MM/YYYY")
-          ).length;
-          mergeValue.add(record.bod);
-          return { rowSpan: rowCount };
-        }
-        return {};
-      },
+      // onCell: (record, index) => {
+      //   // return   moment(record.bod).format("DD/MM/YYYY")
+      //   if (mergeBod.has(record.bod)) {
+      //     return { rowSpan: 0 };
+      //   } else {
+      //     const rowCount = data.filter(
+      //       (item) =>
+      //         moment(item.bod).format("DD/MM/YYYY") ===
+      //         moment(record.bod).format("DD/MM/YYYY")
+      //     ).length;
+      //     mergeBod.add(record.bod);
+      //     return { rowSpan: rowCount };
+      //   }
+      //   return {};
+      // },
     },
     { title: "Note", dataIndex: "note", key: "note" },
     {

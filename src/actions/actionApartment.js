@@ -14,6 +14,7 @@ import {
   SEARCH_APARTMENT,
   THUE_APARTMENT,
 } from "./actionTypes";
+import { getCookie } from "cookies-next";
 
 export const fetchApartment = (data) => {
   return {
@@ -226,7 +227,7 @@ export const actFecthRequestApartment = () => {
 };
 
 export const actRequestApartment = (id) => {
-  const user = getCookie("user");
+  const user = getCookie('user')
   return (dispatch) => {
     return axios.post("https://api.connecthome.vn/apartment/request-data", {
       id: id,
