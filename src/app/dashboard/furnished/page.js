@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import { deleteCookie, getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import ModalFurnished from "./ModalFurnished";
 
 const config = {
@@ -41,6 +41,15 @@ const Furnished = () => {
       }
     }
   }, [isLoading]);
+
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
+  }, []);
 
   const columns = [
     {
@@ -104,7 +113,7 @@ const Furnished = () => {
         Thêm mới
       </Button>
       <ModalFurnished open={open} hideModal={() => changeOpen()} id={id} />
-      <Table columns={columns} dataSource={data?.data} isLoading={isLoading} size="small" />
+      <Table columns={columns} dataSource={getCookie("role") == "staff" ? []:data?.data} isLoading={isLoading} size="small" />
     </>
   );
 };

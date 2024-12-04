@@ -24,7 +24,14 @@ const apartment = (state = initialState, action) => {
       return { ...state, isLoading: true };
     case FETCH_APARTMENT:
       var role = getCookie("role");
-      state.data = action.data.data;
+      var data = JSON.parse(
+        Buffer.from(action.data, "base64").toString("utf-8")
+      );
+      var result = JSON.parse(
+        Buffer.from(data.split(".")[1], "base64").toString()
+      );
+
+      state.data = result.data;
       // state.data = state.data.sort(function (x, y) {
       //   return x.status === y.status ? 0 : x.status ? -1 : 1;
       // });
@@ -42,7 +49,7 @@ const apartment = (state = initialState, action) => {
       state.data.unshift(action.data);
       return { ...state, isLoading: false };
     case EDIT_APARTMENT:
-      console.log(action)
+      console.log(action);
       var stateIndex = state.data.findIndex(
         (item) => item._id == action.data._id
       );

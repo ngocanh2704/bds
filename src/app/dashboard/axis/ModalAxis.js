@@ -22,24 +22,24 @@ const ModalAxis = (prop) => {
     values.id = prop.id;
     var urlCreate = "https://api.connecthome.vn/axis/create";
     var urlEdit = "https://api.connecthome.vn/axis/edit";
+    var encode = Buffer.from(JSON.stringify(values)).toString("base64");
     axios
-      .post(prop.id ? urlEdit : urlCreate, values)
+      .post(prop.id ? urlEdit : urlCreate, {values: encode})
       .then((res) => {
-        mutate('https://api.connecthome.vn/axis')
+        mutate("https://api.connecthome.vn/axis");
         prop.hideModal();
         prop.isLoading(),
           messageApi.open({
             type: "success",
             content: res.data.message,
           });
-
       })
       .catch((e) => {
         // messageApi.open({
         //   type: "warning",
         //   content: e.response.data.message,
         // });
-        console.log(e)
+        console.log(e);
       });
   };
 
@@ -47,9 +47,9 @@ const ModalAxis = (prop) => {
     axios
       .post("https://api.connecthome.vn/axis/detail", { id: id })
       .then((res) => {
-        console.log(res)
+        console.log(res);
         form.setFieldsValue({
-          axis_name: res.data.axis.axis_name
+          axis_name: res.data.axis.axis_name,
         });
       })
       .catch((e) => console.log(e));

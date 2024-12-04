@@ -4,6 +4,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import ModalStatus from "./ModalStatus";
 import { redirect } from "next/dist/server/api-utils";
+import { getCookie } from "cookies-next";
+import { useRouter } from "next/navigation";
 
 const Status = () => {
   const [data, setData] = useState([]);
@@ -11,7 +13,6 @@ const Status = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
-  const [jwt, setJwt] = useState('')
 
   const columns = [
     {
@@ -34,7 +35,13 @@ const Status = () => {
           >
             Sửa
           </Button>
-          <Button type="primary" danger onClick={() => { onDelete(item) }}>
+          <Button
+            type="primary"
+            danger
+            onClick={() => {
+              onDelete(item);
+            }}
+          >
             Xoá
           </Button>
         </Flex>
@@ -49,8 +56,6 @@ const Status = () => {
   const changeOpen = () => {
     setOpen(false);
   };
-
-
 
   const onDelete = (id) => {
     axios
@@ -69,26 +74,40 @@ const Status = () => {
       axios
         .get("https://api.connecthome.vn/status", {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem('jwt')}`
-          }
+            Authorization: `Bearer ${localStorage.getItem("jwt")}`,
+          },
         })
         .then((res) => {
-          console.log(res)
+          console.log(res);
           setData(res.data.data);
-          setIsLoading(false)
+          setIsLoading(false);
         })
         .catch((e) => {
-          redirect('/login')
+          redirect("/login");
         });
     };
     getData();
   }, [isLoading]);
+
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
+  }, []);
+
   return (
     <>
-      <Button type="primary" style={{ marginBottom: 20 }} onClick={() => {
-        setOpen(true);
-        setId("");
-      }}>
+      <Button
+        type="primary"
+        style={{ marginBottom: 20 }}
+        onClick={() => {
+          setOpen(true);
+          setId("");
+        }}
+      >
         Thêm mới
       </Button>
       <ModalStatus
@@ -97,7 +116,12 @@ const Status = () => {
         isLoading={() => changeLoading()}
         id={id}
       />
-      <Table columns={columns} dataSource={data} isLoading={isLoading} size="small" />
+      <Table
+        columns={columns}
+        dataSource={getCookie("role") == "staff" ? [] : data}
+        isLoading={isLoading}
+        size="small"
+      />
     </>
   );
 };

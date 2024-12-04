@@ -1,5 +1,5 @@
 import { Button, Layout, Menu } from "antd";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   DesktopOutlined,
   LogoutOutlined,
@@ -11,6 +11,7 @@ import { getCookie } from "cookies-next";
 const { Sider } = Layout;
 const Side = () => {
   const [collapsed, setCollapsed] = useState(false);
+  const [item, setItem] = useState("");
   function getItem(label, key, icon, children) {
     return {
       key,
@@ -45,6 +46,14 @@ const Side = () => {
       getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
     ]),
   ];
+
+  useEffect(() => {
+    if (getCookie("role") == "staff") {
+      setItem(itmesStaff);
+    } else {
+      setItem(itemsAdminManager);
+    }
+  }, []);
   return (
     <Sider
       collapsible
@@ -59,12 +68,16 @@ const Side = () => {
           background: "rgba(255,255,255,.2)",
           borderRadius: 6,
         }}
-      ><p style={{ fontSize: 'large', color: 'white', marginLeft: 55 }}>{getCookie('name')}</p></div>
+      >
+        <p style={{ fontSize: "large", color: "white", marginLeft: 55 }}>
+          {getCookie("name")}
+        </p>
+      </div>
       <Menu
         theme="dark"
         defaultSelectedKeys={["10"]}
         mode="inline"
-        items={getCookie('role') == 'staff' ? itmesStaff : itemsAdminManager}
+        items={item}
         activeKey={["10"]}
         defaultOpenKeys={["sub2"]}
       />

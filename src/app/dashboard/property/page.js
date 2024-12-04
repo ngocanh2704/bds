@@ -102,7 +102,7 @@ const Property = () => {
         hideModal={() => changeOpen()}
         id={id}
       />
-      <Table columns={columns} dataSource={data?.data} loading={isLoading} size="small" />
+      <Table columns={columns} dataSource={getCookie("role") == "staff" ? []:data?.data} loading={isLoading} size="small" />
     </>
   );
 };

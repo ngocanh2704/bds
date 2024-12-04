@@ -3,7 +3,8 @@ import { Button, Flex, Table, message } from "antd";
 import axios from "axios";
 import { useEffect, useState } from "react";
 import ModalProject from "./ModalProject";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
+import { getCookie } from "cookies-next";
 
 const Project = () => {
   const [data, setData] = useState([]);
@@ -80,6 +81,15 @@ const Project = () => {
   useEffect(() => {
     getData();
   }, [isLoading]);
+
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
+  }, []);
   return (
     <>
       {contextHolder}
@@ -95,7 +105,7 @@ const Project = () => {
         isLoading={() => changeLoading()}
         id={id}
       />
-      <Table columns={columns} dataSource={data} isLoading={isLoading} size="small" />
+      <Table columns={columns} dataSource={getCookie("role") == "staff" ? []:data} isLoading={isLoading} size="small" />
     </>
   );
 };

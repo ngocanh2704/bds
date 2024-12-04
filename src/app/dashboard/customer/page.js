@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { actDeleteCustomer, actFetchCustomer } from "@/actions/actionCustonmer";
 import moment from "moment";
 import axios from "axios";
+import { useRouter } from "next/navigation";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
@@ -15,11 +16,22 @@ const Customer = () => {
   const handleDelete = (id) => dispatch(actDeleteCustomer(id));
   const mergeValue = new Set();
   const mergeBod = new Set();
+  const names = new Set();
 
   useEffect(() => {
     getData();
     mergeValue.clear();
     mergeBod.clear();
+    names.clear();
+  }, []);
+
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
   }, []);
 
   const onFinish = (values) => {
@@ -39,17 +51,22 @@ const Customer = () => {
       title: "Tên khách hàng",
       dataIndex: "name",
       key: "name",
-      onCell: (record, index) => {
-        if (mergeValue.has(record.name)) {
-          return { rowSpan: 0 };
+      onCell: (value, row, index) => {
+        const obj = {
+          children: value,
+          props: {}
+        };
+        
+        if (names.has(value)) {
+          obj.props.rowSpan = 0;
         } else {
-          const rowCount = data.filter(
-            (item) => item.name === record.name
-          ).length;
-          mergeValue.add(record.name);
-          return { rowSpan: rowCount };
+          const occurCount = data.filter((data) => data.name === value).length;
+          
+          obj.props.rowSpan = occurCount;
+          names.add(value);
         }
-        return {};
+    
+        return obj;
       },
     },
     { title: "Số điện thoại", dataIndex: "phone_number", key: "phone_number" },
@@ -78,8 +95,8 @@ const Customer = () => {
       //   } else {
       //     const rowCount = data.filter(
       //       (item) =>
-      //         moment(item.bod).format("DD/MM/YYYY") ===
-      //         moment(record.bod).format("DD/MM/YYYY")
+      //       item.bod ===
+      //       record.bod
       //     ).length;
       //     mergeBod.add(record.bod);
       //     return { rowSpan: rowCount };

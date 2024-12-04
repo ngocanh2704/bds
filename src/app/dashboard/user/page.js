@@ -2,10 +2,11 @@
 
 import { Button, Flex, Table, message } from "antd";
 import axios from "axios";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWR, { mutate } from "swr";
 import dynamic from "next/dynamic";
 import { getCookie } from "cookies-next";
+import { redirect, useRouter } from "next/navigation";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -18,6 +19,14 @@ const User = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [messageApi, contextHolder] = message.useMessage();
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
+  }, []);
 
   const { data, error, isLoading } = useSWR(
     "https://api.connecthome.vn/user",
@@ -40,7 +49,7 @@ const User = () => {
     },
     {
       title: "Tài khoản",
-      dataIndex: "username",
+      dataIndex: "rname",
       key: "username",
     },
     {
@@ -129,13 +138,13 @@ const User = () => {
       />
       <Table
         columns={columns}
-        dataSource={data?.user}
+        dataSource={getCookie("role") == "staff" ? [] : data?.user}
         loading={isLoading}
         size="small"
         pagination={{
           defaultPageSize: 20,
-          pageSizeOptions: [20,30, 40, 50],
-          showSizeChanger: true
+          pageSizeOptions: [20, 30, 40, 50],
+          showSizeChanger: true,
         }}
       />
     </>

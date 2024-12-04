@@ -6,7 +6,7 @@ import ModalAxis from "./ModalAxis";
 import useSWR, { mutate } from "swr";
 import { deleteCookie, getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -50,8 +50,8 @@ const Axis = () => {
     },
     {
       title: "Action",
-      dataIndex: "_id",
-      key: "_id",
+      // dataIndex: "_id",
+      // key: "_id",
       render: (item) => (
         <Flex gap="small" wrap>
           <Button
@@ -91,6 +91,15 @@ const Axis = () => {
     });
   };
 
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
+  }, []);
+
   return (
     <>
       <Button
@@ -104,12 +113,20 @@ const Axis = () => {
         Thêm mới
       </Button>
       <ModalAxis open={open} hideModal={() => changeOpen()} id={id} />
-      <Table columns={columns} dataSource={data?.data} isLoading={isLoading} size="small" 
-       pagination={{
-        defaultPageSize: 20,
-        pageSizeOptions: [20,30, 40, 50],
-        showSizeChanger: true
-      }}
+      <Table
+        columns={columns}
+        dataSource={
+          data
+            ? JSON.parse(Buffer.from(data, "base64").toString("utf-8"))?.data
+            : []
+        }
+        isLoading={isLoading}
+        size="small"
+        pagination={{
+          defaultPageSize: 20,
+          pageSizeOptions: [20, 30, 40, 50],
+          showSizeChanger: true,
+        }}
       />
     </>
   );

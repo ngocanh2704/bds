@@ -8,7 +8,7 @@ import moment from "moment";
 // import { redirect } from "next/navigation";
 import useSWR, { mutate } from "swr";
 import dynamic from "next/dynamic";
-import { redirect } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { deleteCookie, getCookie } from "cookies-next";
 import { jwtDecode } from "jwt-decode";
 
@@ -162,6 +162,15 @@ const Employee = () => {
     }
   }, [isLoading]);
 
+  const { push } = useRouter();
+
+  useEffect(() => {
+    var role = getCookie("role");
+    if (role == "staff") {
+      push("/dashboard/datasource");
+    }
+  }, []);
+
   return (
     <div>
       {contextHolder}
@@ -198,7 +207,7 @@ const Employee = () => {
         id={id}
         isLoading={() => changeLoading()}
       />
-      <Table columns={columns} dataSource={data?.data} loading={isLoading} size="small" 
+      <Table columns={columns} dataSource={getCookie("role") == "staff" ? []:data?.data} loading={isLoading} size="small" 
        pagination={{
         defaultPageSize: 20,
         pageSizeOptions: [20,30, 40, 50],
