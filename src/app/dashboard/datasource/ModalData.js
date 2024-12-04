@@ -126,8 +126,9 @@ const ModalData = (prop) => {
     axios
       .get("https://api.connecthome.vn/axis")
       .then((res) => {
+        var data = JSON.parse(Buffer.from(res.data, "base64").toString("utf-8"))
         var array = [];
-        res.data.data.forEach((item) => {
+        data.data.forEach((item) => {
           array.push({
             value: item._id,
             label: item.axis_name,
