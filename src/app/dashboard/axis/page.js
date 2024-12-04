@@ -82,13 +82,15 @@ const Axis = () => {
   };
 
   const onDelete = (id) => {
-    axios.post("https://api.connecthome.vn/axis/delete", { id: id }).then((res) => {
-      mutate("https://api.connecthome.vn/axis");
-      messageApi.open({
-        type: "success",
-        content: res.data.message,
+    axios
+      .post("https://api.connecthome.vn/axis/delete", { id: id })
+      .then((res) => {
+        mutate("https://api.connecthome.vn/axis");
+        messageApi.open({
+          type: "success",
+          content: res.data.message,
+        });
       });
-    });
   };
 
   const { push } = useRouter();
@@ -116,7 +118,9 @@ const Axis = () => {
       <Table
         columns={columns}
         dataSource={
-          data
+          getCookie("role") == "staff"
+            ? []
+            : data
             ? JSON.parse(Buffer.from(data, "base64").toString("utf-8"))?.data
             : []
         }
