@@ -227,7 +227,7 @@ export const actFecthRequestApartment = () => {
 };
 
 export const actRequestApartment = (id) => {
-  const user = getCookie('users')
+  const user = getCookie('user')
   return (dispatch) => {
     return axios.post("https://api.connecthome.vn/apartment/request-data", {
       id: id,
@@ -247,6 +247,7 @@ export const actApproveApartment = (id) => {
       .then((res) => {
         dispatch(approveApartment(res.data.data.apartment));
       });
+
   };
 };
 

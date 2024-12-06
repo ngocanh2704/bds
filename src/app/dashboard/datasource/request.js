@@ -190,6 +190,7 @@ const Request = forwardRef(function Request(prop, ref) {
                 <Button
                   type="primary"
                   onClick={() => {
+                    console.log(getCookie('role'))
                     actionRequest(record.id);
                     messageApi.open({
                       type: "success",

@@ -7,6 +7,7 @@ import { actDeleteCustomer, actFetchCustomer } from "@/actions/actionCustonmer";
 import moment from "moment";
 import axios from "axios";
 import { useRouter } from "next/navigation";
+import { getCookie } from "cookies-next";
 
 const Customer = () => {
   const [open, setOpen] = useState(false);
