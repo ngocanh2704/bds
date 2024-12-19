@@ -16,6 +16,7 @@ const Customer = () => {
   const [open, setOpen] = useState(false);
   const [id, setId] = useState("");
   const [page, setPage] = useState(1);
+  const [type, setType] = useState("create");
   const dispatch = useDispatch();
   const getData = (page) => dispatch(actFetchCustomer(page));
   const searchData = (data) => dispatch(searchCustomer(data))
@@ -127,6 +128,15 @@ const Customer = () => {
           </Button>
           <Button
             type="primary"
+            style={{ backgroundColor: "green" }}
+            onClick={() => {
+              setOpen(true), setId(item), setType("addMore")
+            }}
+          >
+            Tạo
+          </Button>
+          <Button
+            type="primary"
             danger
             onClick={() => {
               handleDelete(item);
@@ -171,7 +181,7 @@ const Customer = () => {
           </Button>
         </Form.Item>
       </Form>
-      <DynamicModalCustomer open={open} hideModal={() => changeOpen()} page={page} id={id} />
+      <DynamicModalCustomer open={open} hideModal={() => changeOpen()} page={page} id={id} type={type}/>
       <Table
         rowKey={"_id"}
         columns={columns}

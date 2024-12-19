@@ -15,12 +15,20 @@ const ModalCustomer = (prop) => {
   const onFinish = () => {
     var values = form.getFieldsValue();
     if (prop.id) {
-      values.id = prop.id
-      axios
-        .post("https://api.connecthome.vn/customer/edit", values)
-        // .then((res) => { form.resetFields(), prop.hideModal() })
-        .then((res) => {editData(res.data.data),form.resetFields(), prop.hideModal(),getData(prop.page)})
-        .catch((e) => console.log(e));
+
+      if (prop.type === "addMore") {
+        axios
+          .post("https://api.connecthome.vn/customer/create", values)
+          .then((res) => { form.resetFields(), prop.hideModal(), getData(prop.page) })
+          .catch((e) => console.log(e));
+      } else {
+        values.id = prop.id
+        axios
+          .post("https://api.connecthome.vn/customer/edit", values)
+          // .then((res) => { form.resetFields(), prop.hideModal() })
+          .then((res) => { editData(res.data.data), form.resetFields(), prop.hideModal(), getData(prop.page) })
+          .catch((e) => console.log(e));
+      }
     } else {
       axios
         .post("https://api.connecthome.vn/customer/create", values)
