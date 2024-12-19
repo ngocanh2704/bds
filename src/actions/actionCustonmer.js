@@ -1,5 +1,5 @@
 import axios from "axios";
-import { DELETE_CUSTOMER, FETCH_CUSTOMER, FETCH_LOADING } from "./actionTypes";
+import { ADD_CUSTOMER, DELETE_CUSTOMER, EDIT_CUSTOMER, FETCH_CUSTOMER, FETCH_LOADING, SEARCH_CUSTOMER } from "./actionTypes";
 
 export const actLoadingApartment = () => {
   return {
@@ -21,12 +21,33 @@ export const deleteCustomer = (id) => {
   };
 };
 
-export const actFetchCustomer = () => {
+export const addCustomer = (data) => {
+  return {
+    type: ADD_CUSTOMER,
+    data
+  }
+}
+
+export const editCustomer = (data) => {
+  return {
+    type: EDIT_CUSTOMER,
+    data
+  }
+}
+
+export const searchCustomer = (data) => {
+  return {
+    type: SEARCH_CUSTOMER,
+    data
+  }
+}
+
+export const actFetchCustomer = (page) => {
   return (dispatch) => {
     return (
       dispatch(actLoadingApartment()),
       axios
-        .get(`https://api.connecthome.vn/customer`)
+        .get(`https://api.connecthome.vn/customer?page=${page}`)
         .then((res) => dispatch(fetchCustomer(res.data)))
         .catch((e) => console.log(e))
     );
@@ -42,3 +63,9 @@ export const actDeleteCustomer = (id) => {
         .catch((e) => console.log(e));
   };
 };
+
+export const actAddApartment = (data) => {
+  return dispatch => {
+    return dispatch(actLoadingApartment), dispatch(addCustomer(data))
+  }
+}

@@ -280,3 +280,4 @@ export const actEditApartmen = (values, hideModal) => {
     );
   };
 };
+
