@@ -136,7 +136,11 @@ const ALl = (prop) => {
           style={{ fontSize: "small", backgroundColor: record.color }}
           bordered={false}
         >
-          {record.apartment_name}
+            {record.building?.building_name +
+            ((role == "admin") | (role == "manager")
+              ? record?.floor
+              : spliceString(record?.floor)) +
+            record.axis?.axis_name}
         </Tag>
       ),
     },

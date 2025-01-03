@@ -410,8 +410,7 @@ const DataSource = () => {
         >
           <Button>Nhập dữ liệu excel</Button>
         </Upload>
-
-        <Button onClick={() => {
+        {(role == "admin") | (role == "manager") ? <Button onClick={() => {
           axios
             .post("https://api.connecthome.vn/apartment/export-excel-apartment", { data: selectedRow })
             .then((res) => {
@@ -456,7 +455,9 @@ const DataSource = () => {
               // XLSX.writeFile(wb, "result.xlsx");
             })
             .catch((e) => console.log(e));
-        }}>Xuất excel</Button>
+        }}>Xuất excel</Button> :
+          ''}
+
       </Flex>
       <ModalUpload open={on} hideModal={() => changeOn()} id={id} />
       <DynamicModalData open={open} hideModal={() => changeOpen()} id={id} />
