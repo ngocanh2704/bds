@@ -22,8 +22,10 @@ import {
   actFetchApartment,
   actRequestApartment,
   actSearchApartment,
+  setSelectedRows,
 } from "@/actions/actionApartment";
 import moment from "moment";
+import compareAndAddArrays from "@/ultil/compareAndAddarrays";
 
 const config = {
   headers: { Authorization: `Bearer ${getCookie("token")}` },
@@ -50,6 +52,7 @@ const ALl = (prop) => {
   const valuesSearch = useSelector((state) => state.apartment.values);
   const keySearch = useSelector((state) => state.apartment.key);
   const curPage = useSelector((state) => state.apartment.page);
+  const selectedRow = useSelector((state) => state.apartment.selectedRows);
   const handleDelete = (id) => dispatch(actDeleteApartment(id));
   const getApartment = (page) => dispatch(actFetchApartment(page));
   const searchApartment = (values, key, page) =>
@@ -66,7 +69,6 @@ const ALl = (prop) => {
       }
     }
   }, []);
-
   useEffect(() => {
     if (prop.search.length != 0) {
       setData(prop.search);
@@ -79,12 +81,9 @@ const ALl = (prop) => {
   };
 
   const rowSelection = {
+    selectedRowKeys: useSelector((state) => state.apartment.selectedRows),
     onChange: (selectedRowKeys, selectedRows) => {
-      // console.log(
-      //   `selectedRowKeys: ${selectedRowKeys}`,
-      //   "selectedRows: ",
-      //   selectedRows
-      // );
+      dispatch(setSelectedRows(selectedRowKeys,selectedRows));
       prop.yeuCauDongLoat(selectedRowKeys);
     },
     getCheckboxProps: (record) => ({
@@ -92,6 +91,7 @@ const ALl = (prop) => {
       // Column configuration not to be checked
       name: record.name,
     }),
+    preserveSelectedRowKeys: true
   };
 
   useEffect(() => {
@@ -121,7 +121,7 @@ const ALl = (prop) => {
     {
       title: "STT",
       dataIndex: "_id",
-      key: "_id",
+      // key: "_id",
       render: (text, record, index) => {
         return <>{index + 1}</>;
       },
@@ -136,11 +136,7 @@ const ALl = (prop) => {
           style={{ fontSize: "small", backgroundColor: record.color }}
           bordered={false}
         >
-          {record.building?.building_name +
-            ((role == "admin") | (role == "manager")
-              ? record?.floor
-              : spliceString(record?.floor)) +
-            record.axis?.axis_name}
+          {record.apartment_name}
         </Tag>
       ),
     },
@@ -188,9 +184,9 @@ const ALl = (prop) => {
           <p>- {record.notes}</p>
           <p>
             -{" "}
-            {record.user_id?.employee_ID?.employee_name ?record.user_id?.employee_ID?.employee_name  +
+            {record.user_id?.employee_ID?.employee_name ? record.user_id?.employee_ID?.employee_name +
               " đã cập nhật ngày " +
-              moment(record.updatedAt).format("DD/MM/YYYY"): ''}
+              moment(record.updatedAt).format("DD/MM/YYYY") : ''}
           </p>
         </>
       ),
@@ -297,16 +293,14 @@ const ALl = (prop) => {
       key: "status",
       hidden: true,
     },
-  ].filter((item) => !item.hidden);
+  ]
 
   return (
     <>
       {/* <Search style={{ marginBottom: 20 }} /> */}
       {contextHolder}
       <Table
-        rowSelection={{
-          ...rowSelection,
-        }}
+        rowSelection={rowSelection}
         columns={columns}
         dataSource={dataApartment}
         loading={loading}

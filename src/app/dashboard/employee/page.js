@@ -93,7 +93,7 @@ const Employee = () => {
       title: "Tình trạng làm việc",
       dataIndex: "employment_status_id",
       key: "employment_status_id",
-      render: (item) => Object.values(item)[1],
+      render: (item) => item ? Object.values(item)[1] : '',
     },
     {
       title: "Action",

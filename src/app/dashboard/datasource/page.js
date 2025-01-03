@@ -25,7 +25,9 @@ import {
   actFetchApartment,
   actRequestApartment,
   actSearchApartment,
+  clearSelectedRows,
 } from "@/actions/actionApartment";
+import { decryptData } from "@/ultil/crypto";
 
 const DynamicAll = dynamic(() => import("./all"));
 const DynamicSale = dynamic(() => import("./sale"));
@@ -59,11 +61,10 @@ const DataSource = () => {
   const actionApprove = (id) => dispatch(actApproveApartment(id));
   const searchApartment = (values, key) =>
     dispatch(actSearchApartment(values, key));
-
   useEffect(() => {
     getApartment();
   }, []);
-
+  const selectedRow = useSelector((state) => state.apartment.selectedRows);
   const changeOpen = () => {
     setOpen(!open);
   };
@@ -85,6 +86,11 @@ const DataSource = () => {
   const changeId = (id) => {
     setId(id);
   };
+
+  const handleClearSelectedRows = () => {
+    dispatch(clearSelectedRows());
+  };
+
   const items = [
     {
       key: "1",
@@ -159,7 +165,7 @@ const DataSource = () => {
           onDelete={() => onDelete(id)}
           changeLoading={() => changeLoading()}
           yeuCauDongLoat={(items) => yeuCauDongLoat(items)}
-          // key={key}
+        // key={key}
         />
       ),
     },
@@ -280,7 +286,9 @@ const DataSource = () => {
     axios
       .get("https://api.connecthome.vn/axis")
       .then((res) => {
-        var data = JSON.parse(Buffer.from(res.data, "base64").toString("utf-8"))
+        var data = JSON.parse(
+          Buffer.from(res.data, "base64").toString("utf-8")
+        );
         var array = [];
         data.data.forEach((item) => {
           array.push({
@@ -322,10 +330,10 @@ const DataSource = () => {
   const onFinish = (values) => {
     values.key = key;
     values.isDelete = false;
-    if (values.price == 1 | values.price == 2) {
+    if ((values.price == 1) | (values.price == 2)) {
       values.sale_price = { $gt: 0 };
     }
-    if (values.price == 3 | values.price == 4) {
+    if ((values.price == 3) | (values.price == 4)) {
       values.rental_price = { $gt: 0 };
     }
     if (values.minSalePrice && values.maxSalePrice) {
@@ -402,6 +410,53 @@ const DataSource = () => {
         >
           <Button>Nhập dữ liệu excel</Button>
         </Upload>
+
+        <Button onClick={() => {
+          axios
+            .post("https://api.connecthome.vn/apartment/export-excel-apartment", { data: selectedRow })
+            .then((res) => {
+              const decryptedData = decryptData(res.data.apartment);
+              if (!decryptedData) {
+                return {
+                  ...state,
+                  isLoading: false,
+                  error: "Data is not valid",
+                };
+              }
+              var newData = [];
+              for (let i = 0; i < decryptedData.length; i++) {
+                console.log(decryptedData[i]);
+                const value = {
+                  'Dự án': decryptedData[i].project?.project_name,
+                  'Căn hộ': decryptedData[i].apartment_name,
+                  'Tên chủ căn hộ': decryptedData[i].owner,
+                  'Số điện thoại': decryptedData[i].phone_number,
+                  'Loại BDS': decryptedData[i].properties?.property_name,
+                  'Diện tích': decryptedData[i].area,
+                  'Hướng ban công': decryptedData[i].balcony_direction?.balcony_direction_name,
+                  'Số phòng ngủ': decryptedData[i].bedrooms,
+                  'Số WC': decryptedData[i].bathrooms,
+                  'Trục căn': decryptedData[i].axis?.axis_name,
+                  'Giá bán': decryptedData[i].sale_price,
+                  'Giá thuê': decryptedData[i].rental_price,
+                  'Nội thất': decryptedData[i].furnished?.furnished_name,
+                  'Ghi chú': decryptedData[i].notes
+                };
+                newData.push(value);
+              }
+              var ws = XLSX.utils.json_to_sheet(newData);
+              /* create workbook and export */
+              var wb = XLSX.utils.book_new();
+              XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+              XLSX.writeFile(wb, "result.xlsx");
+              // var ws = XLSX.utils.json_to_sheet(res.data);
+              // /* create workbook and export */
+              // var wb = XLSX.utils.book_new();
+              // XLSX.utils.book_append_sheet(wb, ws, "Sheet1");
+              // XLSX.writeFile(wb, "result.xlsx");
+            })
+            .catch((e) => console.log(e));
+        }}>Xuất excel</Button>
       </Flex>
       <ModalUpload open={on} hideModal={() => changeOn()} id={id} />
       <DynamicModalData open={open} hideModal={() => changeOpen()} id={id} />
@@ -526,6 +581,11 @@ const DataSource = () => {
           <Form.Item>
             <Button htmlType="reset" onClick={() => getApartment()}>
               reset
+            </Button>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" danger onClick={() => handleClearSelectedRows()}>
+              Xoá đã chọn
             </Button>
           </Form.Item>
         </Row>

@@ -1,3 +1,5 @@
+import compareAndAddArrays from "@/ultil/compareAndAddarrays";
+import { decryptData } from "@/ultil/crypto";
 import { getCookie } from "cookies-next";
 
 const {
@@ -14,9 +16,11 @@ const {
   DELETE_REQUEST_APPROVE,
   EDIT_APARTMENT,
   CREATE_APARTMENT,
+  SET_SELECTED_ROWS,
+  CLEAR_SELECTED_ROWS,
 } = require("@/actions/actionTypes");
 
-var initialState = { data: [] };
+var initialState = { data: [], selectedRows: [] };
 
 const apartment = (state = initialState, action) => {
   switch (action.type) {
@@ -24,26 +28,35 @@ const apartment = (state = initialState, action) => {
       return { ...state, isLoading: true };
     case FETCH_APARTMENT:
       var role = getCookie("role");
-      var data = JSON.parse(
-        Buffer.from(action.data, "base64").toString("utf-8")
-      );
-      var result = JSON.parse(
-        Buffer.from(data.split(".")[1], "base64").toString()
-      );
+      // var data = JSON.parse(
+      //   Buffer.from(action.data, "base64").toString("utf-8")
+      // );
+      // var result = JSON.parse(
+      //   Buffer.from(data.split(".")[1], "base64").toString()
+      // );
+      const decryptedData = decryptData(action.data.data);
+      if (!decryptedData) {
+        return {
+          ...state,
+          isLoading: false,
+          error: "Data is not valid",
+        };
+      }
+      state.data = decryptedData;
 
-      state.data = result.data;
       // state.data = state.data.sort(function (x, y) {
       //   return x.status === y.status ? 0 : x.status ? -1 : 1;
       // });
-      if (role == "staff") {
-        state.data = state.data.filter((item) => item.status == true);
-      }
+      // if (role == "staff") {
+      //   state.data = decryptedData.filter((item) => item.status == true);
+      // }
       return {
         ...state,
         isLoading: false,
         total_page: action.data.total_page,
         search: false,
         page: action.data.page,
+        selectedRows: state.selectedRows || [],
       };
     case CREATE_APARTMENT:
       state.data.unshift(action.data);
@@ -139,6 +152,14 @@ const apartment = (state = initialState, action) => {
       state.data = state.data.filter((item) => item._id !== id);
       return { ...state, isLoading: false };
     }
+    case SET_SELECTED_ROWS: 
+   localStorage.setItem('selectedRowsApartment', JSON.stringify(action.selectedRowKeys));
+      state.selectedRows = action.selectedRowKeys;
+      return { ...state, isLoading: false };
+    case CLEAR_SELECTED_ROWS:
+      localStorage.removeItem('selectedRowsApartment');
+      state.selectedRows = [];
+      return { ...state, isLoading: false };
     default:
       return { ...state, isLoading: false };
   }

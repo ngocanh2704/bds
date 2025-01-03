@@ -3,15 +3,18 @@ import {
   APPROVE_APARTMENT,
   BAN_APARTMENT,
   CHANGE_STATUS_APARTMENT,
+  CLEAR_SELECTED_ROWS,
   CREATE_APARTMENT,
   DELETE_APARTMENT,
   DELETE_REQUEST_APPROVE,
   EDIT_APARTMENT,
+  EXPORT_EXCEL_APARTMENT,
   FETCH_APARTMENT,
   FETCH_LOADING,
   FETCH_REQUEST_APARTMENT,
   REQUEST_APARTMENT,
   SEARCH_APARTMENT,
+  SET_SELECTED_ROWS,
   THUE_APARTMENT,
 } from "./actionTypes";
 import { getCookie } from "cookies-next";
@@ -105,6 +108,26 @@ export const createApartment = (data) => {
   return {
     type: CREATE_APARTMENT,
     data,
+  };
+};
+
+export const exportExcelApartment = (data) => {
+  return {
+    type: EXPORT_EXCEL_APARTMENT,
+    data,
+  };
+};
+
+export const setSelectedRows = (selectedRowKeys,selectedRows) => {
+  return {
+    type: SET_SELECTED_ROWS,
+    selectedRowKeys,selectedRows
+  };
+};
+
+export const clearSelectedRows = () => {
+  return {
+    type: CLEAR_SELECTED_ROWS,
   };
 };
 
@@ -227,7 +250,7 @@ export const actFecthRequestApartment = () => {
 };
 
 export const actRequestApartment = (id) => {
-  const user = getCookie('user')
+  const user = getCookie("user");
   return (dispatch) => {
     return axios.post("https://api.connecthome.vn/apartment/request-data", {
       id: id,
@@ -247,7 +270,6 @@ export const actApproveApartment = (id) => {
       .then((res) => {
         dispatch(approveApartment(res.data.data.apartment));
       });
-
   };
 };
 
@@ -281,3 +303,16 @@ export const actEditApartmen = (values, hideModal) => {
   };
 };
 
+export const actExportExcelApartment = (values) => {
+  return (dispatch) => {
+    return (
+      dispatch(actLoadingApartment()),
+      axios
+        .post("https://api.connecthome.vn/apartment/export-excel", values)
+        .then((res) => {
+          dispatch(exportExcelApartment(res.data.data));
+        })
+        .catch((e) => console.log(e))
+    );
+  };
+};
