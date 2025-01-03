@@ -44,6 +44,7 @@ const Side = () => {
   const itmesStaff = [
     getItem("Sale", "sub2", <DesktopOutlined />, [
       getItem(<Link href="/dashboard/datasource">Data Nguồn</Link>, "10"),
+      getItem(<Link href="/dashboard/customer">Khách hàng</Link>, "11"),
     ]),
   ];
 

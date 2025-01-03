@@ -9,6 +9,7 @@ import axios from "axios";
 import { useRouter } from "next/navigation";
 import { getCookie } from "cookies-next";
 import dynamic from "next/dynamic";
+import { jwtDecode } from "jwt-decode";
 
 const DynamicModalCustomer = dynamic(() => import('./ModalCustomer'))
 
@@ -37,10 +38,16 @@ const Customer = () => {
   const { push } = useRouter();
 
   useEffect(() => {
-    var role = getCookie("role");
-    if (role == "staff") {
-      push("/dashboard/datasource");
-    }
+   var token = getCookie("token");
+       const currentTime = Date.now() / 1000;
+       if (token == undefined) {
+         redirect("/login");
+       } else {
+         if (jwtDecode(token).exp < currentTime) {
+           deleteCookie("token");
+           redirect("/login");
+         }
+       }
   }, []);
 
   const onFinish = (values) => {
